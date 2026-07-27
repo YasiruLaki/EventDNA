@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #4F10FF;
+  --primary-hover: #3B00D6;
+  --primary-tint: #F3F0FF;
+  --secondary: #0F172A;
+  --tertiary: #F1F5F9;
+  --neutral: #64748B;
+
+  --font-family-sans: 'Inter', sans-serif;
+  --bg-color: #E2E8F0;
+  --surface-color: #FFFFFF;
+
+  --text-primary: var(--secondary);
+  --text-secondary: var(--neutral);
+  --text-tertiary: #94A3B8;
+
+  --success: #16A34A;
+  --success-tint: #F0FDF4;
+  --warning: #F59E0B;
+  --warning-tint: #FFFBEB;
+  --danger: #DC2626;
+  --danger-tint: #FEF2F2;
+  --info: #2563EB;
+  --info-tint: #EFF6FF;
+
+  --border-color: #E2E8F0;
+  --divider-color: #EEF2F7;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-sans);
+  background-color: var(--bg-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  margin-top: 0;
+}
+
+.btn-primary {
+  padding: 1rem 2rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
