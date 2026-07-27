@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Onboarding Step 1 — Email Verification</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../../globals.css" />
+  </head>
+  <body>
+    <div class="stage">
+      <div class="card">
+        <div class="step-row">
+          <span class="step-label">Step 1 of 3 · Verification</span>
+          <span class="step-pct">33% Complete</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+
+        <h1>Verify Your Email</h1>
+        <p class="sub">
+          A secure code has been sent to your professional email. Please enter
+          it below to continue.
+        </p>
+
+        <div class="code-row">
+          <input class="code-box" maxlength="1" value="" autofocus />
+          <input class="code-box" maxlength="1" value="" />
+          <input class="code-box" maxlength="1" value="" />
+          <input class="code-box" maxlength="1" value="" />
+          <input class="code-box" maxlength="1" value="" />
+          <input class="code-box" maxlength="1" value="" />
+        </div>
+
+        <button class="btn-primary">Verify &amp; Continue →</button>
+
+        <div class="resend">Didn't get a code? <a href="#">Resend code</a></div>
+        <a href="#" class="alt-email">Use a different email address</a>
+
+        <div class="foot-row">
+          <a href="#" class="skip">Skip for now</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const boxes = document.querySelectorAll(".code-box");
+      boxes.forEach((box, i) => {
+        box.addEventListener("input", () => {
+          box.value = box.value.replace(/[^0-9]/g, "").slice(0, 1);
+          if (box.value && boxes[i + 1]) boxes[i + 1].focus();
+        });
+        box.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !box.value && boxes[i - 1])
+            boxes[i - 1].focus();
+        });
+      });
+    </script>
+  </body>
+</html>
