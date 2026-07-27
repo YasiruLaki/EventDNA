@@ -1,0 +1,10 @@
+.toolbar-search {
+	max-width: 320px;
+	flex: 1;
+	min-width: 220px;
+}
+
+.table-toolbar-filters select {
+	min-width: 160px;
+	cursor: pointer;
+}

@@ -1,0 +1,23 @@
+.reports-layout {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.rail-text {
+	font-size: 0.85rem;
+	color: var(--text-secondary);
+	margin-bottom: 1.25rem;
+}
+
+.section-heading {
+	font-size: 1.15rem;
+	margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+	.reports-layout {
+		grid-template-columns: 1fr;
+	}
+}

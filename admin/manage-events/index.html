@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Manage Events - EventDNA</title>
+	<link rel="stylesheet" href="../../globals.css" />
+	<link rel="stylesheet" href="../../shared/shell.css" />
+	<link rel="stylesheet" href="../../shared/components.css" />
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-body">
+	<div class="sidebar-scrim"></div>
+	<div class="app-shell">
+		<aside class="sidebar">
+			<a href="../dashboard/index.html" class="sidebar-brand">
+				<span class="brand-mark">ED</span>
+				EventDNA
+			</a>
+			<nav class="sidebar-nav">
+				<span class="sidebar-section-label">Admin</span>
+				<a href="../dashboard/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+					Admin Dashboard
+				</a>
+				<a href="../manage-users/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+					Manage Users
+				</a>
+				<a href="../manage-events/index.html" class="sidebar-link active">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+					Manage Events
+				</a>
+				<a href="../moderate-posts/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+					Moderate Posts
+				</a>
+				<a href="../reports/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+					Reports Overview
+				</a>
+				<span class="sidebar-section-label">Platform</span>
+				<a href="../../community/community-hub/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Exit to Main Site
+				</a>
+			</nav>
+			<div class="sidebar-footer">Signed in as Administrator</div>
+		</aside>
+
+		<div class="main-column">
+			<header class="topbar">
+				<button type="button" class="sidebar-toggle" aria-label="Toggle sidebar">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+				</button>
+				<div class="topbar-search">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					<input type="text" placeholder="Search users, events, reports" />
+				</div>
+				<div class="topbar-actions">
+					<a href="../../community/notifications/index.html" class="icon-btn" aria-label="Notifications">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+						<span class="dot"></span>
+					</a>
+					<div class="topbar-profile">
+						<span class="avatar avatar-sm">SW</span>
+						<div>
+							<div class="topbar-profile-name">Senaka Wickrama</div>
+							<div class="topbar-profile-role">Administrator</div>
+						</div>
+						<div class="profile-menu">
+							<a href="#">View Profile</a>
+							<a href="#">Settings</a>
+							<div class="divider"></div>
+							<a href="../../attendee/login/index.html">Log Out</a>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<main class="page-content">
+				<div class="page-header">
+					<div>
+						<h1>Manage Events</h1>
+						<p class="page-subtitle">Monitor every event created on the platform and step in when an organizer needs support.</p>
+					</div>
+				</div>
+
+				<div class="table-toolbar">
+					<div class="input-wrapper toolbar-search">
+						<svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+						<input type="text" class="has-icon" placeholder="Search by event or organizer" />
+					</div>
+					<div class="table-toolbar-filters">
+						<div class="input-wrapper">
+							<select>
+								<option>All Statuses</option>
+								<option>Upcoming</option>
+								<option>Live</option>
+								<option>Completed</option>
+								<option>Cancelled</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="table-wrapper">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th>Event</th>
+								<th>Organizer</th>
+								<th>Date</th>
+								<th>Registrations</th>
+								<th>Status</th>
+								<th>Visibility</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><p class="table-cell-user-name">AI &amp; Robotics Summit 2026</p></td>
+								<td>Nadia Kumari</td>
+								<td>Aug 14, 2026</td>
+								<td>312 / 400</td>
+								<td><span class="badge badge-info">Upcoming</span></td>
+								<td><span class="chip">Public</span></td>
+								<td>
+									<div class="row-actions">
+										<button type="button" class="btn-secondary btn-sm btn-icon" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+										<button type="button" class="btn-destructive btn-sm btn-icon" title="Cancel Event" data-modal-open="cancel-modal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"></line></svg></button>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td><p class="table-cell-user-name">Product Design Meetup</p></td>
+								<td>Tharindu Perera</td>
+								<td>Jul 30, 2026</td>
+								<td>128 / 150</td>
+								<td><span class="badge badge-success">Live</span></td>
+								<td><span class="chip">Registered Only</span></td>
+								<td>
+									<div class="row-actions">
+										<button type="button" class="btn-secondary btn-sm btn-icon" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+										<button type="button" class="btn-destructive btn-sm btn-icon" title="Cancel Event" data-modal-open="cancel-modal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"></line></svg></button>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td><p class="table-cell-user-name">Startup Founders Circle</p></td>
+								<td>Malith Wijesinghe</td>
+								<td>Jun 2, 2026</td>
+								<td>241 / 250</td>
+								<td><span class="badge badge-neutral">Completed</span></td>
+								<td><span class="chip">Public</span></td>
+								<td>
+									<div class="row-actions">
+										<button type="button" class="btn-secondary btn-sm btn-icon" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td><p class="table-cell-user-name">Cybersecurity Conclave</p></td>
+								<td>Dilshan Perera</td>
+								<td>Sep 2, 2026</td>
+								<td>96 / 200</td>
+								<td><span class="badge badge-danger">Cancelled</span></td>
+								<td><span class="chip">Public</span></td>
+								<td>
+									<div class="row-actions">
+										<button type="button" class="btn-secondary btn-sm btn-icon" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td><p class="table-cell-user-name">Campus Tech Fair</p></td>
+								<td>Yasiru Lakshan</td>
+								<td>Oct 18, 2026</td>
+								<td>470 / 600</td>
+								<td><span class="badge badge-info">Upcoming</span></td>
+								<td><span class="chip">Public</span></td>
+								<td>
+									<div class="row-actions">
+										<button type="button" class="btn-secondary btn-sm btn-icon" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+										<button type="button" class="btn-destructive btn-sm btn-icon" title="Cancel Event" data-modal-open="cancel-modal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"></line></svg></button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="pagination">
+						<span>Showing 1-5 of 126 events</span>
+						<div class="pagination-pages">
+							<button type="button" class="page-btn" disabled>
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+							</button>
+							<button type="button" class="page-btn active">1</button>
+							<button type="button" class="page-btn">2</button>
+							<button type="button" class="page-btn">3</button>
+							<button type="button" class="page-btn">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<footer class="app-footer">
+				<span>© 2026 EventDNA · Admin Console</span>
+				<div class="app-footer-links">
+					<a href="#">Privacy Policy</a>
+					<a href="#">Terms of Service</a>
+					<a href="#">Support</a>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<div class="modal-backdrop" id="cancel-modal">
+		<div class="modal">
+			<div class="modal-header">
+				<span class="modal-title">Cancel this event?</span>
+				<button type="button" class="modal-close" data-modal-close aria-label="Close">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+				</button>
+			</div>
+			<p class="modal-body">All registered attendees will be notified immediately and check-in will be disabled. This action cannot be undone by the organizer.</p>
+			<div class="modal-actions">
+				<button type="button" class="btn-secondary" data-modal-close>Go Back</button>
+				<button type="button" class="btn-destructive" data-modal-close>Cancel Event</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="../../shared/shell.js"></script>
+</body>
+</html>
