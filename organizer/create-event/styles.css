@@ -1,0 +1,85 @@
+.page-content.narrow {
+	max-width: 860px;
+}
+
+.back-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+	text-decoration: none;
+	margin-bottom: 1.25rem;
+}
+
+.back-link svg {
+	width: 16px;
+	height: 16px;
+}
+
+.back-link:hover {
+	color: var(--primary);
+}
+
+.event-form-card h1 {
+	font-size: 1.5rem;
+	margin-bottom: 0.35rem;
+}
+
+.event-form-subtitle {
+	margin-bottom: 1.5rem;
+}
+
+.event-form-card .alert {
+	margin-bottom: 1.5rem;
+}
+
+.form-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.25rem;
+}
+
+.form-error {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--danger);
+	margin-top: 0.4rem;
+}
+
+.form-error:empty {
+	display: none;
+}
+
+.input-wrapper.error input,
+.input-wrapper.error select {
+	border-color: var(--danger);
+}
+
+.input-wrapper.error input:focus,
+.input-wrapper.error select:focus {
+	box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+}
+
+.composer-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+	.form-row {
+		grid-template-columns: 1fr;
+	}
+
+	.composer-actions {
+		flex-direction: column-reverse;
+	}
+
+	.composer-actions .btn-primary,
+	.composer-actions .btn-secondary {
+		width: 100%;
+	}
+}

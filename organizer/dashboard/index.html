@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Organizer Dashboard - EventDNA</title>
+	<link rel="stylesheet" href="../../globals.css" />
+	<link rel="stylesheet" href="../../shared/shell.css" />
+	<link rel="stylesheet" href="../../shared/components.css" />
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-body">
+	<div class="sidebar-scrim"></div>
+	<div class="app-shell">
+		<aside class="sidebar">
+			<a href="../dashboard/index.html" class="sidebar-brand">
+				<span class="brand-mark">ED</span>
+				EventDNA
+			</a>
+			<nav class="sidebar-nav">
+				<span class="sidebar-section-label">Organizer</span>
+				<a href="../dashboard/index.html" class="sidebar-link active">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+					Dashboard
+				</a>
+				<a href="../create-event/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="10" y1="16" x2="14" y2="16"></line></svg>
+					Create Event
+				</a>
+				<a href="../my-events/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+					My Events
+				</a>
+				<a href="../analytics/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+					Analytics
+				</a>
+				<span class="sidebar-section-label">Platform</span>
+				<a href="../../community/notifications/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+					Notifications
+				</a>
+				<a href="../../community/community-hub/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Exit to Main Site
+				</a>
+			</nav>
+			<div class="sidebar-footer">Signed in as Organizer</div>
+		</aside>
+
+		<div class="main-column">
+			<header class="topbar">
+				<button type="button" class="sidebar-toggle" aria-label="Toggle sidebar">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+				</button>
+				<div class="topbar-search">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					<input type="text" placeholder="Search your events" />
+				</div>
+				<div class="topbar-actions">
+					<a href="../../community/notifications/index.html" class="icon-btn" aria-label="Notifications">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+						<span class="dot"></span>
+					</a>
+					<div class="topbar-profile">
+						<span class="avatar avatar-sm">RS</span>
+						<div>
+							<div class="topbar-profile-name">Ruvindi Silva</div>
+							<div class="topbar-profile-role">Event Organizer</div>
+						</div>
+						<div class="profile-menu">
+							<a href="#">View Profile</a>
+							<a href="#">Settings</a>
+							<div class="divider"></div>
+							<a href="../../attendee/login/index.html">Log Out</a>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<main class="page-content">
+				<div class="page-header">
+					<div>
+						<h1>Organizer Dashboard</h1>
+						<p class="page-subtitle">Track your events, manage attendees, and see how each event is performing.</p>
+					</div>
+					<div class="page-header-actions">
+						<a href="../create-event/index.html" class="btn-primary">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+							Create New Event
+						</a>
+					</div>
+				</div>
+
+				<div class="stat-grid">
+					<div class="stat-card">
+						<p class="stat-card-label">Total Events</p>
+						<p class="stat-card-value">12</p>
+						<span class="stat-card-trend up">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+							2 new this month
+						</span>
+					</div>
+					<div class="stat-card">
+						<p class="stat-card-label">Upcoming Events</p>
+						<p class="stat-card-value">3</p>
+						<span class="stat-card-trend up">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+							Next in 15 days
+						</span>
+					</div>
+					<div class="stat-card">
+						<p class="stat-card-label">Total Attendees</p>
+						<p class="stat-card-value">1,284</p>
+						<span class="stat-card-trend up">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+							6.4% this month
+						</span>
+					</div>
+					<div class="stat-card">
+						<p class="stat-card-label">Draft Events</p>
+						<p class="stat-card-value">2</p>
+						<span class="stat-card-trend down">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+							Awaiting publish
+						</span>
+					</div>
+				</div>
+
+				<div class="card">
+					<div class="card-row">
+						<div>
+							<h3 class="card-title">Your Events</h3>
+							<p class="page-subtitle">View and manage every event you're organizing.</p>
+						</div>
+						<a href="../my-events/index.html" class="btn-ghost">View All</a>
+					</div>
+
+					<div class="event-list">
+						<div class="event-card">
+							<div class="event-card-main">
+								<span class="badge badge-info">Upcoming</span>
+								<h4 class="event-card-title">TechConnect Colombo 2026</h4>
+								<p class="event-card-date">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+									Aug 14, 2026
+								</p>
+							</div>
+							<div class="event-card-actions">
+								<a href="../event-details/index.html?event=techconnect-colombo-2026" class="btn-secondary btn-sm">Details</a>
+								<a href="../edit-event/index.html?event=techconnect-colombo-2026" class="btn-secondary btn-sm">Edit</a>
+								<a href="../manage-attendees/index.html?event=techconnect-colombo-2026" class="btn-secondary btn-sm">Manage Attendees</a>
+								<a href="../attendance/index.html?event=techconnect-colombo-2026" class="btn-secondary btn-sm">Attendance</a>
+								<a href="../analytics/index.html?event=techconnect-colombo-2026" class="btn-secondary btn-sm">Analytics</a>
+							</div>
+						</div>
+
+						<div class="event-card">
+							<div class="event-card-main">
+								<span class="badge badge-success">Live</span>
+								<h4 class="event-card-title">Founders' Fireside Chat</h4>
+								<p class="event-card-date">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+									Jul 30, 2026
+								</p>
+							</div>
+							<div class="event-card-actions">
+								<a href="../event-details/index.html?event=founders-fireside-chat" class="btn-secondary btn-sm">Details</a>
+								<a href="../edit-event/index.html?event=founders-fireside-chat" class="btn-secondary btn-sm">Edit</a>
+								<a href="../manage-attendees/index.html?event=founders-fireside-chat" class="btn-secondary btn-sm">Manage Attendees</a>
+								<a href="../attendance/index.html?event=founders-fireside-chat" class="btn-secondary btn-sm">Attendance</a>
+								<a href="../analytics/index.html?event=founders-fireside-chat" class="btn-secondary btn-sm">Analytics</a>
+							</div>
+						</div>
+
+						<div class="event-card">
+							<div class="event-card-main">
+								<span class="badge badge-neutral">Completed</span>
+								<h4 class="event-card-title">Campus Innovation Expo</h4>
+								<p class="event-card-date">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+									Jun 2, 2026
+								</p>
+							</div>
+							<div class="event-card-actions">
+								<a href="../event-details/index.html?event=campus-innovation-expo" class="btn-secondary btn-sm">Details</a>
+								<a href="../edit-event/index.html?event=campus-innovation-expo" class="btn-secondary btn-sm">Edit</a>
+								<a href="../manage-attendees/index.html?event=campus-innovation-expo" class="btn-secondary btn-sm">Manage Attendees</a>
+								<a href="../attendance/index.html?event=campus-innovation-expo" class="btn-secondary btn-sm">Attendance</a>
+								<a href="../analytics/index.html?event=campus-innovation-expo" class="btn-secondary btn-sm">Analytics</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<footer class="app-footer">
+				<span>© 2026 EventDNA · Organizer Console</span>
+				<div class="app-footer-links">
+					<a href="#">Privacy Policy</a>
+					<a href="#">Terms of Service</a>
+					<a href="#">Support</a>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="../../shared/shell.js"></script>
+</body>
+</html>

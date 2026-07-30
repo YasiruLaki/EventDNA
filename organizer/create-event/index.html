@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Create Event - EventDNA</title>
+	<link rel="stylesheet" href="../../globals.css" />
+	<link rel="stylesheet" href="../../shared/shell.css" />
+	<link rel="stylesheet" href="../../shared/components.css" />
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-body">
+	<div class="sidebar-scrim"></div>
+	<div class="app-shell">
+		<aside class="sidebar">
+			<a href="../dashboard/index.html" class="sidebar-brand">
+				<span class="brand-mark">ED</span>
+				EventDNA
+			</a>
+			<nav class="sidebar-nav">
+				<span class="sidebar-section-label">Organizer</span>
+				<a href="../dashboard/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+					Dashboard
+				</a>
+				<a href="../create-event/index.html" class="sidebar-link active">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="10" y1="16" x2="14" y2="16"></line></svg>
+					Create Event
+				</a>
+				<a href="../my-events/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+					My Events
+				</a>
+				<a href="../analytics/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+					Analytics
+				</a>
+				<span class="sidebar-section-label">Platform</span>
+				<a href="../../community/notifications/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+					Notifications
+				</a>
+				<a href="../../community/community-hub/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Exit to Main Site
+				</a>
+			</nav>
+			<div class="sidebar-footer">Signed in as Organizer</div>
+		</aside>
+
+		<div class="main-column">
+			<header class="topbar">
+				<button type="button" class="sidebar-toggle" aria-label="Toggle sidebar">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+				</button>
+				<div class="topbar-search">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					<input type="text" placeholder="Search your events" />
+				</div>
+				<div class="topbar-actions">
+					<a href="../../community/notifications/index.html" class="icon-btn" aria-label="Notifications">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+						<span class="dot"></span>
+					</a>
+					<div class="topbar-profile">
+						<span class="avatar avatar-sm">RS</span>
+						<div>
+							<div class="topbar-profile-name">Ruvindi Silva</div>
+							<div class="topbar-profile-role">Event Organizer</div>
+						</div>
+						<div class="profile-menu">
+							<a href="#">View Profile</a>
+							<a href="#">Settings</a>
+							<div class="divider"></div>
+							<a href="../../attendee/login/index.html">Log Out</a>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<main class="page-content narrow">
+				<a href="../dashboard/index.html" class="back-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Back to Dashboard
+				</a>
+
+				<div class="card event-form-card">
+					<h1>Create New Event</h1>
+					<p class="page-subtitle event-form-subtitle">Fill in the details below to publish a new event.</p>
+
+					<div class="alert alert-success" id="create-event-success" hidden>
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+						<div>
+							<p class="alert-title">Event captured</p>
+							<p>No backend yet — the submitted data was logged to the browser console.</p>
+						</div>
+					</div>
+
+					<form id="create-event-form" novalidate>
+						<div class="form-group">
+							<label for="event-title">Event Title</label>
+							<div class="input-wrapper">
+								<input type="text" id="event-title" name="title" maxlength="150" placeholder="e.g. AI &amp; Robotics Summit 2026" required />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="event-description">Description</label>
+							<div class="form-textarea-wrapper">
+								<textarea id="event-description" name="description" class="form-textarea" rows="5" placeholder="Tell attendees what this event is about..."></textarea>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="event-location">Location</label>
+							<div class="input-wrapper">
+								<input type="text" id="event-location" name="location" maxlength="255" placeholder="e.g. BMICH, Colombo" required />
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label for="event-start">Start Date &amp; Time</label>
+								<div class="input-wrapper">
+									<input type="datetime-local" id="event-start" name="start_datetime" required />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="event-end">End Date &amp; Time</label>
+								<div class="input-wrapper">
+									<input type="datetime-local" id="event-end" name="end_datetime" required />
+								</div>
+								<p class="form-error" id="error-end"></p>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label for="event-reg-open">Registration Opens</label>
+								<div class="input-wrapper">
+									<input type="datetime-local" id="event-reg-open" name="reg_open" required />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="event-reg-close">Registration Closes</label>
+								<div class="input-wrapper">
+									<input type="datetime-local" id="event-reg-close" name="reg_close" required />
+								</div>
+								<p class="form-error" id="error-reg-close"></p>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label for="event-visibility">Visibility</label>
+								<div class="input-wrapper">
+									<select id="event-visibility" name="visibility" required>
+										<option value="public" selected>Public</option>
+										<option value="private">Private</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="event-capacity">Capacity</label>
+								<div class="input-wrapper">
+									<input type="number" id="event-capacity" name="capacity" step="1" placeholder="e.g. 250" required />
+								</div>
+								<p class="form-error" id="error-capacity"></p>
+							</div>
+						</div>
+
+						<div class="composer-actions">
+							<a href="../dashboard/index.html" class="btn-secondary">Cancel</a>
+							<button type="submit" class="btn-primary">Create Event</button>
+						</div>
+					</form>
+				</div>
+			</main>
+
+			<footer class="app-footer">
+				<span>© 2026 EventDNA · Organizer Console</span>
+				<div class="app-footer-links">
+					<a href="#">Privacy Policy</a>
+					<a href="#">Terms of Service</a>
+					<a href="#">Support</a>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="../../shared/shell.js"></script>
+	<script>
+		const form = document.getElementById('create-event-form');
+		const startInput = document.getElementById('event-start');
+		const endInput = document.getElementById('event-end');
+		const regOpenInput = document.getElementById('event-reg-open');
+		const regCloseInput = document.getElementById('event-reg-close');
+		const capacityInput = document.getElementById('event-capacity');
+		const successAlert = document.getElementById('create-event-success');
+
+		const errorFields = {
+			end: { input: endInput, el: document.getElementById('error-end') },
+			regClose: { input: regCloseInput, el: document.getElementById('error-reg-close') },
+			capacity: { input: capacityInput, el: document.getElementById('error-capacity') },
+		};
+
+		function setError(field, message) {
+			const { input, el } = errorFields[field];
+			el.textContent = message;
+			input.closest('.input-wrapper').classList.toggle('error', Boolean(message));
+		}
+
+		function clearErrors() {
+			Object.keys(errorFields).forEach((field) => setError(field, ''));
+		}
+
+		function validate() {
+			clearErrors();
+			successAlert.hidden = true;
+			let isValid = true;
+
+			const start = startInput.value ? new Date(startInput.value) : null;
+			const end = endInput.value ? new Date(endInput.value) : null;
+			const regOpen = regOpenInput.value ? new Date(regOpenInput.value) : null;
+			const regClose = regCloseInput.value ? new Date(regCloseInput.value) : null;
+			const capacity = Number(capacityInput.value);
+
+			if (start && end && end <= start) {
+				setError('end', 'End date & time must be after the start date & time.');
+				isValid = false;
+			}
+
+			if (regOpen && regClose && regClose <= regOpen) {
+				setError('regClose', 'Registration close must be after registration open.');
+				isValid = false;
+			}
+
+			if (regClose && start && regClose > start) {
+				const existing = errorFields.regClose.el.textContent;
+				const message = 'Registration must close before the event starts.';
+				setError('regClose', existing ? `${existing} ${message}` : message);
+				isValid = false;
+			}
+
+			if (capacityInput.value !== '' && capacity <= 0) {
+				setError('capacity', 'Capacity must be a positive number.');
+				isValid = false;
+			}
+
+			return isValid;
+		}
+
+		[startInput, endInput, regOpenInput, regCloseInput, capacityInput].forEach((input) => {
+			input.addEventListener('input', validate);
+		});
+
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
+			}
+
+			if (!validate()) return;
+
+			const data = Object.fromEntries(new FormData(form).entries());
+			console.log('Create Event submission (no backend yet):', data);
+			successAlert.hidden = false;
+		});
+	</script>
+</body>
+</html>
