@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Attendance View - EventDNA</title>
+	<link rel="stylesheet" href="../../globals.css" />
+	<link rel="stylesheet" href="../../shared/shell.css" />
+	<link rel="stylesheet" href="../../shared/components.css" />
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-body">
+	<div class="sidebar-scrim"></div>
+	<div class="app-shell">
+		<aside class="sidebar">
+			<a href="../dashboard/index.html" class="sidebar-brand">
+				<span class="brand-mark">ED</span>
+				EventDNA
+			</a>
+			<nav class="sidebar-nav">
+				<span class="sidebar-section-label">Organizer</span>
+				<a href="../dashboard/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+					Dashboard
+				</a>
+				<a href="../create-event/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="10" y1="16" x2="14" y2="16"></line></svg>
+					Create Event
+				</a>
+				<a href="../my-events/index.html" class="sidebar-link active">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+					My Events
+				</a>
+				<a href="../analytics/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+					Analytics
+				</a>
+				<span class="sidebar-section-label">Platform</span>
+				<a href="../../community/notifications/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+					Notifications
+				</a>
+				<a href="../../community/community-hub/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Exit to Main Site
+				</a>
+			</nav>
+			<div class="sidebar-footer">Signed in as Organizer</div>
+		</aside>
+
+		<div class="main-column">
+			<header class="topbar">
+				<button type="button" class="sidebar-toggle" aria-label="Toggle sidebar">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+				</button>
+				<div class="topbar-search">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					<input type="text" placeholder="Search your events" />
+				</div>
+				<div class="topbar-actions">
+					<a href="../../community/notifications/index.html" class="icon-btn" aria-label="Notifications">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+						<span class="dot"></span>
+					</a>
+					<div class="topbar-profile">
+						<span class="avatar avatar-sm">RS</span>
+						<div>
+							<div class="topbar-profile-name">Ruvindi Silva</div>
+							<div class="topbar-profile-role">Event Organizer</div>
+						</div>
+						<div class="profile-menu">
+							<a href="#">View Profile</a>
+							<a href="#">Settings</a>
+							<div class="divider"></div>
+							<a href="../../attendee/login/index.html">Log Out</a>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<main class="page-content">
+				<a href="../event-details/index.html" class="back-link" id="back-to-event">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Back to Event Details
+				</a>
+
+				<div class="page-header">
+					<div>
+						<h1>Attendance View</h1>
+						<p class="page-subtitle" id="page-subtitle">Track who has checked in as the event runs.</p>
+					</div>
+					<div class="page-header-actions">
+						<button type="button" class="btn-secondary" id="refresh-btn">
+							<svg class="refresh-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+							Refresh
+						</button>
+					</div>
+				</div>
+
+				<section class="card checkin-summary">
+					<div class="checkin-summary-head">
+						<div>
+							<p class="stat-card-label">Check-in Progress</p>
+							<p class="checkin-headline">
+								<span id="summary-checked-in">0</span> checked in
+								<span class="checkin-headline-sep">/</span>
+								<span id="summary-registered">0</span> registered
+							</p>
+						</div>
+						<div class="checkin-percent-block">
+							<span class="checkin-percent" id="summary-percent">0%</span>
+							<span class="live-chip">
+								<span class="live-dot"></span>
+								Live
+							</span>
+						</div>
+					</div>
+
+					<div class="bar-track checkin-progress" role="img" aria-label="Check-in progress" id="summary-bar">
+						<div class="bar-fill" id="summary-bar-fill" style="width: 0%"></div>
+					</div>
+
+					<div class="checkin-summary-foot">
+						<span class="checkin-legend">
+							<span class="legend-item"><span class="legend-swatch legend-checked-in"></span><span id="legend-checked-in">0 checked in</span></span>
+							<span class="legend-item"><span class="legend-swatch legend-awaiting"></span><span id="legend-awaiting">0 awaiting check-in</span></span>
+						</span>
+						<span class="checkin-updated" id="last-updated">Updated just now</span>
+					</div>
+				</section>
+
+				<div class="table-toolbar">
+					<div class="input-wrapper toolbar-search">
+						<svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+						<input type="text" class="has-icon" id="attendee-search" placeholder="Search by name or email" autocomplete="off" />
+					</div>
+					<div class="table-toolbar-filters">
+						<div class="input-wrapper">
+							<select id="status-filter">
+								<option value="all">All Statuses</option>
+								<option value="checked_in">Checked-in</option>
+								<option value="registered">Awaiting Check-in</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<p class="table-summary" id="attendee-count">Loading attendance…</p>
+
+				<div class="table-wrapper">
+					<table class="data-table attendance-table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Attendance Status</th>
+								<th>Checked-in At</th>
+							</tr>
+						</thead>
+						<tbody id="attendee-rows"></tbody>
+					</table>
+				</div>
+			</main>
+
+			<footer class="app-footer">
+				<span>© 2026 EventDNA · Organizer Console</span>
+				<div class="app-footer-links">
+					<a href="#">Privacy Policy</a>
+					<a href="#">Terms of Service</a>
+					<a href="#">Support</a>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="../../shared/shell.js"></script>
+	<script>
+		// Placeholder event titles, keyed by the ?event= query param used across the organizer pages.
+		const mockEventTitles = {
+			'techconnect-colombo-2026': 'TechConnect Colombo 2026',
+			'founders-fireside-chat': "Founders' Fireside Chat",
+			'campus-innovation-expo': 'Campus Innovation Expo',
+		};
+
+		const defaultSlug = 'techconnect-colombo-2026';
+		const eventSlug = new URLSearchParams(window.location.search).get('event') || defaultSlug;
+		const eventTitle = mockEventTitles[eventSlug] || mockEventTitles[defaultSlug];
+
+		// Placeholder check-in records for the event above. Replaced by a join across the
+		// registrations and check-ins tables once the PHP backend is connected.
+		const mockAttendees = [
+			{ id: 1, name: 'Nimesha Fernando', email: 'nimesha.f@stu.ucsc.cmb.ac.lk', attendance_status: 'checked_in', checked_in_at: '2026-07-30T08:42' },
+			{ id: 2, name: 'Kavindu Jayasuriya', email: 'kavindu.j@stu.ucsc.cmb.ac.lk', attendance_status: 'registered', checked_in_at: null },
+			{ id: 3, name: 'Sanduni Dias', email: 'sanduni.dias@stu.ucsc.cmb.ac.lk', attendance_status: 'checked_in', checked_in_at: '2026-07-30T08:47' },
+			{ id: 4, name: 'Tharindu Perera', email: 'tharindu.p@stu.ucsc.cmb.ac.lk', attendance_status: 'registered', checked_in_at: null },
+			{ id: 5, name: 'Amaya Rathnayake', email: 'amaya.r@stu.ucsc.cmb.ac.lk', attendance_status: 'checked_in', checked_in_at: '2026-07-30T09:03' },
+			{ id: 6, name: 'Dilan Gunasekara', email: 'dilan.g@stu.ucsc.cmb.ac.lk', attendance_status: 'registered', checked_in_at: null },
+			{ id: 7, name: 'Hasini Wijesinghe', email: 'hasini.w@stu.ucsc.cmb.ac.lk', attendance_status: 'checked_in', checked_in_at: '2026-07-30T09:15' },
+			{ id: 8, name: 'Janith Silva', email: 'janith.silva@stu.ucsc.cmb.ac.lk', attendance_status: 'checked_in', checked_in_at: '2026-07-30T09:28' },
+			{ id: 9, name: 'Rashmi Bandara', email: 'rashmi.b@stu.ucsc.cmb.ac.lk', attendance_status: 'registered', checked_in_at: null },
+			{ id: 10, name: 'Oshadi Senanayake', email: 'oshadi.s@stu.ucsc.cmb.ac.lk', attendance_status: 'checked_in', checked_in_at: '2026-07-30T09:36' },
+		];
+
+		const statusLabels = {
+			registered: 'Awaiting Check-in',
+			checked_in: 'Checked-in',
+		};
+
+		const statusBadgeMap = {
+			registered: 'badge-neutral',
+			checked_in: 'badge-success',
+		};
+
+		const searchInput = document.getElementById('attendee-search');
+		const statusFilter = document.getElementById('status-filter');
+		const rowsContainer = document.getElementById('attendee-rows');
+		const countLabel = document.getElementById('attendee-count');
+		const refreshBtn = document.getElementById('refresh-btn');
+		const lastUpdatedLabel = document.getElementById('last-updated');
+
+		document.getElementById('page-subtitle').textContent =
+			`Live check-in status for ${eventTitle}. This view is read-only — registrations are edited from Manage Attendees.`;
+
+		const backLink = document.getElementById('back-to-event');
+		backLink.href = `${backLink.getAttribute('href')}?event=${encodeURIComponent(eventSlug)}`;
+
+		function initials(name) {
+			return name
+				.split(' ')
+				.filter(Boolean)
+				.slice(0, 2)
+				.map((part) => part.charAt(0).toUpperCase())
+				.join('');
+		}
+
+		function formatDateTime(value) {
+			if (!value) return '—';
+			return new Date(value).toLocaleString('en-US', {
+				dateStyle: 'medium',
+				timeStyle: 'short',
+			});
+		}
+
+		function formatTime(date) {
+			return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+		}
+
+		// Most recent check-ins first, with everyone still awaiting check-in listed after them.
+		function byMostRecentCheckIn(a, b) {
+			if (a.checked_in_at && b.checked_in_at) {
+				return b.checked_in_at.localeCompare(a.checked_in_at);
+			}
+			if (a.checked_in_at) return -1;
+			if (b.checked_in_at) return 1;
+			return a.name.localeCompare(b.name);
+		}
+
+		function getFilteredAttendees() {
+			const query = searchInput.value.trim().toLowerCase();
+			const status = statusFilter.value;
+
+			return mockAttendees
+				.filter((attendee) => {
+					const matchesStatus = status === 'all' || attendee.attendance_status === status;
+					const matchesQuery =
+						query === '' ||
+						attendee.name.toLowerCase().includes(query) ||
+						attendee.email.toLowerCase().includes(query);
+					return matchesStatus && matchesQuery;
+				})
+				.sort(byMostRecentCheckIn);
+		}
+
+		function buildRow(attendee) {
+			const row = document.createElement('tr');
+			if (attendee.attendance_status === 'checked_in') {
+				row.className = 'row-checked-in';
+			}
+
+			const nameCell = document.createElement('td');
+			const nameWrap = document.createElement('div');
+			nameWrap.className = 'table-cell-user';
+			const avatar = document.createElement('span');
+			avatar.className = 'avatar avatar-sm';
+			avatar.textContent = initials(attendee.name);
+			const nameText = document.createElement('p');
+			nameText.className = 'table-cell-user-name';
+			nameText.textContent = attendee.name;
+			nameWrap.append(avatar, nameText);
+			nameCell.appendChild(nameWrap);
+
+			const emailCell = document.createElement('td');
+			emailCell.className = 'attendee-email';
+			emailCell.textContent = attendee.email;
+
+			const statusCell = document.createElement('td');
+			const badge = document.createElement('span');
+			badge.className = `badge ${statusBadgeMap[attendee.attendance_status] || 'badge-neutral'}`;
+			badge.textContent = statusLabels[attendee.attendance_status] || attendee.attendance_status;
+			statusCell.appendChild(badge);
+
+			const timeCell = document.createElement('td');
+			timeCell.className = attendee.checked_in_at ? 'attendee-date' : 'attendee-date is-empty';
+			timeCell.textContent = formatDateTime(attendee.checked_in_at);
+
+			row.append(nameCell, emailCell, statusCell, timeCell);
+			return row;
+		}
+
+		function buildEmptyRow() {
+			const row = document.createElement('tr');
+			const cell = document.createElement('td');
+			cell.colSpan = 4;
+
+			const empty = document.createElement('div');
+			empty.className = 'empty-state';
+			const heading = document.createElement('h3');
+			heading.textContent = 'No attendees match your filters';
+			const text = document.createElement('p');
+			text.textContent = 'Try a different name or email, or reset the status filter to see everyone.';
+			empty.append(heading, text);
+
+			cell.appendChild(empty);
+			row.appendChild(cell);
+			return row;
+		}
+
+		function renderSummary() {
+			const registered = mockAttendees.length;
+			const checkedIn = mockAttendees.filter((a) => a.attendance_status === 'checked_in').length;
+			const awaiting = registered - checkedIn;
+			const percent = registered === 0 ? 0 : Math.round((checkedIn / registered) * 100);
+
+			document.getElementById('summary-checked-in').textContent = checkedIn;
+			document.getElementById('summary-registered').textContent = registered;
+			document.getElementById('summary-percent').textContent = `${percent}%`;
+			document.getElementById('summary-bar-fill').style.width = `${percent}%`;
+			document.getElementById('summary-bar').setAttribute(
+				'aria-label',
+				`${checkedIn} of ${registered} registered attendees checked in (${percent}%)`
+			);
+			document.getElementById('legend-checked-in').textContent = `${checkedIn} checked in`;
+			document.getElementById('legend-awaiting').textContent = `${awaiting} awaiting check-in`;
+		}
+
+		function renderAttendees() {
+			const attendees = getFilteredAttendees();
+
+			rowsContainer.replaceChildren(
+				...(attendees.length > 0 ? attendees.map(buildRow) : [buildEmptyRow()])
+			);
+
+			const noun = mockAttendees.length === 1 ? 'attendee' : 'attendees';
+			countLabel.textContent = `${attendees.length} of ${mockAttendees.length} ${noun} shown`;
+		}
+
+		searchInput.addEventListener('input', renderAttendees);
+		statusFilter.addEventListener('change', renderAttendees);
+
+		refreshBtn.addEventListener('click', () => {
+			// Visual placeholder only — the poll for new check-ins goes here once the backend exists.
+			refreshBtn.classList.add('is-refreshing');
+			refreshBtn.disabled = true;
+
+			window.setTimeout(() => {
+				refreshBtn.classList.remove('is-refreshing');
+				refreshBtn.disabled = false;
+				lastUpdatedLabel.textContent = `Updated at ${formatTime(new Date())}`;
+			}, 700);
+		});
+
+		renderSummary();
+		renderAttendees();
+		lastUpdatedLabel.textContent = `Updated at ${formatTime(new Date())}`;
+	</script>
+</body>
+</html>

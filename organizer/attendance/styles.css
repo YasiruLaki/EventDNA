@@ -1,0 +1,215 @@
+.back-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+	text-decoration: none;
+	margin-bottom: 1.25rem;
+}
+
+.back-link svg {
+	width: 16px;
+	height: 16px;
+}
+
+.back-link:hover {
+	color: var(--primary);
+}
+
+/* ---------- Refresh button ---------- */
+
+.refresh-icon {
+	transition: transform 0.2s ease;
+}
+
+#refresh-btn.is-refreshing .refresh-icon {
+	animation: refresh-spin 0.7s linear;
+}
+
+#refresh-btn:disabled {
+	cursor: default;
+	opacity: 0.7;
+}
+
+@keyframes refresh-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* ---------- Check-in summary ---------- */
+
+.checkin-summary {
+	margin-bottom: 1.75rem;
+}
+
+.checkin-summary-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+}
+
+.checkin-headline {
+	margin: 0;
+	font-size: 1.35rem;
+	font-weight: 700;
+	color: var(--text-primary);
+	letter-spacing: -0.01em;
+}
+
+.checkin-headline-sep {
+	color: var(--text-tertiary);
+	margin: 0 0.15rem;
+	font-weight: 500;
+}
+
+.checkin-percent-block {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.checkin-percent {
+	font-size: 2rem;
+	font-weight: 700;
+	color: var(--success);
+	letter-spacing: -0.02em;
+	line-height: 1;
+}
+
+.live-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.25rem 0.65rem;
+	border-radius: 999px;
+	background: var(--success-tint);
+	color: var(--success);
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+.live-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 999px;
+	background: currentColor;
+	animation: live-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.25;
+	}
+}
+
+.checkin-progress {
+	height: 10px;
+}
+
+.checkin-progress .bar-fill {
+	background: linear-gradient(90deg, var(--success), #4ADE80);
+	transition: width 0.4s ease;
+}
+
+.checkin-summary-foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+	margin-top: 0.85rem;
+	font-size: 0.8rem;
+	color: var(--text-secondary);
+}
+
+.checkin-legend {
+	display: inline-flex;
+	align-items: center;
+	gap: 1.1rem;
+	flex-wrap: wrap;
+}
+
+.legend-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-weight: 600;
+}
+
+.legend-swatch {
+	width: 9px;
+	height: 9px;
+	border-radius: 999px;
+	flex-shrink: 0;
+}
+
+.legend-checked-in {
+	background: var(--success);
+}
+
+.legend-awaiting {
+	background: var(--border-color);
+}
+
+.checkin-updated {
+	font-weight: 600;
+	color: var(--text-tertiary);
+}
+
+/* ---------- Toolbar & table ---------- */
+
+.toolbar-search {
+	max-width: 320px;
+	flex: 1;
+	min-width: 220px;
+}
+
+.table-toolbar-filters select {
+	min-width: 180px;
+	cursor: pointer;
+}
+
+.table-summary {
+	margin: 0 0 0.85rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+}
+
+.attendance-table {
+	min-width: 780px;
+}
+
+.attendee-email,
+.attendee-date {
+	color: var(--text-secondary);
+	white-space: nowrap;
+}
+
+.attendee-date.is-empty {
+	color: var(--text-tertiary);
+}
+
+.attendance-table tbody .row-checked-in td:first-child {
+	box-shadow: inset 3px 0 0 var(--success);
+}
+
+.attendance-table .empty-state {
+	padding: 3rem 1.5rem;
+}
+
+@media (max-width: 640px) {
+	.checkin-percent {
+		font-size: 1.65rem;
+	}
+}
