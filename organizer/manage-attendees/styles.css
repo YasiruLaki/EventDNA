@@ -1,0 +1,55 @@
+.back-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+	text-decoration: none;
+	margin-bottom: 1.25rem;
+}
+
+.back-link svg {
+	width: 16px;
+	height: 16px;
+}
+
+.back-link:hover {
+	color: var(--primary);
+}
+
+.toolbar-search {
+	max-width: 320px;
+	flex: 1;
+	min-width: 220px;
+}
+
+.table-toolbar-filters select {
+	min-width: 160px;
+	cursor: pointer;
+}
+
+.table-summary {
+	margin: 0 0 0.85rem;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+}
+
+.attendee-table {
+	min-width: 860px;
+}
+
+.attendee-email,
+.attendee-date {
+	color: var(--text-secondary);
+	white-space: nowrap;
+}
+
+.attendee-table .row-actions .btn-destructive {
+	white-space: nowrap;
+}
+
+.attendee-table .empty-state {
+	padding: 3rem 1.5rem;
+}
