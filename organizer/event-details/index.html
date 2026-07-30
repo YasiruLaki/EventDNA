@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Event Details - EventDNA</title>
+	<link rel="stylesheet" href="../../globals.css" />
+	<link rel="stylesheet" href="../../shared/shell.css" />
+	<link rel="stylesheet" href="../../shared/components.css" />
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-body">
+	<div class="sidebar-scrim"></div>
+	<div class="app-shell">
+		<aside class="sidebar">
+			<a href="../dashboard/index.html" class="sidebar-brand">
+				<span class="brand-mark">ED</span>
+				EventDNA
+			</a>
+			<nav class="sidebar-nav">
+				<span class="sidebar-section-label">Organizer</span>
+				<a href="../dashboard/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+					Dashboard
+				</a>
+				<a href="../create-event/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="10" y1="16" x2="14" y2="16"></line></svg>
+					Create Event
+				</a>
+				<a href="../my-events/index.html" class="sidebar-link active">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+					My Events
+				</a>
+				<a href="../analytics/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+					Analytics
+				</a>
+				<span class="sidebar-section-label">Platform</span>
+				<a href="../../community/notifications/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+					Notifications
+				</a>
+				<a href="../../community/community-hub/index.html" class="sidebar-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Exit to Main Site
+				</a>
+			</nav>
+			<div class="sidebar-footer">Signed in as Organizer</div>
+		</aside>
+
+		<div class="main-column">
+			<header class="topbar">
+				<button type="button" class="sidebar-toggle" aria-label="Toggle sidebar">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+				</button>
+				<div class="topbar-search">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					<input type="text" placeholder="Search your events" />
+				</div>
+				<div class="topbar-actions">
+					<a href="../../community/notifications/index.html" class="icon-btn" aria-label="Notifications">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+						<span class="dot"></span>
+					</a>
+					<div class="topbar-profile">
+						<span class="avatar avatar-sm">RS</span>
+						<div>
+							<div class="topbar-profile-name">Ruvindi Silva</div>
+							<div class="topbar-profile-role">Event Organizer</div>
+						</div>
+						<div class="profile-menu">
+							<a href="#">View Profile</a>
+							<a href="#">Settings</a>
+							<div class="divider"></div>
+							<a href="../../attendee/login/index.html">Log Out</a>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<main class="page-content">
+				<a href="../my-events/index.html" class="back-link">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+					Back to My Events
+				</a>
+
+				<div class="page-header">
+					<div>
+						<div class="detail-title-row">
+							<h1 id="detail-title">Event Title</h1>
+							<span class="badge badge-neutral" id="detail-status-badge">Status</span>
+						</div>
+						<p class="page-subtitle" id="detail-subtitle">Location · Dates</p>
+					</div>
+					<div class="page-header-actions">
+						<a href="../edit-event/index.html" class="btn-primary" id="action-edit-event">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+							Edit Event
+						</a>
+					</div>
+				</div>
+
+				<div class="stat-grid">
+					<div class="stat-card">
+						<p class="stat-card-label">Registered</p>
+						<p class="stat-card-value" id="stat-registered">0</p>
+						<span class="stat-card-trend up" id="stat-capacity-note">of 0 capacity</span>
+					</div>
+					<div class="stat-card">
+						<p class="stat-card-label">Checked In</p>
+						<p class="stat-card-value" id="stat-checked-in">0</p>
+						<span class="stat-card-trend up" id="stat-checkin-rate">0% check-in rate</span>
+					</div>
+					<div class="stat-card">
+						<p class="stat-card-label">Capacity</p>
+						<p class="stat-card-value" id="stat-capacity">0</p>
+						<span class="stat-card-trend up" id="stat-remaining">0 spots left</span>
+					</div>
+				</div>
+
+				<div class="detail-layout">
+					<div class="card">
+						<h3 class="card-title">Event Details</h3>
+						<p class="page-subtitle">Read-only view of the information attendees and organizers see for this event.</p>
+
+						<dl class="detail-grid">
+							<div class="detail-item detail-item-full">
+								<dt>Title</dt>
+								<dd id="field-title"></dd>
+							</div>
+							<div class="detail-item detail-item-full">
+								<dt>Description</dt>
+								<dd id="field-description"></dd>
+							</div>
+							<div class="detail-item detail-item-full">
+								<dt>Location</dt>
+								<dd id="field-location"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>Start Date &amp; Time</dt>
+								<dd id="field-start"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>End Date &amp; Time</dt>
+								<dd id="field-end"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>Registration Opens</dt>
+								<dd id="field-reg-open"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>Registration Closes</dt>
+								<dd id="field-reg-close"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>Visibility</dt>
+								<dd id="field-visibility"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>Capacity</dt>
+								<dd id="field-capacity"></dd>
+							</div>
+							<div class="detail-item">
+								<dt>Event Status</dt>
+								<dd id="field-status"></dd>
+							</div>
+						</dl>
+					</div>
+
+					<div class="detail-side">
+						<div class="card">
+							<h3 class="card-title">Event QR Code</h3>
+							<p class="page-subtitle">Attendees scan this at check-in. Generated by the PHP QR Code library once the backend is connected.</p>
+							<div class="qr-box">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="14" y1="14" x2="14" y2="21"></line><line x1="21" y1="14" x2="21" y2="21"></line><line x1="14" y1="17.5" x2="21" y2="17.5"></line></svg>
+								<span>QR code placeholder</span>
+							</div>
+							<button type="button" class="btn-secondary qr-download-btn" disabled>Download QR Code</button>
+						</div>
+
+						<div class="card">
+							<h3 class="card-title">Quick Actions</h3>
+							<div class="quick-actions">
+								<a href="../edit-event/index.html" class="btn-secondary quick-action-link">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+									Edit Event
+								</a>
+								<a href="../manage-attendees/index.html" class="btn-secondary quick-action-link">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+									Manage Attendees
+								</a>
+								<a href="../attendance/index.html" class="btn-secondary quick-action-link">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+									Attendance View
+								</a>
+								<a href="../analytics/index.html" class="btn-secondary quick-action-link">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+									Analytics Dashboard
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<footer class="app-footer">
+				<span>© 2026 EventDNA · Organizer Console</span>
+				<div class="app-footer-links">
+					<a href="#">Privacy Policy</a>
+					<a href="#">Terms of Service</a>
+					<a href="#">Support</a>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="../../shared/shell.js"></script>
+	<script>
+		// Placeholder events this page would load via the backend, keyed by the ?event= query param.
+		// Slugs match the ones linked from the dashboard's event list.
+		const mockEvents = {
+			'techconnect-colombo-2026': {
+				id: 101,
+				title: 'TechConnect Colombo 2026',
+				description: 'A full-day technology conference bringing together developers, startups, and investors from across Sri Lanka for talks, workshops, and networking.',
+				location: 'BMICH, Colombo',
+				start_datetime: '2026-08-14T09:00',
+				end_datetime: '2026-08-14T18:00',
+				reg_open: '2026-06-01T00:00',
+				reg_close: '2026-08-10T23:59',
+				visibility: 'public',
+				capacity: 500,
+				event_status: 'published',
+				registered_count: 342,
+				checked_in_count: 0,
+			},
+			'founders-fireside-chat': {
+				id: 102,
+				title: "Founders' Fireside Chat",
+				description: 'An intimate evening conversation with early-stage founders sharing lessons from building startups in Sri Lanka, followed by open Q&A and networking.',
+				location: 'Cinnamon Grand Colombo, Sri Lanka',
+				start_datetime: '2026-07-30T18:00',
+				end_datetime: '2026-07-30T21:00',
+				reg_open: '2026-06-15T00:00',
+				reg_close: '2026-07-29T23:59',
+				visibility: 'public',
+				capacity: 120,
+				event_status: 'live',
+				registered_count: 108,
+				checked_in_count: 76,
+			},
+			'campus-innovation-expo': {
+				id: 103,
+				title: 'Campus Innovation Expo',
+				description: 'A showcase of student-led innovation projects from universities across Sri Lanka, featuring exhibits, judging panels, and awards.',
+				location: 'University of Colombo, Colombo',
+				start_datetime: '2026-06-02T10:00',
+				end_datetime: '2026-06-02T16:00',
+				reg_open: '2026-04-15T00:00',
+				reg_close: '2026-05-30T23:59',
+				visibility: 'public',
+				capacity: 250,
+				event_status: 'completed',
+				registered_count: 231,
+				checked_in_count: 219,
+			},
+		};
+
+		const defaultSlug = 'techconnect-colombo-2026';
+		const eventSlug = new URLSearchParams(window.location.search).get('event') || defaultSlug;
+		const mockEvent = mockEvents[eventSlug] || mockEvents[defaultSlug];
+
+		const statusBadgeMap = {
+			draft: 'badge-neutral',
+			published: 'badge-info',
+			live: 'badge-success',
+			completed: 'badge-neutral',
+			cancelled: 'badge-danger',
+		};
+
+		function formatDateTime(value) {
+			if (!value) return '—';
+			const date = new Date(value);
+			return date.toLocaleString('en-US', {
+				dateStyle: 'medium',
+				timeStyle: 'short',
+			});
+		}
+
+		function formatDateOnly(value) {
+			if (!value) return '—';
+			return new Date(value).toLocaleDateString('en-US', { dateStyle: 'medium' });
+		}
+
+		function capitalize(value) {
+			return value.charAt(0).toUpperCase() + value.slice(1);
+		}
+
+		document.getElementById('detail-title').textContent = mockEvent.title;
+		document.getElementById('detail-subtitle').textContent =
+			`${mockEvent.location} · ${formatDateOnly(mockEvent.start_datetime)} – ${formatDateOnly(mockEvent.end_datetime)}`;
+
+		const statusBadge = document.getElementById('detail-status-badge');
+		statusBadge.textContent = capitalize(mockEvent.event_status);
+		statusBadge.className = `badge ${statusBadgeMap[mockEvent.event_status] || 'badge-neutral'}`;
+
+		document.getElementById('field-title').textContent = mockEvent.title;
+		document.getElementById('field-description').textContent = mockEvent.description;
+		document.getElementById('field-location').textContent = mockEvent.location;
+		document.getElementById('field-start').textContent = formatDateTime(mockEvent.start_datetime);
+		document.getElementById('field-end').textContent = formatDateTime(mockEvent.end_datetime);
+		document.getElementById('field-reg-open').textContent = formatDateTime(mockEvent.reg_open);
+		document.getElementById('field-reg-close').textContent = formatDateTime(mockEvent.reg_close);
+		document.getElementById('field-visibility').textContent = capitalize(mockEvent.visibility);
+		document.getElementById('field-capacity').textContent = mockEvent.capacity.toLocaleString();
+		document.getElementById('field-status').textContent = capitalize(mockEvent.event_status);
+
+		const registered = mockEvent.registered_count;
+		const checkedIn = mockEvent.checked_in_count;
+		const capacity = mockEvent.capacity;
+		const checkinRate = registered > 0 ? Math.round((checkedIn / registered) * 100) : 0;
+
+		document.getElementById('stat-registered').textContent = registered.toLocaleString();
+		document.getElementById('stat-capacity-note').textContent = `of ${capacity.toLocaleString()} capacity`;
+		document.getElementById('stat-checked-in').textContent = checkedIn.toLocaleString();
+		document.getElementById('stat-checkin-rate').textContent = `${checkinRate}% check-in rate`;
+		document.getElementById('stat-capacity').textContent = capacity.toLocaleString();
+		document.getElementById('stat-remaining').textContent = `${Math.max(capacity - registered, 0).toLocaleString()} spots left`;
+
+		document
+			.querySelectorAll('#action-edit-event, .quick-action-link')
+			.forEach((link) => {
+				link.href = `${link.getAttribute('href')}?event=${encodeURIComponent(eventSlug)}`;
+			});
+	</script>
+</body>
+</html>

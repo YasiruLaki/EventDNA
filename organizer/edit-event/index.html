@@ -80,7 +80,7 @@
 			</header>
 
 			<main class="page-content narrow">
-				<a href="../event-details/index.html" class="back-link">
+				<a href="../event-details/index.html" class="back-link" id="back-to-details-link">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
 					Back to Event Details
 				</a>
@@ -179,7 +179,7 @@
 						</div>
 
 						<div class="composer-actions">
-							<a href="../event-details/index.html" class="btn-secondary">Cancel</a>
+							<a href="../event-details/index.html" class="btn-secondary" id="cancel-edit-link">Cancel</a>
 							<button type="submit" class="btn-primary">Save Changes</button>
 						</div>
 					</form>
@@ -223,20 +223,59 @@
 
 	<script src="../../shared/shell.js"></script>
 	<script>
-		// Placeholder for the existing event this page would load via the backend.
-		const mockEvent = {
-			id: 42,
-			title: 'Colombo Tech Founders Meetup 2026',
-			description: 'A gathering for early-stage founders and builders across Sri Lanka\'s tech scene, featuring lightning talks, investor Q&A, and structured networking.',
-			location: 'Cinnamon Grand Colombo, Sri Lanka',
-			start_datetime: '2026-09-12T09:00',
-			end_datetime: '2026-09-12T17:00',
-			reg_open: '2026-08-01T00:00',
-			reg_close: '2026-09-05T23:59',
-			visibility: 'public',
-			capacity: 300,
-			event_status: 'published',
+		// Placeholder events this page would load via the backend, keyed by the ?event= query param.
+		// Slugs match the ones linked from the dashboard's event list and the event-details page.
+		const mockEvents = {
+			'techconnect-colombo-2026': {
+				id: 101,
+				title: 'TechConnect Colombo 2026',
+				description: 'A full-day technology conference bringing together developers, startups, and investors from across Sri Lanka for talks, workshops, and networking.',
+				location: 'BMICH, Colombo',
+				start_datetime: '2026-08-14T09:00',
+				end_datetime: '2026-08-14T18:00',
+				reg_open: '2026-06-01T00:00',
+				reg_close: '2026-08-10T23:59',
+				visibility: 'public',
+				capacity: 500,
+				event_status: 'published',
+			},
+			'founders-fireside-chat': {
+				id: 102,
+				title: "Founders' Fireside Chat",
+				description: 'An intimate evening conversation with early-stage founders sharing lessons from building startups in Sri Lanka, followed by open Q&A and networking.',
+				location: 'Cinnamon Grand Colombo, Sri Lanka',
+				start_datetime: '2026-07-30T18:00',
+				end_datetime: '2026-07-30T21:00',
+				reg_open: '2026-06-15T00:00',
+				reg_close: '2026-07-29T23:59',
+				visibility: 'public',
+				capacity: 120,
+				event_status: 'live',
+			},
+			'campus-innovation-expo': {
+				id: 103,
+				title: 'Campus Innovation Expo',
+				description: 'A showcase of student-led innovation projects from universities across Sri Lanka, featuring exhibits, judging panels, and awards.',
+				location: 'University of Colombo, Colombo',
+				start_datetime: '2026-06-02T10:00',
+				end_datetime: '2026-06-02T16:00',
+				reg_open: '2026-04-15T00:00',
+				reg_close: '2026-05-30T23:59',
+				visibility: 'public',
+				capacity: 250,
+				event_status: 'completed',
+			},
 		};
+
+		const defaultSlug = 'techconnect-colombo-2026';
+		const eventSlug = new URLSearchParams(window.location.search).get('event') || defaultSlug;
+		const mockEvent = mockEvents[eventSlug] || mockEvents[defaultSlug];
+
+		document
+			.querySelectorAll('#back-to-details-link, #cancel-edit-link')
+			.forEach((link) => {
+				link.href = `${link.getAttribute('href')}?event=${encodeURIComponent(eventSlug)}`;
+			});
 
 		const form = document.getElementById('edit-event-form');
 		const titleInput = document.getElementById('event-title');
