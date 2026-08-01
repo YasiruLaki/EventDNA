@@ -1,0 +1,60 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Onboarding Step 3 — Interests</title>
+<link rel="stylesheet" href="../../globals.css">
+<link rel="stylesheet" href="../../globals copy.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+ 
+  <div class="page">
+    <div class="card">
+ 
+      <div class="step-row">
+        <span class="step-label">Step 3 of 3: Interests</span>
+        <span class="step-percent">100%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+ 
+      <h1>Define Your Interests</h1>
+      <p class="subtitle">Select at least 3 areas of focus to help the network understand your professional DNA.</p>
+ 
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search or add interests...">
+      </div>
+ 
+      <div class="chip-list">
+        <button class="chip selected">Artificial Intelligence</button>
+        <button class="chip">Venture Capital</button>
+        <button class="chip">Product Design</button>
+        <button class="chip selected">Fintech</button>
+        <button class="chip">Quantum Computing</button>
+        <button class="chip selected">Sustainability</button>
+        <button class="chip">Robotics</button>
+        <button class="chip">Cybersecurity</button>
+        <button class="chip">Web3</button>
+        <button class="chip">BioTech</button>
+      </div>
+ 
+      <button class="btn-primary">Complete Setup →</button>
+ 
+      <a href="#" class="skip-link">Skip for now</a>
+ 
+    </div>
+  </div>
+ 
+<script>
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
+    });
+  });
+</script>
+</body>
+</html>
+ 
