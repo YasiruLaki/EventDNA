@@ -4,17 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're Registered — EventDNA</title>
-	<link rel="stylesheet" href="../../../globals.css" />
-    	<link rel="stylesheet" href="../../../globals copy.css" />
-	<link rel="stylesheet" href="../../../shared/shell.css" />
-	<link rel="stylesheet" href="../../../shared/components/index.css" />
+<link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-<div class="page">
-  <div class="card">
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="../../attendee/dashboard/index.html" class="nav-logo">
+          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="../ExploreEvents/index.html" class="nav-link">Find Events</a>
+          <a href="../myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../../community/community-hub/index.html" class="nav-link">Connections</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <span class="nav-profile-name">Yasiru</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
+            <a href="#" class="dropdown-item text-danger">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
+<div class="dashboard-shell success-shell">
+  <div class="card">
     <!-- Left column -->
     <div class="left-col">
       <div class="status-row">
@@ -49,8 +73,8 @@
       </ul>
 
       <div class="left-actions">
-        <a href="#" class="btn-primary">Go to My Events</a>
-        <a href="#" class="btn-tint">Continue Exploring</a>
+        <a href="../myEvents/index.html" class="btn-primary">Go to My Events</a>
+        <a href="../ExploreEvents/index.html" class="btn-tint">Continue Exploring</a>
       </div>
     </div>
 
@@ -61,11 +85,11 @@
           <span class="ticket-badge">Registered</span>
         </div>
         <div class="ticket-body">
-          <h3>Global Tech Summit 2024</h3>
+          <h3>AI Innovation Summit 2024</h3>
           <div class="ticket-meta">
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Oct 15 – 17, 2024
+              Oct 24, 2024, 9:00 AM
             </span>
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -73,7 +97,7 @@
             </span>
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c0-3.4 3-6 7-6s7 2.6 7 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              VIP Pass
+              Standard Pass
             </span>
           </div>
         </div>
@@ -81,8 +105,8 @@
         <div class="ticket-divider"></div>
 
         <div class="ticket-barcode-wrap">
-          <div class="barcode">
-            <span style="width:2px"></span><span style="width:1px"></span><span style="width:3px"></span><span style="width:1px"></span><span style="width:2px"></span><span style="width:4px"></span><span style="width:1px"></span><span style="width:2px"></span><span style="width:1px"></span><span style="width:3px"></span><span style="width:2px"></span><span style="width:1px"></span><span style="width:1px"></span><span style="width:4px"></span><span style="width:2px"></span><span style="width:1px"></span><span style="width:3px"></span><span style="width:1px"></span><span style="width:2px"></span><span style="width:1px"></span><span style="width:2px"></span><span style="width:3px"></span><span style="width:1px"></span><span style="width:1px"></span><span style="width:2px"></span>
+          <div class="qr-code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=EventDNA-592-441-XY" alt="Ticket QR Code">
           </div>
           <div class="ticket-id">ID: 592-441-XY</div>
         </div>
