@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendee Flow - EventDNA</title>
+  <link rel="stylesheet" href="../../globals.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="attendee-flow">
+    <section class="hero-panel">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="5" r="2" fill="currentColor" />
+          <circle cx="5" cy="14" r="2" fill="currentColor" />
+          <circle cx="19" cy="14" r="2" fill="currentColor" />
+          <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+          <line x1="12" y1="5" x2="5" y2="14" stroke="currentColor" stroke-width="1.2" />
+          <line x1="12" y1="5" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
+          <line x1="5" y1="14" x2="19" y2="14" stroke="currentColor" stroke-width="1.2" />
+          <line x1="5" y1="14" x2="12" y2="19" stroke="currentColor" stroke-width="1.2" />
+          <line x1="19" y1="14" x2="12" y2="19" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </div>
+
+      <p class="eyebrow">Attendee Module</p>
+      <h1>Organized attendee onboarding, from first click to dashboard.</h1>
+      <p class="lead">
+        This is the reference flow for the attendee workspace. Each screen is linked in sequence so the module feels like one guided experience instead of a set of scattered pages.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn-primary" href="./register/index.html">Create Account</a>
+        <a class="secondary-link" href="./login/index.html">Login</a>
+      </div>
+
+      <div class="stepper" aria-label="Attendee setup steps">
+        <span class="step current">Experience</span>
+        <span class="step">Auth</span>
+        <span class="step">Verify</span>
+        <span class="step">Profile</span>
+        <span class="step">Interests</span>
+        <span class="step">Dashboard</span>
+      </div>
+    </section>
+
+    <section class="flow-grid">
+      <article class="flow-card">
+        <div class="flow-meta">
+          <span class="flow-index">01</span>
+          <span class="flow-pill">Start</span>
+        </div>
+        <h2>Choose Your Experience</h2>
+        <p>Users decide whether they are joining as an attendee or organizer before authentication begins.</p>
+        <a class="card-link" href="../events/chooseExperience/index.html">Open screen</a>
+      </article>
+
+      <article class="flow-card">
+        <div class="flow-meta">
+          <span class="flow-index">02</span>
+          <span class="flow-pill">Auth</span>
+        </div>
+        <h2>Login or Register</h2>
+        <p>Let attendees sign in quickly or create an account with a clean, low-friction form.</p>
+        <a class="card-link" href="./login/index.html">Open login</a>
+        <a class="card-link secondary" href="./register/index.html">Open register</a>
+      </article>
+
+      <article class="flow-card">
+        <div class="flow-meta">
+          <span class="flow-index">03</span>
+          <span class="flow-pill">Verify</span>
+        </div>
+        <h2>Email Verification</h2>
+        <p>OTP entry keeps the confirmation step lightweight while preserving trust and account safety.</p>
+        <a class="card-link" href="./verify-email/index.html">Open screen</a>
+      </article>
+
+      <article class="flow-card">
+        <div class="flow-meta">
+          <span class="flow-index">04</span>
+          <span class="flow-pill">Profile</span>
+        </div>
+        <h2>Profile Setup</h2>
+        <p>Optional profile details help personalize networking without forcing a heavy onboarding form.</p>
+        <a class="card-link" href="./onboarding/index.html">Open screen</a>
+      </article>
+
+      <article class="flow-card">
+        <div class="flow-meta">
+          <span class="flow-index">05</span>
+          <span class="flow-pill">Match</span>
+        </div>
+        <h2>Select Interests</h2>
+        <p>Interest chips and custom tags support smarter recommendations and better introductions.</p>
+        <a class="card-link" href="./onboarding2/index.html">Open screen</a>
+      </article>
+
+      <article class="flow-card highlight">
+        <div class="flow-meta">
+          <span class="flow-index">06</span>
+          <span class="flow-pill">Done</span>
+        </div>
+        <h2>Dashboard Entry</h2>
+        <p>The onboarding route lands on a focused attendee dashboard with event exploration as the next action.</p>
+        <a class="card-link" href="./dashboard/index.html">Open dashboard</a>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

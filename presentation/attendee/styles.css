@@ -1,0 +1,228 @@
+@import url('../../globals.css');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-family-sans);
+  background:
+    radial-gradient(circle at top left, rgba(79, 16, 255, 0.08), transparent 30%),
+    radial-gradient(circle at 90% 15%, rgba(79, 16, 255, 0.06), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  color: var(--text-primary);
+}
+
+.attendee-flow {
+  min-height: 100vh;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 4rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero-panel,
+.flow-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(12px);
+}
+
+.hero-panel {
+  padding: 2rem;
+}
+
+.brand-mark {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: var(--primary-tint);
+  color: var(--primary);
+  margin-bottom: 1.25rem;
+}
+
+.brand-mark svg {
+  width: 26px;
+  height: 26px;
+}
+
+.eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-panel h1 {
+  margin: 0;
+  max-width: 700px;
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.lead {
+  max-width: 700px;
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 1.03rem;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.secondary-link,
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 1.1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.secondary-link {
+  color: var(--text-primary);
+  background: #fff;
+  border: 1px solid var(--border-color);
+}
+
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.step {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  background: var(--tertiary);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.step.current {
+  background: var(--primary-tint);
+  color: var(--primary);
+  box-shadow: 0 0 0 1px rgba(79, 16, 255, 0.12);
+}
+
+.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.flow-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  min-height: 228px;
+}
+
+.flow-card.highlight {
+  border-color: rgba(79, 16, 255, 0.2);
+  box-shadow: 0 20px 44px rgba(79, 16, 255, 0.08);
+}
+
+.flow-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.flow-index {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.flow-pill {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: var(--primary-tint);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.flow-card h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.flow-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.94rem;
+}
+
+.card-link.secondary {
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid rgba(79, 16, 255, 0.18);
+}
+
+.card-link {
+  width: fit-content;
+  background: var(--primary);
+  color: #fff;
+}
+
+.card-link:hover,
+.secondary-link:hover {
+  opacity: 0.94;
+}
+
+@media (max-width: 920px) {
+  .flow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .attendee-flow {
+    width: min(100% - 1rem, 1180px);
+    padding: 1rem 0 2rem;
+  }
+
+  .hero-panel,
+  .flow-card {
+    border-radius: 20px;
+  }
+
+  .hero-panel {
+    padding: 1.25rem;
+  }
+
+  .flow-grid {
+    grid-template-columns: 1fr;
+  }
+}
