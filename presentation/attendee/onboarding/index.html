@@ -4,60 +4,53 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Onboarding - EventDNA</title>
-	<link rel="stylesheet" href="../../../globals.css" />
 	<link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
-	<div class="split-layout onboarding-layout">
-		<div class="left-section">
-			<h1 class="hero-title">Meet Better.<br /><span class="highlight">Network Smarter.</span></h1>
-			<p class="hero-description">
-				Connect, collaborate, and grow with EventDNA—an intelligent platform that makes professional networking at events smarter, easier, and more meaningful.
-			</p>
-		</div>
+	<body>
+		<div class="auth-layout">
+			<div class="auth-panel">
+				<div class="register-card onboarding-card">
+					<div class="step-row">
+						<span class="step-label">Step 2 of 3 · Profile Setup</span>
+						<span class="step-pct">66% Complete</span>
+					</div>
+					<div class="progress-track"><div class="progress-fill" style="width: 66%"></div></div>
 
-		<div class="right-section">
-			<div class="register-card onboarding-card">
-				<div class="step-row">
-					<span class="step-label">Step 2 of 3 · Identity</span>
-					<span class="step-pct">66% Complete</span>
-				</div>
-				<div class="progress-track"><div class="progress-fill"></div></div>
+					<h2>Complete Your Profile</h2>
+					<p class="subtitle">Help others know who you are.</p>
 
-				<h2>Define Your Presence</h2>
-				<p class="subtitle">Let the network see the person behind the DNA.</p>
+					<div class="photo-uploader" aria-label="Profile photo upload">
+						<div class="avatar-ring">
+							<div class="avatar-placeholder">
+								<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+									<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.75" />
+									<path d="M4 7h4l2-2h4l2 2h4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+								</svg>
+							</div>
+						</div>
+						<button type="button" class="upload-link">Upload Photo</button>
+					</div>
 
-				<div class="photo-uploader" aria-label="Profile photo upload">
-					<div class="avatar-ring">
-						<div class="avatar-placeholder">
-							<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-								<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.75" />
-								<path d="M4 7h4l2-2h4l2 2h4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
-							</svg>
+					<div class="form-group bio-group">
+						<label for="bio">Your Professional Bio</label>
+						<div class="textarea-wrapper">
+							<textarea id="bio" rows="5" maxlength="300" placeholder="Tell people about your experience and what you're looking for."></textarea>
+							<span class="counter">0 / 300</span>
 						</div>
 					</div>
-					<button type="button" class="upload-link">Upload Photo</button>
-				</div>
 
-				<div class="form-group bio-group">
-					<label for="bio">Your Professional Bio</label>
-					<div class="textarea-wrapper">
-						<textarea id="bio" rows="5" maxlength="300" placeholder="Tell us about your technical expertise, your vision, and your impact..."></textarea>
-						<span class="counter">0 / 300</span>
+					<a class="btn-primary" href="../onboarding2/index.html">
+						Continue
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+					</a>
+
+					<div class="footer-links onboarding-footer-links">
+						<a href="#" class="skip-link">Skip for now</a>
 					</div>
-				</div>
-
-				<a class="btn-primary" href="../onboarding2/index.html">
-					Proceed to Next Step
-					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-				</a>
-
-				<div class="footer-links onboarding-footer-links">
-					<a href="#" class="skip-link">Skip for now</a>
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
 
 	<script>
 		const bio = document.getElementById('bio');
