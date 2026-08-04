@@ -5,43 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Onboarding Step 1 — Email Verification</title>
     <link rel="stylesheet" href="./styles.css" />
-    <link rel="stylesheet" href="../../../globals.css" />
   </head>
   <body>
-    <div class="split-layout verify-layout">
-      <div class="left-section">
-        <h1 class="hero-title">Meet Better.<br /><span class="highlight">Network Smarter.</span></h1>
-        <p class="hero-description">
-          Connect, collaborate, and grow with EventDNA—an intelligent platform that makes professional networking at events smarter, easier, and more meaningful.
-        </p>
-      </div>
-
-      <div class="right-section">
+    <div class="auth-layout">
+      <div class="auth-panel">
         <div class="register-card verify-card">
           <div class="step-row">
             <span class="step-label">Step 1 of 3 · Verification</span>
             <span class="step-pct">33% Complete</span>
           </div>
-          <div class="progress-track"><div class="progress-fill"></div></div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 33%"></div>
+          </div>
 
           <h2>Verify Your Email</h2>
           <p class="subtitle">
             A secure code has been sent to your professional email. Please enter it below to continue.
           </p>
 
-          <div class="code-row">
-            <input class="code-box" maxlength="1" value="" autofocus />
-            <input class="code-box" maxlength="1" value="" />
-            <input class="code-box" maxlength="1" value="" />
-            <input class="code-box" maxlength="1" value="" />
-            <input class="code-box" maxlength="1" value="" />
-            <input class="code-box" maxlength="1" value="" />
+          <div class="code-row" aria-label="Verification code input">
+            <input class="code-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code" autofocus />
+            <input class="code-box" maxlength="1" inputmode="numeric" />
+            <input class="code-box" maxlength="1" inputmode="numeric" />
+            <input class="code-box" maxlength="1" inputmode="numeric" />
+            <input class="code-box" maxlength="1" inputmode="numeric" />
+            <input class="code-box" maxlength="1" inputmode="numeric" />
           </div>
 
           <a class="btn-primary" href="../onboarding/index.html">Verify &amp; Continue →</a>
 
-          <div class="resend">Didn't get a code? <a href="#">Resend code</a></div>
-          <a href="#" class="alt-email">Use a different email address</a>
+          <div class="verify-actions">
+            <a class="btn-secondary" href="#">Resend Code</a>
+            <a class="btn-secondary" href="#">Change Email</a>
+          </div>
 
           <div class="foot-row">
             <a href="#" class="skip">Skip for now</a>
@@ -51,15 +47,20 @@
     </div>
 
     <script>
-      const boxes = document.querySelectorAll(".code-box");
-      boxes.forEach((box, i) => {
-        box.addEventListener("input", () => {
-          box.value = box.value.replace(/[^0-9]/g, "").slice(0, 1);
-          if (box.value && boxes[i + 1]) boxes[i + 1].focus();
+      const boxes = document.querySelectorAll('.code-box');
+
+      boxes.forEach((box, index) => {
+        box.addEventListener('input', () => {
+          box.value = box.value.replace(/[^0-9]/g, '').slice(0, 1);
+          if (box.value && boxes[index + 1]) {
+            boxes[index + 1].focus();
+          }
         });
-        box.addEventListener("keydown", (e) => {
-          if (e.key === "Backspace" && !box.value && boxes[i - 1])
-            boxes[i - 1].focus();
+
+        box.addEventListener('keydown', (event) => {
+          if (event.key === 'Backspace' && !box.value && boxes[index - 1]) {
+            boxes[index - 1].focus();
+          }
         });
       });
     </script>

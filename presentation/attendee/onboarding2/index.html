@@ -1,53 +1,56 @@
-
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Onboarding Step 3 — Interests</title>
-<link rel="stylesheet" href="../../../globals.css">
-<link rel="stylesheet" href="../../../globals copy.css">
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
- 
-  <div class="page">
-    <div class="card">
- 
-      <div class="step-row">
-        <span class="step-label">Step 3 of 3: Interests</span>
-        <span class="step-percent">100%</span>
+  <div class="auth-layout">
+    <div class="auth-panel">
+      <div class="register-card interests-card">
+        <div class="step-row">
+          <span class="step-label">Step 3 of 3 · Interests</span>
+          <span class="step-pct">100% Complete</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width: 100%"></div></div>
+
+        <h2>Choose Your Interests</h2>
+        <p class="subtitle">These help us recommend relevant events and meaningful connections.</p>
+
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search interests...">
+        </div>
+
+        <div class="chip-list">
+          <button class="chip selected">Artificial Intelligence</button>
+          <button class="chip">Machine Learning</button>
+          <button class="chip">Medicine</button>
+          <button class="chip">Healthcare</button>
+          <button class="chip">Cybersecurity</button>
+          <button class="chip">Business</button>
+          <button class="chip">Startups</button>
+          <button class="chip">Software Engineering</button>
+          <button class="chip">Robotics</button>
+          <button class="chip">Data Science</button>
+          <button class="chip">Cloud Computing</button>
+          <button class="chip">UX Design</button>
+          <button class="chip">Research</button>
+          <button class="chip">FinTech</button>
+          <button class="chip">BioTech</button>
+          <button class="chip">Entrepreneurship</button>
+        </div>
+
+        <div class="interest-actions">
+          <a class="btn-primary" href="../dashboard/index.html">Complete Setup →</a>
+          <a href="#" class="skip-link">Skip for now</a>
+        </div>
       </div>
-      <div class="progress-track"><div class="progress-fill"></div></div>
- 
-      <h1>Define Your Interests</h1>
-      <p class="subtitle">Select at least 3 areas of focus to help the network understand your professional DNA.</p>
- 
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Search or add interests...">
-      </div>
- 
-      <div class="chip-list">
-        <button class="chip selected">Artificial Intelligence</button>
-        <button class="chip">Venture Capital</button>
-        <button class="chip">Product Design</button>
-        <button class="chip selected">Fintech</button>
-        <button class="chip">Quantum Computing</button>
-        <button class="chip selected">Sustainability</button>
-        <button class="chip">Robotics</button>
-        <button class="chip">Cybersecurity</button>
-        <button class="chip">Web3</button>
-        <button class="chip">BioTech</button>
-      </div>
- 
-      <a class="btn-primary" href="../dashboard/index.html">Complete Setup →</a>
- 
-      <a href="#" class="skip-link">Skip for now</a>
- 
     </div>
   </div>
- 
+
 <script>
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -57,4 +60,3 @@
 </script>
 </body>
 </html>
- 
