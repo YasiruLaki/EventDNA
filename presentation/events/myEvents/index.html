@@ -5,46 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Events — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
-<link rel="stylesheet" href="../../../globals copy.css" />
-	<link rel="stylesheet" href="../../../shared/shell.css" />
-	<link rel="stylesheet" href="../../../shared/components/index.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
 <!-- Nav -->
-<nav class="nav">
-  <div class="container">
-    <div class="nav-logo">EventDNA</div>
-    <div class="nav-search">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input type="text" placeholder="Search events...">
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a href="../../attendee/dashboard/index.html" class="nav-logo">
+        <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+      </a>
+      <div class="nav-links">
+        <a href="../ExploreEvents/index.html" class="nav-link">Find Events</a>
+        <a href="#" class="nav-link active">My Events</a>
+        <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
+        <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
+      </div>
     </div>
-    <ul class="nav-links">
-      <li><a href="#">Discover</a></li>
-      <li><a href="#">Calendar</a></li>
-      <li><a href="#">Host</a></li>
-      <li><a href="#">Pricing</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a href="#" class="nav-login">Log In</a>
-      <a href="#" class="btn-primary btn-sm">Create Event</a>
+    <div class="nav-right">
+      <div class="nav-profile-menu">
+        <button class="nav-profile-btn" aria-label="Profile Menu">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+          <span class="nav-profile-name">Yasiru</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
+          <a href="#" class="dropdown-item text-danger">Logout</a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
 
-<!-- Page header -->
-<header class="page-header">
-  <div class="container">
-    <h1>My Events</h1>
-    <p>Manage your upcoming schedules and past attendances.</p>
-  </div>
-</header>
+<!-- Main Shell -->
+<div class="dashboard-shell">
+  
+  <!-- Page header (Dashboard Hero Style) -->
+  <header class="hero-row">
+    <div class="hero-copy">
+      <h1 class="page-title">My Events</h1>
+      <p class="supporting-copy">Manage your upcoming schedules and past attendances.</p>
+    </div>
+    <div class="hero-actions">
+      <!-- Added back the search feature but styled appropriately -->
+      <div class="search-bar-premium">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Search events...">
+      </div>
+    </div>
+  </header>
 
-<!-- Main -->
-<section class="main-section">
-  <div class="container main-grid">
-
+  <div class="dashboard-content main-grid">
     <div class="main-col">
       <div class="section-title-row">
         <h2>Upcoming Events</h2>
@@ -58,8 +71,9 @@
         </div>
       </div>
 
-      <div class="event-card">
-        <div class="event-thumb">
+      <!-- Event 1 -->
+      <div class="event-card-horizontal">
+        <div class="event-thumb" style="background: url('https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg') center/cover;">
           <div class="event-thumb-brand">EventDNA</div>
           <div class="event-thumb-badge">
             <div>
@@ -79,25 +93,150 @@
             <span class="registered-badge">REGISTERED</span>
           </div>
 
-          <h3>AI Innovation Summit</h3>
+          <h3>AI Innovation Summit 2024</h3>
 
           <div class="event-meta">
             <span class="meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Oct 24 – 26, 2024 · 8:00 AM PST
+              Oct 24 – 26, 2024 · 9:00 AM
             </span>
             <span class="meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-              Moscone Center, San Francisco
+              Moscone Center, SF
             </span>
           </div>
 
           <div class="event-actions">
-            <a href="#" class="btn-primary btn-md">
+            <a href="../eventView/index.html" class="btn-primary">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg>
-              View Event Pass
+              View Details
             </a>
-            <a href="#" class="btn-outline btn-md">View Details</a>
+            <a href="#" class="btn-secondary">View Pass</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="events-grid">
+        <!-- Event 2 -->
+        <div class="event-card-vertical">
+          <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80') center/cover;">
+            <div class="event-thumb-brand">EventDNA</div>
+            <div class="event-thumb-badge">
+              <div>
+                <span class="starts-label">STARTS IN</span>
+                <span class="starts-value">35 Days</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="event-body">
+            <div class="event-info-top">
+              <div class="tag-row">
+                <span class="tag">Design</span>
+              </div>
+              <span class="registered-badge">REGISTERED</span>
+            </div>
+
+            <h3>Global Design Conference</h3>
+
+            <div class="event-meta">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                Nov 12 – 14, 2024
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+                Javits Center, NY
+              </span>
+            </div>
+
+            <div class="event-actions">
+              <a href="#" class="btn-primary">View</a>
+              <a href="#" class="btn-secondary">Pass</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event 3 -->
+        <div class="event-card-vertical">
+          <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80') center/cover;">
+            <div class="event-thumb-brand">EventDNA</div>
+            <div class="event-thumb-badge">
+              <div>
+                <span class="starts-label">STARTS IN</span>
+                <span class="starts-value">51 Days</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="event-body">
+            <div class="event-info-top">
+              <div class="tag-row">
+                <span class="tag">Finance</span>
+              </div>
+              <span class="registered-badge">REGISTERED</span>
+            </div>
+
+            <h3>FinTech Disruptors 2024</h3>
+
+            <div class="event-meta">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                Nov 28, 2024
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+                ExCeL, London
+              </span>
+            </div>
+
+            <div class="event-actions">
+              <a href="#" class="btn-primary">View</a>
+              <a href="#" class="btn-secondary">Pass</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event 4 -->
+        <div class="event-card-vertical">
+          <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1559136555-9ce7b5fda2d6?auto=format&fit=crop&w=800&q=80') center/cover;">
+            <div class="event-thumb-brand">EventDNA</div>
+            <div class="event-thumb-badge">
+              <div>
+                <span class="starts-label">STARTS IN</span>
+                <span class="starts-value">2 Months</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="event-body">
+            <div class="event-info-top">
+              <div class="tag-row">
+                <span class="tag">Security</span>
+              </div>
+              <span class="registered-badge">REGISTERED</span>
+            </div>
+
+            <h3>CyberSecurity Summit</h3>
+
+            <div class="event-meta">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                Dec 05, 2024
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+                Online
+              </span>
+            </div>
+
+            <div class="event-actions">
+              <a href="#" class="btn-primary">View</a>
+              <a href="#" class="btn-secondary">Pass</a>
+            </div>
           </div>
         </div>
       </div>
@@ -129,48 +268,120 @@
         </div>
       </div>
     </div>
-
   </div>
-</section>
+</div>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="nav-logo">EventDNA</div>
-        <p>© 2024 EventDNA. Built for meaningful connections.</p>
+<!-- Event Pass Modal -->
+<div class="modal-overlay" id="eventPassModal">
+  <div class="pass-modal">
+    <button class="modal-close" id="closePassModal">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    
+    <div class="pass-modal-header">
+      <h2>Your Event Pass</h2>
+      <p>Registration complete. You are ready to go.</p>
+    </div>
+
+    <div class="pass-modal-body">
+      <!-- Top section: split layout -->
+      <div class="pass-top-row">
+        <!-- Left: Pass visual placeholder -->
+        <div class="pass-visual">
+          <span class="registered-pill">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Registered
+          </span>
+        </div>
+        
+        <!-- Right: Details -->
+        <div class="pass-details-col">
+          <div class="pass-info-card">
+            <h3>Global Tech Summit 2024</h3>
+            <div class="pass-meta-list">
+              <div class="pass-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                October 15-17, 2024
+              </div>
+              <div class="pass-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+                Moscone Center, San Francisco
+              </div>
+              <div class="pass-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                Starts in 14 days, 5 hours
+              </div>
+            </div>
+          </div>
+          
+          <div class="pass-calendar-card">
+            <div class="calendar-label">CALENDAR</div>
+            <div class="calendar-grid">
+              <button class="btn-cal"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Google</button>
+              <button class="btn-cal"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Apple</button>
+              <button class="btn-cal"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Outlook</button>
+              <button class="btn-cal"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>ICS</button>
+            </div>
+          </div>
+          
+          <button class="btn-primary w-full share-btn">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="12" r="2" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="6" r="2" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="18" r="2" stroke="currentColor" stroke-width="1.6"/><line x1="7.7" y1="11" x2="16.3" y2="7" stroke="currentColor" stroke-width="1.6"/><line x1="7.7" y1="13" x2="16.3" y2="17" stroke="currentColor" stroke-width="1.6"/></svg>
+            Share Event
+          </button>
+        </div>
       </div>
-      <div class="footer-col">
-        <h5>Platform</h5>
-        <ul>
-          <li><a href="#">Product</a></li>
-          <li><a href="#">Features</a></li>
-          <li><a href="#">Integrations</a></li>
-          <li><a href="#">Solutions</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Community</h5>
-        <ul>
-          <li><a href="#">Community</a></li>
-          <li><a href="#">Events</a></li>
-          <li><a href="#">Forum</a></li>
-          <li><a href="#">Creators</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Legal</h5>
-        <ul>
-          <li><a href="#">Legal</a></li>
-          <li><a href="#">Privacy</a></li>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-        </ul>
+
+      <!-- Access Codes Section -->
+      <div class="access-codes-section">
+        <h3>Access Codes</h3>
+        <div class="access-grid">
+          <div class="access-card">
+            <div class="access-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/><path d="M14 14h7v7h-7z" fill="currentColor"/><path d="M14 14h2v2h-2z" fill="white"/></svg>
+            </div>
+            <h4>Event QR</h4>
+            <p>Available on event day</p>
+          </div>
+          <div class="access-card locked">
+            <div class="access-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="11" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M17 11V7a5 5 0 0 0-10 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>
+            </div>
+            <h4>Personal Networking QR</h4>
+            <p>Locked - Available after check-in</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</footer>
+</div>
+
+<script>
+  const passBtns = document.querySelectorAll('.btn-secondary');
+  const modalOverlay = document.getElementById('eventPassModal');
+  const closeModalBtn = document.getElementById('closePassModal');
+
+  passBtns.forEach(btn => {
+    if(btn.textContent.trim() === 'View Pass') {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+  });
+
+  closeModalBtn.addEventListener('click', () => {
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  });
+
+  modalOverlay.addEventListener('click', (e) => {
+    if(e.target === modalOverlay) {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+</script>
 
 </body>
 </html>
