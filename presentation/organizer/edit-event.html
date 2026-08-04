@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event settings · EventDNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/eventdna.css">
+</head>
+<body data-nav="events">
+
+<header class="topbar" data-topbar></header>
+<div data-eventhero="settings"></div>
+
+<section class="section section--flush-top">
+  <div class="shell">
+
+    <div class="notice notice--warning mb-5">
+      <span data-icon="alert" data-icon-size="22"></span>
+      <div style="flex:1"><b>You have unsaved changes</b>The venue was edited. Saving emails all 312 registered attendees.</div>
+      <button class="btn btn--sm btn--ghost" style="color:inherit">Discard</button>
+      <button class="btn btn--sm btn--primary" data-modal-open="saveModal">Save changes</button>
+    </div>
+
+    <div class="intro">
+      <h2>Event settings</h2>
+      <p>Last edited by you, 14 minutes ago.</p>
+    </div>
+
+    <div class="row" style="justify-content:center;margin-bottom:48px">
+      <div class="segment" data-segment data-segment-target="settings">
+        <button class="is-active" data-value="details">Details</button>
+        <button data-value="registration">Registration</button>
+        <button data-value="networking">Networking</button>
+        <button data-value="danger">Danger zone</button>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="stack" data-segment-panel="settings" data-value="details" style="gap:40px">
+      <section class="card">
+        <div class="card__head"><h3>Details</h3><p>Name, category and description.</p></div>
+        <div class="formgrid">
+          <div class="field">
+            <label class="label" for="t">Event title</label>
+            <input class="input" id="t" value="AI Innovation Summit 2026">
+          </div>
+          <div class="formgrid formgrid--2">
+            <div class="field"><label class="label" for="c">Category</label>
+              <select class="select" id="c"><option selected>Technology &amp; Innovation</option><option>Workshop</option><option>Conference</option></select></div>
+            <div class="field"><label class="label" for="f">Format</label>
+              <select class="select" id="f"><option selected>In person &amp; hybrid</option><option>In person</option><option>Online</option></select></div>
+          </div>
+          <div class="field">
+            <label class="label" for="d">Description</label>
+            <textarea class="textarea" id="d" maxlength="600" data-charcount>Three days of keynotes, workshops and structured networking for engineers, designers and founders building the next generation of AI products.</textarea>
+            <span class="hint" data-charcount-for="d">0 / 600</span>
+          </div>
+          <div class="field">
+            <span class="label">Tags</span>
+            <div class="row">
+              <span class="chip">Artificial intelligence</span>
+              <span class="chip">Product design</span>
+              <span class="chip">Startups</span>
+              <span class="chip chip--muted">+ Add tag</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card__head"><h3>Schedule and venue</h3><p>Changing these notifies every registered attendee.</p></div>
+        <div class="formgrid">
+          <div class="formgrid formgrid--2">
+            <div class="field"><label class="label" for="s1">Start date</label><input class="input" id="s1" type="date" value="2026-10-24"></div>
+            <div class="field"><label class="label" for="s2">End date</label><input class="input" id="s2" type="date" value="2026-10-26"></div>
+          </div>
+          <div class="field">
+            <label class="label" for="v">Venue</label>
+            <input class="input is-error" id="v" value="Moscone Center — Hall B, San Francisco">
+            <span class="error">Changed from "Moscone Center". Attendees will be emailed the new location.</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Registration -->
+    <div class="stack" data-segment-panel="settings" data-value="registration" hidden style="gap:40px">
+      <section class="card">
+        <div class="card__head"><h3>Registration</h3><p>312 of 400 seats taken.</p></div>
+        <div class="formgrid">
+          <div class="formgrid formgrid--2">
+            <div class="field"><label class="label" for="r1">Opens</label><input class="input" id="r1" type="date" value="2026-08-01"></div>
+            <div class="field"><label class="label" for="r2">Closes</label><input class="input" id="r2" type="date" value="2026-10-20"></div>
+          </div>
+          <div class="field">
+            <label class="label" for="r3">Capacity</label>
+            <div class="input-group input-group--suffix"><input class="input" id="r3" type="number" value="400"><span class="input-group__suffix">seats</span></div>
+          </div>
+        </div>
+        <hr class="rule mt-5">
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Close at capacity</b><span>Stop taking registrations once every seat is filled.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Close at capacity</span></label>
+        </div>
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Keep a waitlist</b><span>Promote automatically when someone cancels.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Keep a waitlist</span></label>
+        </div>
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Approve each registration</b><span>Review requests manually before confirming.</span></div>
+          <label class="switch"><input type="checkbox"><span class="switch__track"></span><span class="sr-only">Approve each registration</span></label>
+        </div>
+      </section>
+    </div>
+
+    <!-- Networking -->
+    <div class="stack" data-segment-panel="settings" data-value="networking" hidden style="gap:40px">
+      <section class="card">
+        <div class="card__head"><h3>Matching weights</h3><p>The rule-based engine scores each pair on three signals. Weights total 100%.</p></div>
+        <div class="hbars">
+          <div>
+            <div class="hbar__top"><span class="hbar__label">Interest similarity</span><span class="hbar__value">40%</span></div>
+            <div class="hbar__track"><div class="hbar__fill" data-fill-w="40"></div></div>
+          </div>
+          <div>
+            <div class="hbar__top"><span class="hbar__label">Skill complementarity</span><span class="hbar__value">35%</span></div>
+            <div class="hbar__track"><div class="hbar__fill" style="background:var(--c2)" data-fill-w="35"></div></div>
+          </div>
+          <div>
+            <div class="hbar__top"><span class="hbar__label">Networking-goal pairing</span><span class="hbar__value">25%</span></div>
+            <div class="hbar__track"><div class="hbar__fill" style="background:var(--c3)" data-fill-w="25"></div></div>
+          </div>
+        </div>
+        <hr class="rule mt-5">
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Require check-in first</b><span>Matches stay locked until the attendee scans in.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Require check-in first</span></label>
+        </div>
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Personal QR profiles</b><span>Attendees scan each other to connect.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Personal QR profiles</span></label>
+        </div>
+      </section>
+    </div>
+
+    <!-- Danger -->
+    <div class="stack" data-segment-panel="settings" data-value="danger" hidden style="gap:40px">
+      <section class="card">
+        <div class="card__head"><h3 style="color:var(--danger-700)">Danger zone</h3><p>These actions affect 312 registered attendees.</p></div>
+        <div class="list">
+          <div class="list__item">
+            <div style="flex:1">
+              <div class="list__title">Unpublish event</div>
+              <div class="list__sub">Removes it from Discover. Registrations are kept.</div>
+            </div>
+            <button class="btn btn--secondary btn--sm">Unpublish</button>
+          </div>
+          <div class="list__item">
+            <div style="flex:1">
+              <div class="list__title">Cancel event</div>
+              <div class="list__sub">Voids every registration and emails everyone.</div>
+            </div>
+            <button class="btn btn--danger-soft btn--sm" data-modal-open="cancelModal">Cancel event</button>
+          </div>
+          <div class="list__item">
+            <div style="flex:1">
+              <div class="list__title">Delete permanently</div>
+              <div class="list__sub">Deletes the event, check-ins and analytics.</div>
+            </div>
+            <button class="btn btn--danger btn--sm" data-modal-open="cancelModal">Delete</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<div class="modal-scrim" id="saveModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="smTitle">
+    <span class="tile" data-icon="mail" data-icon-size="24"></span>
+    <h3 id="smTitle" class="mt-4">Save and notify attendees?</h3>
+    <p>Saving emails all 312 registered attendees about the new venue.</p>
+    <label class="check mt-5"><input type="checkbox" checked>Send the email now</label>
+    <div class="modal__foot">
+      <button class="btn btn--ghost" data-modal-close>Back</button>
+      <button class="btn btn--primary" data-modal-close data-toast="Changes saved · 312 attendees notified">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-scrim" id="cancelModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+    <span class="tile tile--danger" data-icon="alert" data-icon-size="24"></span>
+    <h3 id="cmTitle" class="mt-4">Cancel this event?</h3>
+    <p>All 312 registrations are voided, check-in is disabled and the community group is archived. This cannot be undone.</p>
+    <div class="field mt-5">
+      <label class="label" for="confirmTxt">Type the event code to confirm</label>
+      <input class="input" id="confirmTxt" placeholder="EVT-2026-0041">
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn--ghost" data-modal-close>Keep event</button>
+      <button class="btn btn--danger" data-modal-close data-toast="Event cancelled · attendees notified" data-toast-icon="xcirc">Cancel event</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/mock-data.js"></script>
+<script src="assets/js/eventdna.js"></script>
+</body>
+</html>

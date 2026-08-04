@@ -1,0 +1,18 @@
+.scanner {
+  position: relative; aspect-ratio: 1; border-radius: var(--r-md);
+  background: #12103A; overflow: hidden; display: grid; place-items: center;
+}
+.scanner__frame { width: 60%; aspect-ratio: 1; position: relative; }
+.scanner__frame span { position: absolute; width: 34px; height: 34px; border: 3px solid var(--brand-300); }
+.scanner__frame span:nth-child(1) { top:0; left:0; border-right:0; border-bottom:0; border-radius: 12px 0 0 0; }
+.scanner__frame span:nth-child(2) { top:0; right:0; border-left:0; border-bottom:0; border-radius: 0 12px 0 0; }
+.scanner__frame span:nth-child(3) { bottom:0; left:0; border-right:0; border-top:0; border-radius: 0 0 0 12px; }
+.scanner__frame span:nth-child(4) { bottom:0; right:0; border-left:0; border-top:0; border-radius: 0 0 12px 0; }
+.scanner__beam {
+  position: absolute; left: 20%; right: 20%; height: 2px; background: var(--brand-300);
+  box-shadow: 0 0 16px 3px rgba(191,169,251,.7); animation: beam 2.6s ease-in-out infinite;
+}
+@keyframes beam { 0%,100% { top: 24% } 50% { top: 72% } }
+.scanner__hint { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; color: #BFA9FB; font-size: 14px; }
+.feed__row { animation: fade-in .3s ease; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(-6px) } }

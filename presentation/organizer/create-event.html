@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create event · EventDNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/eventdna.css">
+</head>
+<body data-nav="events">
+
+<header class="topbar" data-topbar></header>
+
+<section class="section">
+  <div class="shell">
+    <div class="intro">
+      <span class="eyebrow">Step 1 of 5</span>
+      <h1>Create an event</h1>
+      <p>Nothing is visible to attendees until you publish.</p>
+    </div>
+
+    <div class="steps mb-5" style="margin-bottom:56px">
+      <div class="step is-current"><span class="step__dot">1</span><span class="step__label">Basics</span></div>
+      <span class="step__line"></span>
+      <div class="step"><span class="step__dot">2</span><span class="step__label">Schedule</span></div>
+      <span class="step__line"></span>
+      <div class="step"><span class="step__dot">3</span><span class="step__label">Registration</span></div>
+      <span class="step__line"></span>
+      <div class="step"><span class="step__dot">4</span><span class="step__label">Networking</span></div>
+      <span class="step__line"></span>
+      <div class="step"><span class="step__dot">5</span><span class="step__label">Review</span></div>
+    </div>
+
+    <form class="stack" novalidate style="gap:40px">
+
+      <!-- Basics -->
+      <section class="card">
+        <div class="card__head">
+          <h3>Event basics</h3>
+          <p>Shown on the public event page.</p>
+        </div>
+
+        <div class="formgrid">
+          <div class="field">
+            <label class="label" for="evTitle">Event title <span class="req">*</span></label>
+            <input class="input" id="evTitle" value="AI Innovation Summit 2026" placeholder="UCSC Career Fair 2026">
+          </div>
+
+          <div class="formgrid formgrid--2">
+            <div class="field">
+              <label class="label" for="evCat">Category <span class="req">*</span></label>
+              <select class="select" id="evCat">
+                <option>Technology &amp; Innovation</option>
+                <option>Design &amp; Strategy</option>
+                <option>Career fair</option>
+                <option>Workshop</option>
+                <option>Hackathon</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="evType">Format <span class="req">*</span></label>
+              <select class="select" id="evType">
+                <option>In person</option>
+                <option>Online</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="evDesc">Description <span class="req">*</span></label>
+            <textarea class="textarea" id="evDesc" maxlength="600" data-charcount placeholder="What is this event about, and who should attend?">Three days of keynotes, workshops and structured networking for engineers, designers and founders building the next generation of AI products.</textarea>
+            <span class="hint" data-charcount-for="evDesc">0 / 600</span>
+          </div>
+
+          <div class="field">
+            <span class="label">Cover image</span>
+            <div class="dropzone">
+              <span class="tile" data-icon="image" data-icon-size="24" style="margin:0 auto"></span>
+              <b>Drop an image, or browse</b>
+              <span class="hint">PNG or JPG · 1600 × 700 recommended</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schedule -->
+      <section class="card">
+        <div class="card__head">
+          <h3>Schedule and venue</h3>
+          <p>Stored in the event's local timezone.</p>
+        </div>
+
+        <div class="formgrid">
+          <div class="formgrid formgrid--2">
+            <div class="field"><label class="label" for="dStart">Start date <span class="req">*</span></label><input class="input" id="dStart" type="date" value="2026-10-24"></div>
+            <div class="field"><label class="label" for="dEnd">End date <span class="req">*</span></label><input class="input" id="dEnd" type="date" value="2026-10-26"></div>
+          </div>
+          <div class="formgrid formgrid--2">
+            <div class="field"><label class="label" for="tStart">Start time <span class="req">*</span></label><input class="input" id="tStart" type="time" value="09:00"></div>
+            <div class="field"><label class="label" for="tEnd">End time <span class="req">*</span></label><input class="input" id="tEnd" type="time" value="17:00"></div>
+          </div>
+          <div class="field">
+            <label class="label" for="venue">Venue <span class="req">*</span></label>
+            <input class="input" id="venue" value="Moscone Center, San Francisco">
+          </div>
+        </div>
+      </section>
+
+      <!-- Registration -->
+      <section class="card">
+        <div class="card__head">
+          <h3>Registration</h3>
+          <p>Every EventDNA event is free — no payment handling.</p>
+        </div>
+
+        <div class="formgrid">
+          <div class="formgrid formgrid--2">
+            <div class="field"><label class="label" for="regOpen">Opens <span class="req">*</span></label><input class="input" id="regOpen" type="date" value="2026-08-01"></div>
+            <div class="field"><label class="label" for="regClose">Closes <span class="req">*</span></label><input class="input" id="regClose" type="date" value="2026-10-20"></div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="cap">Capacity <span class="req">*</span></label>
+            <div class="input-group input-group--suffix">
+              <input class="input" id="cap" type="number" value="400" min="1">
+              <span class="input-group__suffix">seats</span>
+            </div>
+            <span class="hint">Registration closes automatically when capacity is reached.</span>
+          </div>
+
+          <div class="field" data-optiongroup>
+            <span class="label">Visibility <span class="req">*</span></span>
+            <label class="optioncard">
+              <input type="radio" name="vis" checked>
+              <span><b>Public</b><span>Listed on Discover, open to any verified account.</span></span>
+            </label>
+            <label class="optioncard">
+              <input type="radio" name="vis">
+              <span><b>Private</b><span>Unlisted. Only people with the link can register.</span></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Networking -->
+      <section class="card">
+        <div class="card__head">
+          <h3>Networking</h3>
+          <p>Attendees see matches only after they check in.</p>
+        </div>
+
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Matching engine</b><span>Rank compatible attendees by interests, skills and goals.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Matching engine</span></label>
+        </div>
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Personal QR profiles</b><span>Attendees scan each other to connect instantly.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Personal QR profiles</span></label>
+        </div>
+        <div class="switchrow">
+          <div class="switchrow__text"><b>Community hub group</b><span>Keeps the conversation going after the event ends.</span></div>
+          <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Community hub group</span></label>
+        </div>
+
+        <div class="notice notice--info mt-5">
+          <span data-icon="lock" data-icon-size="22"></span>
+          <div><b>Check-in unlocks networking</b>Matching stays locked until an attendee scans in at the venue.</div>
+        </div>
+      </section>
+    </form>
+  </div>
+</section>
+
+<!-- Publish ------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="ctaband">
+      <h2>Ready to publish?</h2>
+      <p>Publishing lists the event on Discover and generates its check-in QR code. You can still edit everything afterwards.</p>
+      <div class="row" style="justify-content:center">
+        <button class="btn btn--white btn--lg" data-modal-open="publishModal">Publish event</button>
+        <button class="btn btn--outline-white btn--lg" data-toast="Saved as draft" data-toast-icon="file">Save draft</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal-scrim" id="publishModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <span class="tile" data-icon="send" data-icon-size="24"></span>
+    <h3 id="pmTitle" class="mt-4">Publish this event?</h3>
+    <p>It becomes visible on Discover, registration opens on Aug 1, and the event QR code is generated.</p>
+    <div class="modal__foot">
+      <button class="btn btn--ghost" data-modal-close>Keep editing</button>
+      <button class="btn btn--primary" data-modal-close data-toast="Event published — QR code generated">Publish now</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/mock-data.js"></script>
+<script src="assets/js/eventdna.js"></script>
+</body>
+</html>

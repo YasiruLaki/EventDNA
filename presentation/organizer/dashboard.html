@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organizer dashboard · EventDNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/eventdna.css">
+</head>
+<body data-nav="dashboard">
+
+<header class="topbar" data-topbar></header>
+
+<!-- Welcome ------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="intro">
+      <span class="eyebrow">Organizer</span>
+      <h1>Welcome back, Hanan</h1>
+      <p>One event is live right now. Everything you host is below.</p>
+      <div class="row" style="justify-content:center;margin-top:32px">
+        <a class="btn btn--primary" href="create-event.html">Create event</a>
+        <a class="btn btn--secondary" href="analytics.html">View analytics</a>
+      </div>
+    </div>
+
+    <div class="grid grid--4">
+      <article class="metric">
+        <div class="metric__label">Events hosted</div>
+        <div class="metric__value" data-count="8">0</div>
+        <div class="metric__foot">1 live · 3 upcoming</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Registrations</div>
+        <div class="metric__value" data-count="1284">0</div>
+        <div class="metric__foot"><span class="delta delta--up">▲ 12.4%</span> this quarter</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Check-in rate</div>
+        <div class="metric__value" data-count="79.4" data-count-dec="1" data-count-suffix="%">0</div>
+        <div class="metric__foot">across completed events</div>
+      </article>
+      <article class="metric metric--accent">
+        <div class="metric__label">Connections formed</div>
+        <div class="metric__value" data-count="512">0</div>
+        <div class="metric__foot">via the matching engine</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Live now ------------------------------------------------------------ -->
+<section class="section">
+  <div class="shell">
+    <div class="ctaband ctaband--left">
+      <div>
+        <span class="badge badge--onhero mb-4"><span class="bullet"></span>Live now · day 1 of 3</span>
+        <h2>AI Innovation Summit 2026</h2>
+        <p>248 of 312 registered attendees have checked in.</p>
+        <div class="row mt-5">
+          <a class="btn btn--white" href="attendance-view.html">Check-in desk</a>
+          <a class="btn btn--outline-white" href="event-details.html">View event</a>
+        </div>
+      </div>
+      <div class="ringwrap">
+        <svg class="ring" width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="79 percent checked in">
+          <circle class="ring__bg" cx="75" cy="75" r="64" fill="none" stroke-width="13" style="stroke:rgba(255,255,255,.22)"></circle>
+          <circle class="ring__fg" cx="75" cy="75" r="64" fill="none" stroke-width="13" data-ring="79.5" style="stroke:#fff"></circle>
+        </svg>
+        <span class="ringwrap__label">
+          <b style="color:#fff">79%</b>
+          <span style="color:rgba(255,255,255,.8)">checked in</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Events -------------------------------------------------------------- -->
+<section class="section" id="events">
+  <div class="shell">
+    <div class="intro">
+      <h2>Your events</h2>
+      <p>Eight events hosted so far. Select one to manage it.</p>
+    </div>
+
+    <div class="card">
+      <div class="tabletools">
+        <div class="input-group">
+          <span class="input-group__icon" data-icon="search" data-icon-size="19"></span>
+          <input class="input" type="search" placeholder="Search events" data-table-search="tblEvents" aria-label="Search events">
+        </div>
+        <select class="select" data-table-filter="tblEvents" data-filter-key="status" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="live">Live</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="draft">Draft</option>
+          <option value="completed">Completed</option>
+        </select>
+        <span class="spacer"></span>
+        <button class="btn btn--secondary btn--sm" data-export-csv="tblEvents" data-filename="eventdna-events.csv">Export CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="tblEvents" data-sortable>
+          <thead>
+            <tr>
+              <th class="th-sort">Event</th>
+              <th class="th-sort">Date</th>
+              <th class="th-sort td-num">Registered</th>
+              <th>Status</th>
+              <th data-csv-skip></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="live">
+              <td class="t-strong">AI Innovation Summit 2026</td>
+              <td class="nowrap" data-sort="2026-10-24">Oct 24 – 26</td>
+              <td class="td-num">312</td>
+              <td><span class="badge badge--danger"><span class="bullet"></span>Live</span></td>
+              <td class="td-actions" data-csv-skip><a class="btn btn--soft btn--sm" href="event-details.html">Manage</a></td>
+            </tr>
+            <tr data-status="upcoming">
+              <td class="t-strong">AI Founders Meetup — Colombo</td>
+              <td class="nowrap" data-sort="2026-11-12">Nov 12</td>
+              <td class="td-num">148</td>
+              <td><span class="badge badge--info"><span class="bullet"></span>Upcoming</span></td>
+              <td class="td-actions" data-csv-skip><a class="btn btn--secondary btn--sm" href="event-details.html">Manage</a></td>
+            </tr>
+            <tr data-status="upcoming">
+              <td class="t-strong">UCSC Career Fair 2026</td>
+              <td class="nowrap" data-sort="2026-12-03">Dec 3 – 4</td>
+              <td class="td-num">276</td>
+              <td><span class="badge badge--info"><span class="bullet"></span>Upcoming</span></td>
+              <td class="td-actions" data-csv-skip><a class="btn btn--secondary btn--sm" href="event-details.html">Manage</a></td>
+            </tr>
+            <tr data-status="draft">
+              <td class="t-strong">Design Systems Masterclass</td>
+              <td class="nowrap muted" data-sort="2027-01-18">Jan 18, 2027</td>
+              <td class="td-num muted">0</td>
+              <td><span class="badge badge--neutral"><span class="bullet"></span>Draft</span></td>
+              <td class="td-actions" data-csv-skip><a class="btn btn--secondary btn--sm" href="edit-event.html">Continue</a></td>
+            </tr>
+            <tr data-status="completed">
+              <td class="t-strong">Global UX Summit 2026</td>
+              <td class="nowrap" data-sort="2026-05-15">May 15 – 17</td>
+              <td class="td-num">204</td>
+              <td><span class="badge badge--neutral"><span class="bullet"></span>Completed</span></td>
+              <td class="td-actions" data-csv-skip><a class="btn btn--secondary btn--sm" href="analytics.html">Report</a></td>
+            </tr>
+            <tr data-status="completed">
+              <td class="t-strong">Bay Area Hackathon</td>
+              <td class="nowrap" data-sort="2026-03-08">Mar 8 – 9</td>
+              <td class="td-num">96</td>
+              <td><span class="badge badge--neutral"><span class="bullet"></span>Completed</span></td>
+              <td class="td-actions" data-csv-skip><a class="btn btn--secondary btn--sm" href="analytics.html">Report</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- What you can do ----------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="intro">
+      <h2>Run the event, not the admin</h2>
+      <p>Three tools cover the whole day, from the door to the follow-up.</p>
+    </div>
+
+    <div class="grid grid--3">
+      <a class="feature feature--link" href="attendance-view.html">
+        <span class="tile" data-icon="qr" data-icon-size="24"></span>
+        <h3>QR check-in</h3>
+        <p>Verify attendance at the door in one scan. Check-in is what unlocks networking for each attendee.</p>
+      </a>
+      <a class="feature feature--link" href="analytics.html">
+        <span class="tile" data-icon="share" data-icon-size="24"></span>
+        <h3>Matching engine</h3>
+        <p>See which recommendations turn into real connections, and tune the weights that drive them.</p>
+      </a>
+      <a class="feature feature--link" href="export-reports.html">
+        <span class="tile" data-icon="file" data-icon-size="24"></span>
+        <h3>Reports</h3>
+        <p>Export the attendee register, attendance log or a full event report as CSV or PDF.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA ----------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="ctaband">
+      <h2>Ready to host your next event?</h2>
+      <p>Set it up in five steps. Registration, QR check-in and matching are configured for you.</p>
+      <a class="btn btn--white btn--lg" href="create-event.html">Create event</a>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/mock-data.js"></script>
+<script src="assets/js/eventdna.js"></script>
+</body>
+</html>
