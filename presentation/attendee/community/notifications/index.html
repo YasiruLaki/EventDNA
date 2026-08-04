@@ -4,48 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Notifications — EventDNA</title>
-<link rel="stylesheet" href="../../../globals.css" />
-<link rel="stylesheet" href="../../../globals copy.css" />
-<link rel="stylesheet" href="../../../shared/shell.css" />
-<link rel="stylesheet" href="../../../shared/components/index.css" />
+<link rel="stylesheet" href="../../dashboard/styles.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-<nav class="nav">
-  <div class="container">
-    <div class="nav-logo">EventDNA</div>
-    <div class="nav-search">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input type="text" placeholder="Search notifications...">
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a href="../../dashboard/index.html" class="nav-logo">
+        <img src="../../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+      </a>
+      <div class="nav-links">
+        <a href="../../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
+        <a href="../../../events/myEvents/index.html" class="nav-link">My Events</a>
+        <a href="../community-hub/index.html" class="nav-link">Communities</a>
+        <a href="../../myConnections/index.html" class="nav-link">Connections</a>
+      </div>
     </div>
-    <ul class="nav-links">
-      <li><a href="../../events/ExploreEvents/index.html">Discover</a></li>
-      <li><a href="../../events/myEvents/index.html">My Events</a></li>
-      <li><a href="../community-hub/index.html">Community</a></li>
-      <li><a href="./index.html" class="active">Notifications</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a href="#" class="nav-login">Amara Ruwan</a>
-      <a href="../create-post/index.html" class="btn-primary btn-sm">Create Post</a>
+    <div class="nav-right">
+      <div class="nav-profile-menu">
+        <button class="nav-profile-btn">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Amara Ruwan" class="nav-avatar">
+          <span class="nav-profile-name">Amara Ruwan</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="../../dashboard/index.html" class="dropdown-item">Dashboard</a>
+          <a href="#" class="dropdown-item">Settings</a>
+          <a href="../../../events/ExploreEvents/index.html" class="dropdown-item text-danger">Log Out</a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
 
-<header class="page-header">
-  <div class="container narrow">
-    <div class="page-header-row">
-      <div>
+<main class="dashboard-shell">
+  <div class="container" style="max-width:800px; margin:0 auto;">
+    <div class="hero-row" style="align-items:center;">
+      <div class="hero-title">
         <h1>Notifications</h1>
         <p>Connection requests, event updates, and community activity land here.</p>
       </div>
       <button type="button" class="btn-secondary btn-sm" id="mark-all-read">Mark all as read</button>
     </div>
-  </div>
-</header>
 
-<section class="main-section">
-  <div class="container narrow">
+    <div style="display:flex; flex-direction:column; gap:2rem;">
 
     <div class="section-title-row">
       <h2>Today</h2>
@@ -122,42 +126,9 @@
     </div>
 
   </div>
-</section>
-
-<footer class="footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="nav-logo">EventDNA</div>
-        <p>© 2026 EventDNA. Built for meaningful connections.</p>
-      </div>
-      <div class="footer-col">
-        <h5>Platform</h5>
-        <ul>
-          <li><a href="../../events/ExploreEvents/index.html">Discover</a></li>
-          <li><a href="../../events/myEvents/index.html">My Events</a></li>
-          <li><a href="../community-hub/index.html">Community</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Support</h5>
-        <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Community Guidelines</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Legal</h5>
-        <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-        </ul>
-      </div>
     </div>
   </div>
-</footer>
+</main>
 
 <script>
   document.getElementById('mark-all-read')?.addEventListener('click', () => {
