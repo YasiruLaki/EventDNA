@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Management - EventDNA Admin</title>
+  <link rel="stylesheet" href="../../globals.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { background-color: #f9f9f9; margin: 0; font-family: 'Inter', -apple-system, sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar { width: 250px; background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+    .admin-logo { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); }
+    .admin-logo img { height: 28px; }
+    .admin-nav { padding: 1.5rem 1rem; flex: 1; }
+    .admin-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; transition: all 0.2s; }
+    .admin-nav-item:hover { background: #f8fafc; color: var(--secondary); }
+    .admin-nav-item.active { background: var(--primary-tint); color: var(--primary); }
+    .admin-footer { padding: 1.5rem 1rem; border-top: 1px solid var(--border-color); }
+    
+    .admin-content { flex: 1; padding: 2.5rem 3rem; overflow-y: auto; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+    .page-title { font-size: 1.75rem; font-weight: 800; color: var(--secondary); margin: 0; }
+    
+    .filters-bar { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    .search-box { flex: 1; position: relative; }
+    .search-box input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; outline: none; }
+    .search-box i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); width: 18px; }
+    .filter-select { padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; background: #fff; font-size: 0.95rem; outline: none; color: var(--secondary); }
+    
+    .data-table { width: 100%; background: #fff; border-radius: 12px; border: 1px solid rgba(226, 232, 240, 0.9); border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .data-table th { background: #f8fafc; text-align: left; padding: 1rem 1.5rem; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-color); }
+    .data-table td { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); color: var(--secondary); font-size: 0.95rem; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover { background: #f8fafc; }
+    
+    .status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    .status-active { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
+    .status-disabled { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+    .btn-view { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../../images/logo.png" alt="EventDNA" />
+        <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.html" class="admin-nav-item active"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.html" class="admin-nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.html" class="admin-nav-item"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+      </nav>
+      <div class="admin-footer">
+        <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
+        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+      </div>
+    </aside>
+
+    <main class="admin-content">
+      <div class="page-header">
+        <h1 class="page-title">Users</h1>
+      </div>
+
+      <div class="filters-bar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search users by name or email..." />
+        </div>
+        <select class="filter-select">
+          <option>All Roles</option>
+          <option>Attendee</option>
+          <option>Organizer</option>
+        </select>
+        <select class="filter-select">
+          <option>All Statuses</option>
+          <option>Active</option>
+          <option>Disabled</option>
+        </select>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600;">Yasiru Lakintha</td>
+            <td>yasiru@example.com</td>
+            <td>Attendee</td>
+            <td><span class="status-badge status-active">Active</span></td>
+            <td><a href="user-details.html" class="btn-view">View</a></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600;">Hanan Perera</td>
+            <td>hanan@example.com</td>
+            <td>Organizer</td>
+            <td><span class="status-badge status-active">Active</span></td>
+            <td><a href="user-details.html" class="btn-view">View</a></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600;">Amara Silva</td>
+            <td>amara@example.com</td>
+            <td>Attendee</td>
+            <td><span class="status-badge status-disabled">Disabled</span></td>
+            <td><a href="user-details.html" class="btn-view">View</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

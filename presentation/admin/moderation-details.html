@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moderation Details - EventDNA Admin</title>
+  <link rel="stylesheet" href="../../globals.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { background-color: #f9f9f9; margin: 0; font-family: 'Inter', -apple-system, sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar { width: 250px; background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+    .admin-logo { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); }
+    .admin-logo img { height: 28px; }
+    .admin-nav { padding: 1.5rem 1rem; flex: 1; }
+    .admin-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; transition: all 0.2s; }
+    .admin-nav-item:hover { background: #f8fafc; color: var(--secondary); }
+    .admin-nav-item.active { background: var(--primary-tint); color: var(--primary); }
+    .admin-footer { padding: 1.5rem 1rem; border-top: 1px solid var(--border-color); }
+    
+    .admin-content { flex: 1; padding: 2.5rem 3rem; overflow-y: auto; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .back-link:hover { color: var(--secondary); }
+    
+    .detail-card { background: #fff; border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); max-width: 800px; }
+    .report-header { margin-bottom: 2.5rem; }
+    .report-header h1 { margin: 0 0 0.5rem 0; font-size: 1.75rem; font-weight: 800; color: var(--secondary); }
+    
+    .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .data-block label { display: block; font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .data-block p { margin: 0; font-size: 1rem; color: var(--secondary); font-weight: 500; }
+    
+    .content-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 3rem; }
+    .content-box label { display: block; font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .content-box p { margin: 0; font-size: 1rem; color: var(--secondary); line-height: 1.6; font-style: italic; }
+    
+    .actions-bar { display: flex; gap: 1rem; padding-top: 2rem; border-top: 1px solid var(--border-color); }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; }
+    .btn-outline { background: #fff; border: 1px solid var(--border-color); color: var(--secondary); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    
+    /* Remove modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal-content { background: #fff; padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .modal-content h3 { font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin: 0 0 1rem 0; }
+    .modal-content p { color: var(--text-secondary); margin: 0 0 1.5rem 0; line-height: 1.6; }
+    .modal-content textarea { width: 100%; box-sizing: border-box; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1.5rem; font-family: inherit; resize: vertical; min-height: 80px; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../../images/logo.png" alt="EventDNA" />
+        <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.html" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.html" class="admin-nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.html" class="admin-nav-item active"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+      </nav>
+      <div class="admin-footer">
+        <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
+        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+      </div>
+    </aside>
+
+    <main class="admin-content">
+      <a href="moderation.html" class="back-link"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to Moderation</a>
+      
+      <div class="detail-card">
+        <div class="report-header">
+          <h1>Reported Content</h1>
+        </div>
+        
+        <div class="data-grid">
+          <div class="data-block">
+            <label>Author</label>
+            <p>John Doe</p>
+          </div>
+          <div class="data-block">
+            <label>Group</label>
+            <p>AI Founders</p>
+          </div>
+          <div class="data-block">
+            <label>Reported For</label>
+            <p style="color: #d97706; font-weight: 700;">Spam</p>
+          </div>
+          <div class="data-block">
+            <label>Reported</label>
+            <p>24 Sep 2026</p>
+          </div>
+        </div>
+        
+        <div class="content-box">
+          <label>Content</label>
+          <p>"Looking for attendees to buy my crypto coin before the summit ends! Guaranteed 10x ROI!!!"</p>
+        </div>
+        
+        <div class="actions-bar">
+          <button class="btn btn-outline">Keep Content</button>
+          <button class="btn btn-danger" id="removeBtn">Remove Content</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Remove Modal -->
+  <div id="removeModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Remove Content</h3>
+      <p>Are you sure you want to remove this content? The author will be notified.</p>
+      <label style="display: block; font-size: 0.85rem; color: var(--secondary); font-weight: 700; margin-bottom: 0.5rem;">Reason for removal</label>
+      <textarea placeholder="e.g. Violation of community spam guidelines..."></textarea>
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button id="cancelModalBtn" class="btn btn-outline" style="padding: 0.75rem 1.5rem;">Cancel</button>
+        <button class="btn btn-danger" style="padding: 0.75rem 1.5rem;">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const removeBtn = document.getElementById('removeBtn');
+    const removeModal = document.getElementById('removeModal');
+    const cancelBtn = document.getElementById('cancelModalBtn');
+
+    if(removeBtn && removeModal && cancelBtn) {
+      removeBtn.addEventListener('click', () => removeModal.style.display = 'flex');
+      cancelBtn.addEventListener('click', () => removeModal.style.display = 'none');
+      removeModal.addEventListener('click', (e) => {
+        if(e.target === removeModal) removeModal.style.display = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
