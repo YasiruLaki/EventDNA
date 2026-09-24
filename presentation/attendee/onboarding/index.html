@@ -10,46 +10,86 @@
 		<div class="auth-layout">
 			<div class="auth-panel">
 				<div class="register-card onboarding-card">
-					<div class="step-row">
-						<span class="step-label">Step 2 of 3 · Profile Setup</span>
-						<span class="step-pct">66% Complete</span>
+					<div class="progress-bar-container">
+						<div class="progress-bar-segment active"></div>
+						<div class="progress-bar-segment"></div>
+						<div class="progress-bar-segment"></div>
 					</div>
-					<div class="progress-track"><div class="progress-fill" style="width: 66%"></div></div>
+					<div class="step-indicator">
+						1 of 3 &mdash; About You
+					</div>
 
-					<h2>Complete Your Profile</h2>
-					<p class="subtitle">Help others know who you are.</p>
+					<h2 class="onboarding-title">Tell us about yourself</h2>
+					<p class="subtitle onboarding-subtitle">
+						Build your professional EventDNA profile so people can understand who you are and what you're looking to connect around.
+					</p>
 
 					<div class="photo-uploader" aria-label="Profile photo upload">
 						<div class="avatar-ring">
 							<div class="avatar-placeholder">
 								<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-									<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.75" />
-									<path d="M4 7h4l2-2h4l2 2h4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+                                    <path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 								</svg>
 							</div>
 						</div>
-						<button type="button" class="upload-link">Upload Photo</button>
+                        <div class="photo-desc-container">
+                            <button type="button" class="upload-link">Upload photo</button>
+                            <p class="photo-desc">
+                                A clear professional photo helps others recognize you at events.
+                            </p>
+                        </div>
 					</div>
 
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" value="John Doe" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">Role / Job Title</label>
+                            <input type="text" id="role" placeholder="e.g. Medical Student, Software Engineer" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="organization">Organization / University</label>
+                            <input type="text" id="organization" placeholder="e.g. University of Colombo" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="industry">Field / Industry</label>
+                            <select id="industry" class="form-select">
+                                <option value="" disabled selected>Select your field</option>
+                                <option value="medicine">Medicine & Healthcare</option>
+                                <option value="technology">Technology</option>
+                                <option value="business">Business</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="education">Education</option>
+                                <option value="research">Research</option>
+                                <option value="design">Design</option>
+                                <option value="finance">Finance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
 					<div class="form-group bio-group">
-						<label for="bio">Your Professional Bio</label>
+						<label for="bio">Professional Bio</label>
 						<div class="textarea-wrapper">
-							<textarea id="bio" rows="5" maxlength="300" placeholder="Tell people about your experience and what you're looking for."></textarea>
+							<textarea id="bio" rows="5" maxlength="300" placeholder="Tell people about your experience, interests, and what you're looking to connect around."></textarea>
 							<span class="counter">0 / 300</span>
 						</div>
 					</div>
 
-					<a class="btn-primary" href="../onboarding2/index.html">
-						Continue
-						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+					<a class="btn-primary onboarding-submit" href="../onboarding2/index.html">
+						Continue &rarr;
 					</a>
 
 					<div class="footer-links onboarding-footer-links">
-						<a href="#" class="skip-link">Skip for now</a>
+						<a href="#" class="skip-link">I'll complete this later</a>
 					</div>
 				</div>
 			</div>
-		</div>
 		</div>
 
 	<script>

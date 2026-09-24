@@ -626,27 +626,28 @@ a {
 
 .checklist li {
   position: relative;
-  padding-left: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--text-secondary);
 }
 
-.checklist li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.6rem;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 999px;
-  background: #cbd5e1;
+.checklist li svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.check-icon {
+  color: var(--primary);
+}
+
+.circle-icon {
+  color: #cbd5e1;
 }
 
 .checklist li.done {
   color: var(--text-primary);
-}
-
-.checklist li.done::before {
-  background: var(--primary);
 }
 
 .request-item,
@@ -682,6 +683,15 @@ a {
   height: 42px;
   flex: none;
   background: var(--tertiary);
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  border-radius: 12px;
+}
+
+.alert-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .alert-item span {
