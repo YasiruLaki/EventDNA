@@ -1,0 +1,4 @@
+.axis { font-size: 12px; fill: var(--ink-400); }
+.gridline { stroke: var(--ink-100); stroke-width: 1; }
+.line { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.dot { fill: #fff; stroke-width: 3; }

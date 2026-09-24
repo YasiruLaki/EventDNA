@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings - EventDNA</title>
+  <link rel="stylesheet" href="../dashboard/styles.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="../dashboard/index.html" class="nav-logo">
+          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
+          <a href="../../events/myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../community/community-hub/index.html" class="nav-link">Communities</a>
+          <a href="../myConnections/index.html" class="nav-link">Connections</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <span class="nav-profile-name">Yasiru</span>
+            <i data-lucide="chevron-down" style="width: 16px; height: 16px;"></i>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../onboarding/index.html" class="dropdown-item">Profile</a>
+            <a href="#" class="dropdown-item text-danger">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="settings-shell">
+    <main class="settings-container">
+      
+      <div class="settings-header">
+        <h1>Settings</h1>
+        <p class="settings-subtitle">Manage your account, privacy, and networking preferences.</p>
+      </div>
+
+      <div class="settings-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="settings-sidebar">
+          <div class="sidebar-widget profile-completion">
+            <div class="widget-header">
+              <span>Profile Completion</span>
+              <strong>82%</strong>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width: 82%"></div></div>
+            <p>Complete your profile for better networking recommendations.</p>
+          </div>
+
+          <nav class="settings-nav">
+            <button class="nav-item active" data-target="account">
+              <i data-lucide="user"></i> Account
+            </button>
+            <button class="nav-item" data-target="profile">
+              <i data-lucide="layout-template"></i> Profile
+            </button>
+            <button class="nav-item" data-target="lock">
+              <i data-lucide="lock"></i> Privacy
+            </button>
+            <button class="nav-item" data-target="notifications">
+              <i data-lucide="bell"></i> Notifications
+            </button>
+            <button class="nav-item" data-target="networking">
+              <i data-lucide="users"></i> Networking
+            </button>
+            <button class="nav-item" data-target="events">
+              <i data-lucide="ticket"></i> Events
+            </button>
+            <button class="nav-item" data-target="appearance">
+              <i data-lucide="palette"></i> Appearance
+            </button>
+            <button class="nav-item" data-target="security">
+              <i data-lucide="shield"></i> Security
+            </button>
+            <button class="nav-item" data-target="language">
+              <i data-lucide="globe"></i> Language & Region
+            </button>
+            <button class="nav-item" data-target="devices">
+              <i data-lucide="smartphone"></i> Connected Devices
+            </button>
+            <button class="nav-item" data-target="support">
+              <i data-lucide="help-circle"></i> Help & Support
+            </button>
+            <button class="nav-item text-danger" data-target="danger">
+              <i data-lucide="alert-triangle"></i> Danger Zone
+            </button>
+          </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="settings-content">
+          
+          <!-- 1. Account Settings -->
+          <section id="account" class="settings-tab active">
+            <h2>Account</h2>
+            <p class="tab-desc">Manage basic account information.</p>
+            
+            <div class="settings-card">
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="form-input" value="Yasiru Lakintha">
+              </div>
+              <div class="form-group">
+                <label for="username">Username <span class="optional">(optional)</span></label>
+                <input type="text" id="username" class="form-input" value="yasirulakintha">
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" value="yasiru@example.com" readonly>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number <span class="optional">(optional)</span></label>
+                <input type="tel" id="phone" class="form-input" placeholder="+1 (555) 000-0000">
+              </div>
+              
+              <div class="info-row">
+                <span class="info-label">Date Joined</span>
+                <span class="info-value">October 12, 2023</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Account Type</span>
+                <span class="info-value"><span class="badge badge-primary">Attendee</span></span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Current Workspace</span>
+                <span class="info-value">Personal</span>
+              </div>
+
+              <div class="card-actions">
+                <button class="btn-secondary">Switch Workspace</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. Profile Settings -->
+          <section id="profile" class="settings-tab">
+            <h2>Profile</h2>
+            <p class="tab-desc">Manage your public profile information.</p>
+            
+            <div class="settings-card">
+              <h3>Profile Identity</h3>
+              <div class="photo-section">
+                <div class="avatar-large">
+                  <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80" alt="Profile Photo">
+                </div>
+                <div class="photo-actions">
+                  <button class="btn-secondary">Change Photo</button>
+                  <button class="btn-text text-danger">Remove</button>
+                </div>
+              </div>
+              
+              <div class="cover-section">
+                <h4>Cover Image <span class="optional">(Optional)</span></h4>
+                <div class="cover-preview empty">
+                  <i data-lucide="image"></i>
+                  <span>Upload a cover image</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="bio">Professional Bio</label>
+                <textarea id="bio" class="form-textarea" rows="4" placeholder="Tell people about your experience...">Experienced software engineer passionate about building scalable products and connecting with like-minded innovators.</textarea>
+                <div class="char-count">103 / 300 Characters</div>
+              </div>
+            </div>
+
+            <div class="settings-card mt-4">
+              <h3>Professional Information</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Current Position</label>
+                  <input type="text" class="form-input" value="Senior Developer">
+                </div>
+                <div class="form-group">
+                  <label>Organization / University</label>
+                  <input type="text" class="form-input" value="TechCorp Inc.">
+                </div>
+                <div class="form-group">
+                  <label>Country</label>
+                  <select class="form-input"><option>United States</option><option>Sri Lanka</option></select>
+                </div>
+                <div class="form-group">
+                  <label>City</label>
+                  <input type="text" class="form-input" value="San Francisco">
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card mt-4">
+              <h3>Skills & Interests</h3>
+              <div class="form-group">
+                <label>Skills</label>
+                <div class="chip-container">
+                  <span class="chip">React <i data-lucide="x"></i></span>
+                  <span class="chip">Node.js <i data-lucide="x"></i></span>
+                  <span class="chip">System Architecture <i data-lucide="x"></i></span>
+                  <input type="text" class="chip-input" placeholder="Add skill...">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Networking Goals</label>
+                <div class="chip-container">
+                  <span class="chip chip-outline">Find Collaborators</span>
+                  <span class="chip chip-outline active">Find Mentors</span>
+                  <span class="chip chip-outline">Job Opportunities</span>
+                  <span class="chip chip-outline active">Startup Networking</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. Privacy Settings -->
+          <section id="privacy" class="settings-tab">
+            <h2>Privacy</h2>
+            <p class="tab-desc">Control what others can see about you.</p>
+
+            <div class="settings-card">
+              <h3>Profile Visibility</h3>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="visibility" value="public">
+                  <div class="radio-content">
+                    <strong>Public</strong>
+                    <span>Anyone can view your profile</span>
+                  </div>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="visibility" value="event" checked>
+                  <div class="radio-content">
+                    <strong>Event Participants Only</strong>
+                    <span>Only people in the same event can see you</span>
+                  </div>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="visibility" value="connections">
+                  <div class="radio-content">
+                    <strong>Connections Only</strong>
+                    <span>Only your approved connections can view your profile</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-card mt-4">
+              <h3>Profile Data Display</h3>
+              
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Show Profile Picture</strong>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Show Bio</strong>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Show Skills & Interests</strong>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Show Event History</strong>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-card mt-4">
+              <h3>Discovery</h3>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Allow Search by Email</strong>
+                  <span>Others can find you if they have your exact email</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Allow QR Profile Access</strong>
+                  <span>People can scan your personal QR to view your profile</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section id="notifications" class="settings-tab">
+            <h2>Notifications</h2>
+            <p class="tab-desc">Choose what we notify you about.</p>
+
+            <div class="settings-card">
+              <div class="card-header-toggle">
+                <h3>Email Notifications</h3>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="checkbox-list">
+                <label class="checkbox-item"><input type="checkbox" checked> Event Updates</label>
+                <label class="checkbox-item"><input type="checkbox" checked> Registration Confirmation</label>
+                <label class="checkbox-item"><input type="checkbox" checked> Event Reminders</label>
+                <label class="checkbox-item"><input type="checkbox"> Community Activity</label>
+                <label class="checkbox-item"><input type="checkbox" checked> Connection Requests</label>
+                <label class="checkbox-item"><input type="checkbox"> Weekly Summary</label>
+              </div>
+            </div>
+
+            <div class="settings-card mt-4">
+              <div class="card-header-toggle">
+                <h3>Push Notifications</h3>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="checkbox-list">
+                <label class="checkbox-item"><input type="checkbox" checked> Connection Requests</label>
+                <label class="checkbox-item"><input type="checkbox" checked> New Matches</label>
+                <label class="checkbox-item"><input type="checkbox" checked> Event Announcements</label>
+                <label class="checkbox-item"><input type="checkbox"> Community Posts</label>
+                <label class="checkbox-item"><input type="checkbox" checked> Organizer Messages</label>
+              </div>
+            </div>
+          </section>
+
+          <section id="networking" class="settings-tab">
+            <div class="title-with-badge">
+              <h2>Networking</h2>
+              <span class="badge badge-star"><i data-lucide="star" style="width:12px; height:12px;"></i> EventDNA Exclusive</span>
+            </div>
+            <p class="tab-desc">Optimize your AI matchmaking and connection preferences.</p>
+
+            <div class="networking-readiness">
+              <div class="readiness-header">
+                <strong>Networking Readiness</strong>
+                <span>80%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width: 80%"></div></div>
+              <p>Complete your profile to improve your compatibility score and discover better connections at upcoming events.</p>
+            </div>
+
+            <div class="settings-card mt-4">
+              <h3>AI Matchmaking</h3>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Enable Compatibility Recommendations</strong>
+                  <span>Allow AI to match you with relevant professionals</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Visibility in Recommendations</strong>
+                  <span>Allow others to see you in their match list</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Show Compatibility Percentage</strong>
+                  <span>Display the % match score on connection profiles</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-card mt-4">
+              <h3>Connection Preferences</h3>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <strong>Auto Accept Connections</strong>
+                  <span>Automatically accept incoming connection requests</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              
+              <div class="info-row mt-4">
+                <span class="info-label">Networking Status</span>
+                <span class="info-value text-success"><i data-lucide="check-circle" style="width: 14px; height:14px; margin-right:4px;"></i> Enabled - Available after Event Check-in</span>
+              </div>
+            </div>
+          </section>
+
+          
+          <section id="events" class="settings-tab">
+            <h2>Events</h2><p class="tab-desc">Manage your event preferences.</p>
+            <div class="settings-card">
+              <h3>Travel Distance</h3>
+              <div class="range-slider">
+                <input type="range" min="5" max="100" value="25" class="slider-input">
+                <div class="slider-labels"><span>5km</span><span>25km</span><span>Anywhere</span></div>
+              </div>
+              
+              <h3 class="mt-4">Calendar Sync</h3>
+              <div class="toggle-row">
+                <div class="toggle-info"><strong>Google Calendar</strong></div>
+                <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+            </div>
+          </section>
+
+          <section id="appearance" class="settings-tab">
+            <h2>Appearance</h2><p class="tab-desc">Customize your interface.</p>
+            <div class="settings-card">
+              <h3>Theme</h3>
+              <div class="radio-group row-group">
+                <label class="radio-label box-radio"><input type="radio" name="theme" value="light" checked><span>Light</span></label>
+                <label class="radio-label box-radio disabled"><input type="radio" name="theme" value="dark" disabled><span>Dark (Future)</span></label>
+                <label class="radio-label box-radio"><input type="radio" name="theme" value="system"><span>System</span></label>
+              </div>
+            </div>
+          </section>
+
+          <section id="security" class="settings-tab">
+            <h2>Security</h2><p class="tab-desc">Keep your account safe.</p>
+            <div class="settings-card">
+              <h3>Change Password</h3>
+              <div class="form-group"><input type="password" class="form-input" placeholder="Current Password"></div>
+              <div class="form-group"><input type="password" class="form-input" placeholder="New Password"></div>
+              <button class="btn-secondary">Update Password</button>
+            </div>
+          </section>
+
+          <section id="language" class="settings-tab">
+            <h2>Language & Region</h2><p class="tab-desc">Set your locale preferences.</p>
+            <div class="settings-card">
+              <div class="form-group">
+                <label>Language</label>
+                <select class="form-input"><option>English</option><option>Sinhala</option><option disabled>Tamil (Future)</option></select>
+              </div>
+            </div>
+          </section>
+
+          <section id="devices" class="settings-tab">
+            <h2>Connected Devices</h2><p class="tab-desc">Manage active sessions.</p>
+            <div class="settings-card">
+              <div class="device-item">
+                <div class="device-icon"><i data-lucide="monitor"></i></div>
+                <div class="device-info">
+                  <strong>MacBook Pro - Chrome</strong>
+                  <span class="device-meta text-success">Online · Current Device</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="support" class="settings-tab">
+            <h2>Help & Support</h2><p class="tab-desc">Get assistance and read our policies.</p>
+            <div class="settings-card list-card">
+              <a href="#" class="list-link">FAQs <i data-lucide="external-link"></i></a>
+              <a href="#" class="list-link">Contact Support <i data-lucide="external-link"></i></a>
+              <a href="#" class="list-link">Privacy Policy <i data-lucide="external-link"></i></a>
+            </div>
+          </section>
+
+          <section id="danger" class="settings-tab">
+            <h2 class="text-danger">Danger Zone</h2><p class="tab-desc">Destructive actions for your account.</p>
+            <div class="settings-card danger-card">
+              <div class="danger-row">
+                <div class="danger-info">
+                  <strong>Export My Data</strong>
+                  <p>Download a copy of your connections and event history.</p>
+                </div>
+                <button class="btn-secondary">Export Data</button>
+              </div>
+              <div class="danger-row">
+                <div class="danger-info">
+                  <strong>Deactivate Account</strong>
+                  <p>Temporarily hide your profile and pause notifications.</p>
+                </div>
+                <button class="btn-secondary text-danger">Deactivate</button>
+              </div>
+              <div class="danger-row">
+                <div class="danger-info">
+                  <strong>Delete Account</strong>
+                  <p>Permanently remove your account and all associated data.</p>
+                </div>
+                <button class="btn-danger">Delete Account</button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Sticky Save Bar -->
+  <div class="save-bar" id="saveBar">
+    <div class="save-bar-content">
+      <span>You have unsaved changes.</span>
+      <div class="save-actions">
+        <button class="btn-text" id="discardBtn">Discard</button>
+        <button class="btn-primary" id="saveBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabs = document.querySelectorAll('.settings-tab');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(nav => nav.classList.remove('active'));
+        tabs.forEach(tab => tab.classList.remove('active'));
+        
+        item.classList.add('active');
+        const targetId = item.getAttribute('data-target');
+        document.getElementById(targetId).classList.add('active');
+
+        if(window.innerWidth < 1024) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    });
+
+    const saveBar = document.getElementById('saveBar');
+    const inputs = document.querySelectorAll('input, select, textarea');
+    const discardBtn = document.getElementById('discardBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    let hasChanges = false;
+
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        hasChanges = true;
+        saveBar.classList.add('visible');
+      });
+      if(input.type === 'text' || input.tagName === 'TEXTAREA') {
+        input.addEventListener('input', () => {
+          hasChanges = true;
+          saveBar.classList.add('visible');
+        });
+      }
+    });
+
+    const hideSaveBar = () => {
+      hasChanges = false;
+      saveBar.classList.remove('visible');
+    };
+
+    discardBtn.addEventListener('click', hideSaveBar);
+    saveBtn.addEventListener('click', () => {
+      saveBtn.innerHTML = '<i data-lucide="loader" class="spin"></i> Saving...';
+      lucide.createIcons();
+      setTimeout(() => {
+        saveBtn.innerHTML = 'Save Changes';
+        hideSaveBar();
+      }, 1000);
+    });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attendees · EventDNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/eventdna.css">
+</head>
+<body data-nav="events">
+
+<header class="topbar" data-topbar></header>
+<div data-eventhero="attendees"></div>
+
+<!-- Numbers ------------------------------------------------------------- -->
+<section class="section section--flush-top">
+  <div class="shell">
+    <div class="intro">
+      <h2>Attendees</h2>
+      <p>Everyone registered for this event, and where they are in the journey.</p>
+    </div>
+
+    <div class="grid grid--4">
+      <article class="metric">
+        <div class="metric__label">Registered</div>
+        <div class="metric__value" data-count="312">0</div>
+        <div class="metric__foot">78% of 400 seats</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Checked in</div>
+        <div class="metric__value" data-count="248">0</div>
+        <div class="metric__foot">79.5% attendance</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Waitlist</div>
+        <div class="metric__value" data-count="38">0</div>
+        <div class="metric__foot">promoted on cancellation</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Awaiting approval</div>
+        <div class="metric__value" data-count="4">0</div>
+        <div class="metric__foot"><a href="#list">Review now</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- List ---------------------------------------------------------------- -->
+<section class="section" id="list">
+  <div class="shell">
+    <div class="card">
+
+      <div class="card__headrow">
+        <div>
+          <h3>Attendee list</h3>
+          <p>Showing <span data-table-count="tblAtt">8</span> of 312 · newest first</p>
+        </div>
+        <div class="row">
+          <button class="btn btn--secondary btn--sm" data-toast="Invite links copied">Invite</button>
+          <button class="btn btn--secondary btn--sm" data-export-csv="tblAtt" data-filename="attendees.csv">Export CSV</button>
+          <a class="btn btn--primary btn--sm" href="attendance-view.html">Check-in desk</a>
+        </div>
+      </div>
+
+      <div class="tabletools">
+        <div class="input-group">
+          <span class="input-group__icon" data-icon="search" data-icon-size="19"></span>
+          <input class="input" type="search" placeholder="Search by name or email" data-table-search="tblAtt" aria-label="Search attendees">
+        </div>
+        <select class="select" data-table-filter="tblAtt" data-filter-key="status" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="checkedin">Checked in</option>
+          <option value="registered">Registered</option>
+          <option value="noshow">No-show</option>
+          <option value="waitlist">Waitlist</option>
+        </select>
+      </div>
+
+      <div class="bulkbar" data-bulkbar="tblAtt" hidden>
+        <span><b data-bulk-count>0</b> selected</span>
+        <span class="spacer"></span>
+        <button class="btn btn--soft btn--sm" data-toast="Email queued">Email</button>
+        <button class="btn btn--soft btn--sm" data-toast="Marked as checked in">Mark checked in</button>
+        <button class="btn btn--danger-soft btn--sm" data-modal-open="removeModal">Remove</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="tblAtt" data-sortable>
+          <thead>
+            <tr>
+              <th style="width:44px" data-csv-skip><input type="checkbox" data-select-all="tblAtt" aria-label="Select all attendees"></th>
+              <th class="th-sort">Attendee</th>
+              <th class="th-sort">Registered</th>
+              <th>Status</th>
+              <th class="th-sort">Check-in</th>
+              <th data-csv-skip></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="checkedin">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Sarah Jenkins"></td>
+              <td><div class="person"><span class="avatar avatar--sm">SJ</span><div><div class="person__name">Sarah Jenkins</div><div class="person__sub">Product Designer · Figma</div></div></div></td>
+              <td class="nowrap" data-sort="2026-08-02">Aug 2</td>
+              <td><span class="badge badge--success"><span class="bullet"></span>Checked in</span></td>
+              <td class="nowrap muted">09:12 AM</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--ghost btn--sm" data-modal-open="attModal">View</button></td>
+            </tr>
+            <tr data-status="checkedin">
+              <td data-csv-skip><input type="checkbox" aria-label="Select David Chen"></td>
+              <td><div class="person"><span class="avatar avatar--sm">DC</span><div><div class="person__name">David Chen</div><div class="person__sub">React Developer · Stripe</div></div></div></td>
+              <td class="nowrap" data-sort="2026-08-04">Aug 4</td>
+              <td><span class="badge badge--success"><span class="bullet"></span>Checked in</span></td>
+              <td class="nowrap muted">09:18 AM</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--ghost btn--sm" data-modal-open="attModal">View</button></td>
+            </tr>
+            <tr data-status="registered">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Anusha Perera"></td>
+              <td><div class="person"><span class="avatar avatar--sm">AP</span><div><div class="person__name">Anusha Perera</div><div class="person__sub">ML Engineer · UCSC</div></div></div></td>
+              <td class="nowrap" data-sort="2026-08-09">Aug 9</td>
+              <td><span class="badge badge--info"><span class="bullet"></span>Registered</span></td>
+              <td class="nowrap muted">—</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--ghost btn--sm" data-modal-open="attModal">View</button></td>
+            </tr>
+            <tr data-status="checkedin">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Miguel Kaur"></td>
+              <td><div class="person"><span class="avatar avatar--sm">MK</span><div><div class="person__name">Miguel Kaur</div><div class="person__sub">Founder · Loopline</div></div></div></td>
+              <td class="nowrap" data-sort="2026-08-15">Aug 15</td>
+              <td><span class="badge badge--success"><span class="bullet"></span>Checked in</span></td>
+              <td class="nowrap muted">09:41 AM</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--ghost btn--sm" data-modal-open="attModal">View</button></td>
+            </tr>
+            <tr data-status="noshow">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Rina Tanaka"></td>
+              <td><div class="person"><span class="avatar avatar--sm">RT</span><div><div class="person__name">Rina Tanaka</div><div class="person__sub">Data Scientist · Sony</div></div></div></td>
+              <td class="nowrap" data-sort="2026-08-18">Aug 18</td>
+              <td><span class="badge badge--warning"><span class="bullet"></span>No-show</span></td>
+              <td class="nowrap muted">—</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--ghost btn--sm" data-modal-open="attModal">View</button></td>
+            </tr>
+            <tr data-status="checkedin">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Hasini Dias"></td>
+              <td><div class="person"><span class="avatar avatar--sm">HD</span><div><div class="person__name">Hasini Dias</div><div class="person__sub">UX Researcher · 99X</div></div></div></td>
+              <td class="nowrap" data-sort="2026-08-21">Aug 21</td>
+              <td><span class="badge badge--success"><span class="bullet"></span>Checked in</span></td>
+              <td class="nowrap muted">10:02 AM</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--ghost btn--sm" data-modal-open="attModal">View</button></td>
+            </tr>
+            <tr data-status="waitlist">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Lena Fischer"></td>
+              <td><div class="person"><span class="avatar avatar--sm">LF</span><div><div class="person__name">Lena Fischer</div><div class="person__sub">Solutions Architect · SAP</div></div></div></td>
+              <td class="nowrap" data-sort="2026-10-14">Oct 14</td>
+              <td><span class="badge badge--neutral"><span class="bullet"></span>Waitlist #3</span></td>
+              <td class="nowrap muted">—</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--soft btn--sm" data-toast="Lena Fischer promoted from the waitlist">Promote</button></td>
+            </tr>
+            <tr data-status="waitlist">
+              <td data-csv-skip><input type="checkbox" aria-label="Select Tom Whitaker"></td>
+              <td><div class="person"><span class="avatar avatar--sm">TW</span><div><div class="person__name">Tom Whitaker</div><div class="person__sub">Student · UCSC</div></div></div></td>
+              <td class="nowrap" data-sort="2026-10-16">Oct 16</td>
+              <td><span class="badge badge--neutral"><span class="bullet"></span>Waitlist #4</span></td>
+              <td class="nowrap muted">—</td>
+              <td class="td-actions" data-csv-skip><button class="btn btn--soft btn--sm" data-toast="Tom Whitaker promoted from the waitlist">Promote</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row row--between mt-6">
+        <span class="small muted">1 – 8 of 312</span>
+        <div class="pagination">
+          <button disabled aria-label="Previous page">‹</button>
+          <button class="is-active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button aria-label="Next page">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA ----------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="ctaband ctaband--left">
+      <div>
+        <h2>64 people have not arrived yet</h2>
+        <p>A reminder an hour before the session lifted attendance by 9 points at your last event.</p>
+      </div>
+      <button class="btn btn--white" data-toast="Reminder sent to 64 attendees" data-toast-icon="mail">Send reminder</button>
+    </div>
+  </div>
+</section>
+
+<!-- Attendee modal ------------------------------------------------------- -->
+<div class="modal-scrim" id="attModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="amTitle">
+    <div class="row">
+      <span class="avatar avatar--lg">SJ</span>
+      <div style="flex:1">
+        <h3 id="amTitle">Sarah Jenkins</h3>
+        <p class="small">Product Designer at Figma</p>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <span class="badge badge--success"><span class="bullet"></span>Checked in 09:12 AM</span>
+      <span class="badge badge--brand">Profile 100%</span>
+    </div>
+
+    <div class="kv mt-5">
+      <div class="kv__row"><span class="kv__k">Email</span><span class="kv__v">sarah.j@figma.com</span></div>
+      <div class="kv__row"><span class="kv__k">Registered</span><span class="kv__v">Aug 2, 2026</span></div>
+      <div class="kv__row"><span class="kv__k">Connections</span><span class="kv__v">7 accepted · 2 pending</span></div>
+    </div>
+
+    <div class="row mt-5">
+      <span class="chip">Product design</span>
+      <span class="chip">Design systems</span>
+      <span class="chip">AI</span>
+    </div>
+
+    <div class="modal__foot">
+      <button class="btn btn--danger-soft" data-modal-close data-toast="Registration removed" data-toast-icon="trash">Remove</button>
+      <button class="btn btn--secondary" data-modal-close data-toast="Event pass resent">Resend pass</button>
+      <button class="btn btn--primary" data-modal-close>Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-scrim" id="removeModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rmTitle">
+    <span class="tile tile--danger" data-icon="alert" data-icon-size="24"></span>
+    <h3 id="rmTitle" class="mt-4">Remove selected registrations?</h3>
+    <p>Their passes are voided and their QR codes stop working. Seats return to the pool.</p>
+    <div class="modal__foot">
+      <button class="btn btn--ghost" data-modal-close>Keep</button>
+      <button class="btn btn--danger" data-modal-close data-toast="Registrations removed" data-toast-icon="trash">Remove</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/mock-data.js"></script>
+<script src="assets/js/eventdna.js"></script>
+</body>
+</html>

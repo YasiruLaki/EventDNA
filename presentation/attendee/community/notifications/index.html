@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications — EventDNA</title>
+<link rel="stylesheet" href="../../dashboard/styles.css" />
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a href="../../dashboard/index.html" class="nav-logo">
+        <img src="../../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+      </a>
+      <div class="nav-links">
+        <a href="../../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
+        <a href="../../../events/myEvents/index.html" class="nav-link">My Events</a>
+        <a href="../community-hub/index.html" class="nav-link">Communities</a>
+        <a href="../../myConnections/index.html" class="nav-link">Connections</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-profile-menu">
+        <button class="nav-profile-btn">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Amara Ruwan" class="nav-avatar">
+          <span class="nav-profile-name">Amara Ruwan</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="../../dashboard/index.html" class="dropdown-item">Dashboard</a>
+          <a href="#" class="dropdown-item">Settings</a>
+          <a href="../../../events/ExploreEvents/index.html" class="dropdown-item text-danger">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="dashboard-shell">
+  <div class="container" style="max-width:800px; margin:0 auto;">
+    <div class="hero-row" style="align-items:center;">
+      <div class="hero-title">
+        <h1>Notifications</h1>
+        <p>Connection requests, event updates, and community activity land here.</p>
+      </div>
+      <button type="button" class="btn-secondary btn-sm" id="mark-all-read">Mark all as read</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:2rem;">
+
+    <div class="section-title-row">
+      <h2>Today</h2>
+    </div>
+
+    <div class="card notif-list">
+      <div class="notif-item unread">
+        <div class="notif-icon info">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.3" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.7 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="notif-body">
+          <p class="notif-text"><strong>Ravindu Lakshan</strong> sent you a connection request.</p>
+          <p class="notif-meta">10 minutes ago</p>
+        </div>
+        <span class="notif-unread-dot"></span>
+      </div>
+
+      <div class="notif-item unread">
+        <div class="notif-icon success">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="notif-body">
+          <p class="notif-text"><strong>Sanduni Dias</strong> accepted your connection request.</p>
+          <p class="notif-meta">45 minutes ago</p>
+        </div>
+        <span class="notif-unread-dot"></span>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon neutral">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="notif-body">
+          <p class="notif-text"><strong>Nadia Kumari</strong> replied to your post in AI &amp; Robotics Summit 2026.</p>
+          <p class="notif-meta">2 hours ago</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title-row">
+      <h2>Earlier</h2>
+    </div>
+
+    <div class="card notif-list">
+      <div class="notif-item">
+        <div class="notif-icon warning">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="notif-body">
+          <p class="notif-text">Registration for <strong>Product Design Meetup</strong> closes tomorrow at 5 PM.</p>
+          <p class="notif-meta">Yesterday</p>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon danger">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="8" x2="12" y2="12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="notif-body">
+          <p class="notif-text"><strong>Cybersecurity Conclave</strong> has been rescheduled to Sep 2, 2026.</p>
+          <p class="notif-meta">2 days ago</p>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon neutral">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="notif-body">
+          <p class="notif-text">Organizer posted an announcement in <strong>Startup Founders Circle</strong>.</p>
+          <p class="notif-meta">3 days ago</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.getElementById('mark-all-read')?.addEventListener('click', () => {
+    document.querySelectorAll('.notif-item.unread').forEach((item) => {
+      item.classList.remove('unread');
+      item.querySelector('.notif-unread-dot')?.remove();
+    });
+  });
+</script>
+
+</body>
+</html>
