@@ -1,0 +1,14 @@
+.sheet {
+  background: #fff; border: 1px solid var(--ink-200); border-radius: 6px;
+  aspect-ratio: 1 / 1.414; padding: 26px 24px; font-size: 9px; line-height: 1.55;
+  color: var(--ink-600); overflow: hidden; box-shadow: var(--sh-card);
+}
+.sheet__rule { height: 1px; background: var(--ink-100); margin: 11px 0; }
+.sheet__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.sheet__kpi { background: var(--surface-soft); border-radius: 4px; padding: 8px 6px; }
+.sheet__kpi b { display: block; font-size: 14px; color: var(--ink-900); }
+.sheet__bars { display: flex; align-items: flex-end; gap: 5px; height: 52px; margin-top: 8px; }
+.sheet__bars i { flex: 1; background: var(--brand-400); border-radius: 2px 2px 0 0; }
+.sheet table { width: 100%; border-collapse: collapse; font-size: 8px; margin-top: 6px; }
+.sheet th, .sheet td { text-align: left; padding: 4px 2px; border-bottom: 1px solid var(--ink-100); }
+.sheet th { color: var(--ink-400); text-transform: uppercase; letter-spacing: .05em; }

@@ -1,0 +1,286 @@
+@import url('globals.css');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--text-primary);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ---------- Header ---------- */
+.pass-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pass-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+
+.pass-header p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ---------- Top grid ---------- */
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+/* Left: pass card */
+.pass-card {
+  position: relative;
+  background: var(--surface-color);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.registered-pill {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--primary);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+}
+
+.registered-pill svg {
+  width: 12px;
+  height: 12px;
+}
+
+.pass-qr {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-md);
+  background: var(--tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.pass-qr svg {
+  width: 100px;
+  height: 100px;
+  color: var(--secondary);
+}
+
+.pass-scan-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.pass-id {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+}
+
+/* Right column */
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.info-card {
+  background: var(--surface-color);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.info-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.55rem;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-row svg {
+  width: 15px;
+  height: 15px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* Calendar card */
+.calendar-card .cal-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.85rem;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.cal-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--primary-tint);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cal-btn:hover {
+  opacity: 0.85;
+}
+
+.cal-btn svg {
+  width: 14px;
+  height: 14px;
+  color: var(--primary);
+}
+
+.share-btn {
+  width: 100%;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem;
+  font-size: 0.9rem;
+}
+
+.share-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Access Codes section ---------- */
+.access-card {
+  background: var(--surface-color);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.access-card h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.access-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.access-tile {
+  border-radius: var(--radius-md);
+  padding: 2rem 1.25rem;
+  text-align: center;
+}
+
+.access-tile.available {
+  background: var(--primary-tint);
+}
+
+.access-tile.locked {
+  background: var(--tertiary);
+}
+
+.access-tile-icon {
+  margin-bottom: 0.85rem;
+}
+
+.access-tile-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.access-tile.available .access-tile-icon svg {
+  color: var(--primary);
+}
+
+.access-tile.locked .access-tile-icon svg {
+  color: var(--text-tertiary);
+}
+
+.access-tile-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.access-tile.locked .access-tile-title {
+  color: var(--text-secondary);
+}
+
+.access-tile-sub {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 680px) {
+  .top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .access-grid {
+    grid-template-columns: 1fr;
+  }
+}
