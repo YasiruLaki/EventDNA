@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Check-in · EventDNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/eventdna.css">
+<link rel="stylesheet" href="attendance-view.css">
+</head>
+<body data-nav="events">
+
+<header class="topbar" data-topbar></header>
+<div data-eventhero="attendance"></div>
+
+<!-- Status -------------------------------------------------------------- -->
+<section class="section section--flush-top">
+  <div class="shell">
+    <div class="intro">
+      <h2>Check-in desk</h2>
+      <p>Day 1 · Saturday, Oct 24 · the gate has been open since 08:30.</p>
+    </div>
+
+    <div class="grid grid--4">
+      <article class="metric metric--accent">
+        <div class="metric__label">Checked in</div>
+        <div class="metric__value"><span id="kpiIn" data-count="248">0</span></div>
+        <div class="metric__foot">of 312 registered</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Inside now</div>
+        <div class="metric__value" data-count="231">0</div>
+        <div class="metric__foot">17 have checked out</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Not arrived</div>
+        <div class="metric__value" data-count="64">0</div>
+        <div class="metric__foot">20.5% of registrations</div>
+      </article>
+      <article class="metric">
+        <div class="metric__label">Failed scans</div>
+        <div class="metric__value" data-count="6">0</div>
+        <div class="metric__foot">invalid or reused tokens</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Scanner ------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="grid grid--split">
+
+      <div class="card">
+        <div class="card__headrow">
+          <div>
+            <h3>Scan a pass</h3>
+            <p>Point the camera at the attendee's QR code.</p>
+          </div>
+          <span class="badge badge--success"><span class="bullet"></span>Gate A online</span>
+        </div>
+
+        <div class="grid grid--2">
+          <div>
+            <div class="scanner">
+              <div class="scanner__frame"><span></span><span></span><span></span><span></span></div>
+              <div class="scanner__beam"></div>
+              <div class="scanner__hint">Waiting for a code</div>
+            </div>
+            <button class="btn btn--primary btn--block mt-4" id="simScan">Simulate a scan</button>
+          </div>
+
+          <div class="stack stack--md">
+            <div class="field">
+              <label class="label" for="lookup">Manual lookup</label>
+              <div class="input-group">
+                <span class="input-group__icon" data-icon="search" data-icon-size="19"></span>
+                <input class="input" id="lookup" placeholder="Name or ticket ID">
+              </div>
+              <span class="hint">Use this when a pass will not scan. Every manual check-in is logged.</span>
+            </div>
+
+            <div class="notice notice--success">
+              <span data-icon="checkcirc" data-icon-size="22"></span>
+              <div><b>Accepted</b>Hasini Dias · 10:02 AM · Gate A</div>
+            </div>
+
+            <div class="notice notice--danger">
+              <span data-icon="xcirc" data-icon-size="22"></span>
+              <div><b>Token already used</b>ATT-000112 checked in at 09:26 AM.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card center">
+        <h3>Attendance rate</h3>
+        <div class="ringwrap mt-5">
+          <svg class="ring" width="190" height="190" viewBox="0 0 190 190" role="img" aria-label="79.5 percent attendance">
+            <circle class="ring__bg" cx="95" cy="95" r="80" fill="none" stroke-width="16"></circle>
+            <circle class="ring__fg" cx="95" cy="95" r="80" fill="none" stroke-width="16" data-ring="79.5"></circle>
+          </svg>
+          <span class="ringwrap__label"><b>79.5%</b><span>248 of 312</span></span>
+        </div>
+
+        <hr class="rule mt-5">
+
+        <div class="hbars mt-5" style="text-align:left">
+          <div>
+            <div class="hbar__top"><span class="hbar__label">Gate A</span><span class="hbar__value">168</span></div>
+            <div class="hbar__track"><div class="hbar__fill" data-fill-w="68"></div></div>
+          </div>
+          <div>
+            <div class="hbar__top"><span class="hbar__label">Gate B</span><span class="hbar__value">69</span></div>
+            <div class="hbar__track"><div class="hbar__fill" style="background:var(--c2)" data-fill-w="28"></div></div>
+          </div>
+          <div>
+            <div class="hbar__top"><span class="hbar__label">Manual desk</span><span class="hbar__value">11</span></div>
+            <div class="hbar__track"><div class="hbar__fill" style="background:var(--c3)" data-fill-w="5"></div></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Live feed ----------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="card">
+      <div class="card__headrow">
+        <div>
+          <h3>Live feed</h3>
+          <p>Newest first · updates as scans come in.</p>
+        </div>
+        <button class="btn btn--secondary btn--sm" data-export-csv="tblCheckins" data-filename="checkin-log-day1.csv">Download log</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="tblCheckins" data-sortable>
+          <thead>
+            <tr>
+              <th class="th-sort">Time</th>
+              <th>Attendee</th>
+              <th>Gate</th>
+              <th>Method</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="feedBody">
+            <tr class="feed__row"><td class="mono nowrap">10:02</td><td><div class="person"><span class="avatar avatar--sm">HD</span><span class="person__name">Hasini Dias</span></div></td><td>Gate A</td><td>QR scan</td><td><span class="badge badge--success"><span class="bullet"></span>Accepted</span></td></tr>
+            <tr class="feed__row"><td class="mono nowrap">09:58</td><td><div class="person"><span class="avatar avatar--sm" style="background:var(--danger-50);color:var(--danger-700)">?</span><span class="person__name">Unknown token</span></div></td><td>Gate A</td><td>QR scan</td><td><span class="badge badge--danger"><span class="bullet"></span>Reused</span></td></tr>
+            <tr class="feed__row"><td class="mono nowrap">09:54</td><td><div class="person"><span class="avatar avatar--sm">JO</span><span class="person__name">Jayden Osei</span></div></td><td>Gate B</td><td>QR scan</td><td><span class="badge badge--success"><span class="bullet"></span>Accepted</span></td></tr>
+            <tr class="feed__row"><td class="mono nowrap">09:49</td><td><div class="person"><span class="avatar avatar--sm">MK</span><span class="person__name">Miguel Kaur</span></div></td><td>Gate A</td><td>Manual</td><td><span class="badge badge--info"><span class="bullet"></span>Manual</span></td></tr>
+            <tr class="feed__row"><td class="mono nowrap">09:41</td><td><div class="person"><span class="avatar avatar--sm">LB</span><span class="person__name">Laura Bianchi</span></div></td><td>Gate A</td><td>QR scan</td><td><span class="badge badge--success"><span class="bullet"></span>Accepted</span></td></tr>
+            <tr class="feed__row"><td class="mono nowrap">09:33</td><td><div class="person"><span class="avatar avatar--sm">DC</span><span class="person__name">David Chen</span></div></td><td>Gate B</td><td>QR scan</td><td><span class="badge badge--success"><span class="bullet"></span>Accepted</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Arrivals ------------------------------------------------------------ -->
+<section class="section">
+  <div class="shell">
+    <div class="intro">
+      <h2>Arrivals by hour</h2>
+      <p>The rush was 09:00 – 09:30, with 84 scans in thirty minutes.</p>
+    </div>
+
+    <div class="card">
+      <div class="bars">
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar" style="width:34px" data-bar-h="14"></div></div><div class="bars__x">08:30</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar" style="width:34px" data-bar-h="46"></div></div><div class="bars__x">09:00</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar" style="width:34px" data-bar-h="100"></div></div><div class="bars__x">09:30</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar" style="width:34px" data-bar-h="62"></div></div><div class="bars__x">10:00</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar bars__bar--2" style="width:34px" data-bar-h="24"></div></div><div class="bars__x">10:30</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar bars__bar--2" style="width:34px" data-bar-h="12"></div></div><div class="bars__x">11:00</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar bars__bar--2" style="width:34px" data-bar-h="6"></div></div><div class="bars__x">11:30</div></div>
+        <div class="bars__col"><div class="bars__stack"><div class="bars__bar bars__bar--2" style="width:34px" data-bar-h="3"></div></div><div class="bars__x">12:00</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA ----------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="ctaband">
+      <h2>Check-in unlocks networking</h2>
+      <p>Matching, personal QR profiles and the community hub become available to an attendee only after a successful scan.</p>
+      <a class="btn btn--white btn--lg" href="analytics.html">See the impact</a>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/mock-data.js"></script>
+<script src="assets/js/eventdna.js"></script>
+<script>
+/* Scan simulation — demonstrates the live feed during the demo. */
+(function () {
+  var people = [['Nadia Silva','NS'],['Owen Bailey','OB'],['Fatima Noor','FN'],['Ravi Shankar','RS'],['Elena Popov','EP']];
+  var i = 0, count = 248;
+  var btn  = document.getElementById('simScan');
+  var body = document.getElementById('feedBody');
+  var kpi  = document.getElementById('kpiIn');
+
+  btn.addEventListener('click', function () {
+    var p = people[i % people.length]; i++;
+    var now = new Date();
+    var t = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    var tr = document.createElement('tr');
+    tr.className = 'feed__row';
+    tr.innerHTML =
+      '<td class="mono nowrap">' + t + '</td>' +
+      '<td><div class="person"><span class="avatar avatar--sm">' + p[1] + '</span><span class="person__name">' + p[0] + '</span></div></td>' +
+      '<td>Gate A</td><td>QR scan</td>' +
+      '<td><span class="badge badge--success"><span class="bullet"></span>Accepted</span></td>';
+    body.insertBefore(tr, body.firstChild);
+    count++;
+    kpi.textContent = count.toLocaleString();
+    ED.toast(p[0] + ' checked in', 'usercheck');
+  });
+})();
+</script>
+</body>
+</html>

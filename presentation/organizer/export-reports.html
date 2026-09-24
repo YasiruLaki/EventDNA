@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports · EventDNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/eventdna.css">
+<link rel="stylesheet" href="export-reports.css">
+</head>
+<body data-nav="reports">
+
+<header class="topbar" data-topbar></header>
+<div data-eventhero="reports"></div>
+
+<!-- Pick a report ------------------------------------------------------- -->
+<section class="section section--flush-top">
+  <div class="shell">
+    <div class="intro">
+      <h2>Export a report</h2>
+      <p>Pick what you need. Every report pulls live figures the moment you export.</p>
+    </div>
+
+    <div class="grid grid--3" data-featuregroup>
+      <article class="feature feature--sel" role="button" tabindex="0">
+        <span class="tile" data-icon="users" data-icon-size="24"></span>
+        <h3>Attendee register</h3>
+        <p>Every registration with contact details, profile strength and check-in time. 312 rows.</p>
+      </article>
+      <article class="feature" role="button" tabindex="0">
+        <span class="tile" data-icon="qr" data-icon-size="24"></span>
+        <h3>Attendance log</h3>
+        <p>Timestamped scan log per gate, including rejected and manual check-ins. 265 rows.</p>
+      </article>
+      <article class="feature" role="button" tabindex="0">
+        <span class="tile" data-icon="chart" data-icon-size="24"></span>
+        <h3>Full event report</h3>
+        <p>Everything above, plus charts and an executive summary. Best as a PDF.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Build it ------------------------------------------------------------ -->
+<section class="section">
+  <div class="shell">
+    <div class="grid grid--split">
+
+      <div class="stack" style="gap:40px">
+
+        <section class="card">
+          <div class="card__head"><h3>Scope</h3><p>Narrow the rows before exporting.</p></div>
+          <div class="formgrid">
+            <div class="formgrid formgrid--2">
+              <div class="field"><label class="label" for="from">From</label><input class="input" id="from" type="date" value="2026-08-01"></div>
+              <div class="field"><label class="label" for="to">To</label><input class="input" id="to" type="date" value="2026-10-26"></div>
+            </div>
+            <div class="formgrid formgrid--2">
+              <div class="field">
+                <label class="label" for="st">Attendee status</label>
+                <select class="select" id="st"><option>All statuses</option><option>Checked in only</option><option>No-shows only</option><option>Waitlist only</option></select>
+              </div>
+              <div class="field">
+                <label class="label" for="dy">Event day</label>
+                <select class="select" id="dy"><option>All three days</option><option>Day 1 — Oct 24</option><option>Day 2 — Oct 25</option><option>Day 3 — Oct 26</option></select>
+              </div>
+            </div>
+            <div class="notice notice--info">
+              <span data-icon="info" data-icon-size="22"></span>
+              <div><b>312 rows match</b>Roughly 46 KB as CSV, or 9 pages as PDF.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card__head"><h3>Columns</h3><p>Nine of fourteen selected.</p></div>
+          <div class="formgrid formgrid--2" style="gap:18px 32px">
+            <label class="check"><input type="checkbox" checked>Attendee ID</label>
+            <label class="check"><input type="checkbox" checked>Full name</label>
+            <label class="check"><input type="checkbox" checked>Email address</label>
+            <label class="check"><input type="checkbox">Phone number</label>
+            <label class="check"><input type="checkbox" checked>Job title</label>
+            <label class="check"><input type="checkbox" checked>Organisation</label>
+            <label class="check"><input type="checkbox" checked>Registration date</label>
+            <label class="check"><input type="checkbox" checked>Status</label>
+            <label class="check"><input type="checkbox" checked>Check-in time</label>
+            <label class="check"><input type="checkbox">Check-in gate</label>
+            <label class="check"><input type="checkbox" checked>Profile completeness</label>
+            <label class="check"><input type="checkbox">Interest tags</label>
+          </div>
+
+          <div class="notice notice--warning mt-6">
+            <span data-icon="lock" data-icon-size="22"></span>
+            <div><b>Personal data notice</b>Exports containing email or phone data are logged against your organizer account.</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card__head"><h3>Format</h3><p>CSV downloads instantly; PDF is rendered server-side.</p></div>
+
+          <div class="segment mb-5" data-segment data-segment-target="fmt">
+            <button class="is-active" data-value="csv">CSV</button>
+            <button data-value="pdf">PDF</button>
+            <button data-value="both">Both</button>
+          </div>
+
+          <div data-segment-panel="fmt" data-value="csv" class="formgrid">
+            <div class="formgrid formgrid--2">
+              <div class="field"><label class="label" for="dl">Delimiter</label><select class="select" id="dl"><option>Comma ( , )</option><option>Semicolon ( ; )</option><option>Tab</option></select></div>
+              <div class="field"><label class="label" for="enc">Encoding</label><select class="select" id="enc"><option>UTF-8 with BOM</option><option>UTF-8</option></select></div>
+            </div>
+            <div class="switchrow">
+              <div class="switchrow__text"><b>Include a header row</b><span>Column names on the first line.</span></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Include a header row</span></label>
+            </div>
+          </div>
+
+          <div data-segment-panel="fmt" data-value="pdf" class="formgrid" hidden>
+            <div class="formgrid formgrid--2">
+              <div class="field"><label class="label" for="ps">Page size</label><select class="select" id="ps"><option>A4 portrait</option><option>A4 landscape</option><option>Letter</option></select></div>
+              <div class="field"><label class="label" for="tpl">Template</label><select class="select" id="tpl"><option>EventDNA branded</option><option>Plain</option></select></div>
+            </div>
+            <div class="switchrow">
+              <div class="switchrow__text"><b>Include charts</b><span>Adds the summary graphics to page one.</span></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch__track"></span><span class="sr-only">Include charts</span></label>
+            </div>
+          </div>
+
+          <div data-segment-panel="fmt" data-value="both" hidden>
+            <div class="notice notice--info"><span data-icon="info" data-icon-size="22"></span><div>Both files are bundled into a single ZIP download.</div></div>
+          </div>
+
+          <div class="field mt-5">
+            <label class="label" for="fn">File name</label>
+            <input class="input" id="fn" value="eventdna_attendee-register">
+          </div>
+        </section>
+      </div>
+
+      <!-- preview -->
+      <aside class="card">
+        <div class="card__head"><h3>Preview</h3><p>Page 1 of 9 · A4 portrait.</p></div>
+
+        <div class="sheet">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <b style="color:var(--brand-600);font-size:11px">EventDNA</b>
+            <span style="font-size:8px;color:var(--ink-400)">30 Jul 2026</span>
+          </div>
+          <div class="sheet__rule"></div>
+          <b style="font-size:13px;color:var(--ink-900)">Attendee register</b>
+          <div style="font-size:8px;color:var(--ink-400)">AI Innovation Summit 2026 · EVT-2026-0041</div>
+          <div class="sheet__rule"></div>
+          <div class="sheet__kpis">
+            <div class="sheet__kpi">Registered<b>312</b></div>
+            <div class="sheet__kpi">Checked in<b>248</b></div>
+            <div class="sheet__kpi">Rate<b>79.5%</b></div>
+            <div class="sheet__kpi">Connections<b>187</b></div>
+          </div>
+          <div class="sheet__rule"></div>
+          <b style="color:var(--ink-700)">Registrations over time</b>
+          <div class="sheet__bars">
+            <i style="height:24%"></i><i style="height:36%"></i><i style="height:32%"></i><i style="height:50%"></i>
+            <i style="height:58%"></i><i style="height:52%"></i><i style="height:70%"></i><i style="height:80%"></i>
+            <i style="height:74%"></i><i style="height:90%"></i><i style="height:96%"></i><i style="height:100%"></i>
+          </div>
+          <div class="sheet__rule"></div>
+          <b style="color:var(--ink-700)">Register</b>
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Org</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>000184</td><td>Sarah Jenkins</td><td>Figma</td><td>Checked in</td></tr>
+              <tr><td>000141</td><td>David Chen</td><td>Stripe</td><td>Checked in</td></tr>
+              <tr><td>000152</td><td>Anusha Perera</td><td>UCSC</td><td>Registered</td></tr>
+              <tr><td>000165</td><td>Miguel Kaur</td><td>Loopline</td><td>Checked in</td></tr>
+              <tr><td>000171</td><td>Rina Tanaka</td><td>Sony</td><td>No-show</td></tr>
+              <tr><td>000191</td><td>Hasini Dias</td><td>99X</td><td>Checked in</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="kv mt-6">
+          <div class="kv__row"><span class="kv__k">Rows</span><span class="kv__v">312</span></div>
+          <div class="kv__row"><span class="kv__k">Columns</span><span class="kv__v">9 of 14</span></div>
+          <div class="kv__row"><span class="kv__k">Size</span><span class="kv__v">46 KB</span></div>
+        </div>
+
+        <button class="btn btn--primary btn--block mt-5" data-export-csv="tblExport" data-filename="eventdna_attendee-register.csv">Generate &amp; download</button>
+        <button class="btn btn--ghost btn--block mt-2" data-print>Print preview</button>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Data preview -------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="intro">
+      <h2>What lands in the file</h2>
+      <p>The first six of 312 rows, exactly as exported.</p>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="table" id="tblExport">
+          <thead>
+            <tr><th>attendee_id</th><th>full_name</th><th>email</th><th>organisation</th><th>status</th><th>checked_in_at</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">ATT-000184</td><td class="t-strong">Sarah Jenkins</td><td class="muted">sarah.j@figma.com</td><td>Figma</td><td>checked_in</td><td class="mono">2026-10-24 09:12</td></tr>
+            <tr><td class="mono">ATT-000141</td><td class="t-strong">David Chen</td><td class="muted">d.chen@stripe.com</td><td>Stripe</td><td>checked_in</td><td class="mono">2026-10-24 09:18</td></tr>
+            <tr><td class="mono">ATT-000152</td><td class="t-strong">Anusha Perera</td><td class="muted">anusha@ucsc.cmb.ac.lk</td><td>UCSC</td><td>registered</td><td class="mono">—</td></tr>
+            <tr><td class="mono">ATT-000165</td><td class="t-strong">Miguel Kaur</td><td class="muted">miguel@loopline.io</td><td>Loopline</td><td>checked_in</td><td class="mono">2026-10-24 09:41</td></tr>
+            <tr><td class="mono">ATT-000171</td><td class="t-strong">Rina Tanaka</td><td class="muted">r.tanaka@sony.co.jp</td><td>Sony</td><td>no_show</td><td class="mono">—</td></tr>
+            <tr><td class="mono">ATT-000191</td><td class="t-strong">Hasini Dias</td><td class="muted">hasini@99x.io</td><td>99X</td><td>checked_in</td><td class="mono">2026-10-24 10:02</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- History ------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="card">
+      <div class="card__head"><h3>Recent exports</h3><p>Files are kept for 30 days.</p></div>
+      <ul class="list">
+        <li class="list__item">
+          <span class="tile tile--sm tile--success" data-icon="sheet" data-icon-size="20"></span>
+          <div style="flex:1"><div class="list__title">attendee-register_day1.csv</div><div class="list__sub">Today · 08:41 · 44 KB</div></div>
+          <button class="btn btn--ghost btn--sm" data-toast="Download started" data-toast-icon="download">Download</button>
+        </li>
+        <li class="list__item">
+          <span class="tile tile--sm tile--danger" data-icon="file" data-icon-size="20"></span>
+          <div style="flex:1"><div class="list__title">full-event-report.pdf</div><div class="list__sub">Yesterday · 21:07 · 1.8 MB</div></div>
+          <button class="btn btn--ghost btn--sm" data-toast="Download started" data-toast-icon="download">Download</button>
+        </li>
+        <li class="list__item">
+          <span class="tile tile--sm tile--success" data-icon="sheet" data-icon-size="20"></span>
+          <div style="flex:1"><div class="list__title">checkin-log.csv</div><div class="list__sub">Oct 24 · 12:15 · 28 KB</div></div>
+          <button class="btn btn--ghost btn--sm" data-toast="Download started" data-toast-icon="download">Download</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA ----------------------------------------------------------------- -->
+<section class="section">
+  <div class="shell">
+    <div class="ctaband">
+      <h2>Schedule it instead</h2>
+      <p>Have this report emailed to you automatically after each event day closes.</p>
+      <button class="btn btn--white btn--lg" data-toast="Scheduled — emailed daily at 20:00" data-toast-icon="clock">Schedule report</button>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/mock-data.js"></script>
+<script src="assets/js/eventdna.js"></script>
+</body>
+</html>
