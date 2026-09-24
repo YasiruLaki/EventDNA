@@ -42,14 +42,14 @@
     
     <!-- Hero Row -->
     <div class="hero-row">
-      <div class="hero-title">
-        <h1>My Connections</h1>
-        <p>Your professional network built through EventDNA.</p>
+      <div class="hero-copy">
+        <h1 class="page-title">My Connections</h1>
+        <p class="supporting-copy">Your professional network built through EventDNA.</p>
       </div>
     </div>
 
     <!-- Stats -->
-    <div class="stats-grid">
+    <div class="stats-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 600px;">
       <div class="stat-card">
         <div class="stat-num">46</div>
         <div class="stat-label">Total Connections</div>
@@ -58,21 +58,12 @@
         <div class="stat-num">4</div>
         <div class="stat-label">Pending Requests</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num">8</div>
-        <div class="stat-label">Events Networked</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">12</div>
-        <div class="stat-label">Communities Shared</div>
-      </div>
     </div>
 
     <!-- Tabs & Toolbar -->
     <div class="connections-control-bar">
       <div class="tabs">
-        <span class="tab active">All Connections</span>
-        <span class="tab">Pending</span>
+        <span class="tab active">Connections</span>
         <span class="tab">Received</span>
         <span class="tab">Sent</span>
       </div>
@@ -82,120 +73,77 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <input type="text" placeholder="Search people...">
         </div>
-        <button class="btn-secondary toolbar-btn">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          Filters
-        </button>
       </div>
     </div>
 
     <!-- Connection cards -->
     <div class="connections-grid">
 
-      <div class="person-card">
-        <div class="person-top">
-          <div class="avatar avatar-1 online">ER</div>
-          <div>
-            <div class="person-name">Elena Rostova</div>
-            <div class="person-role">Product Manager at TechFlow</div>
-            <div class="person-school">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5" stroke="currentColor" stroke-width="1.4"/></svg>
-              Stanford University
-            </div>
-          </div>
-        </div>
-
-        <div class="person-stats">
-          <div class="stat-block">
-            <span class="stat-tiny-label">Compatibility</span>
-            <span class="stat-tiny-value compat-value">94%</span>
-          </div>
-          <div class="stat-block">
-            <span class="stat-tiny-label">Connected Since</span>
-            <span class="stat-tiny-value">Oct 12, 2023</span>
-          </div>
-        </div>
-
-        <div class="tag-row">
-          <span class="tag">AI</span>
-          <span class="tag">Product Strategy</span>
-          <span class="tag">FinTech</span>
-        </div>
-
-        <div class="person-actions">
-          <a href="#" class="btn-primary w-full">View Profile</a>
-          <a href="#" class="btn-secondary w-full">Message</a>
-        </div>
-      </div>
-
+      <!-- Established Connection -->
       <div class="person-card">
         <div class="person-top">
           <div class="avatar avatar-2 online">SJ</div>
           <div>
             <div class="person-name">Sarah Jenkins</div>
-            <div class="person-role">Lead Researcher at BioGen</div>
-            <div class="person-school">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5" stroke="currentColor" stroke-width="1.4"/></svg>
-              MIT
-            </div>
+            <div class="person-role">Lead Researcher<br>BioGen</div>
           </div>
         </div>
 
-        <div class="person-stats">
-          <div class="stat-block">
-            <span class="stat-tiny-label">Compatibility</span>
-            <span class="stat-tiny-value compat-value">88%</span>
+        <div class="person-stats" style="margin-bottom: 1.25rem;">
+          <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
+            <span class="stat-tiny-label">Connected since</span>
+            <span class="stat-tiny-value" style="font-weight: 600;">Nov 05, 2026</span>
           </div>
-          <div class="stat-block">
-            <span class="stat-tiny-label">Connected Since</span>
-            <span class="stat-tiny-value">Nov 05, 2023</span>
-          </div>
-        </div>
-
-        <div class="tag-row">
-          <span class="tag">Medicine</span>
-          <span class="tag">Research</span>
-          <span class="tag">Biotech</span>
         </div>
 
         <div class="person-actions">
           <a href="#" class="btn-primary w-full">View Profile</a>
-          <a href="#" class="btn-secondary w-full">Message</a>
+          <button class="btn-secondary w-full">Remove</button>
         </div>
       </div>
 
+      <!-- Received Request -->
       <div class="person-card">
         <div class="person-top">
           <div class="avatar avatar-3">JD</div>
           <div>
             <div class="person-name">James Doe</div>
-            <div class="person-role">Software Engineer at CloudSync</div>
-            <div class="person-school">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5" stroke="currentColor" stroke-width="1.4"/></svg>
-              Univ. of Washington
-            </div>
+            <div class="person-role">Software Engineer<br>CloudSync</div>
           </div>
         </div>
 
-        <div class="person-stats">
-          <div class="stat-block">
-            <span class="stat-tiny-label">Compatibility</span>
-            <span class="stat-tiny-value compat-value">76%</span>
-          </div>
-          <div class="stat-block">
-            <span class="stat-tiny-label">Connected Since</span>
-            <span class="stat-tiny-value">Dec 01, 2023</span>
+        <div class="person-stats" style="margin-bottom: 1.25rem;">
+          <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
+            <span class="stat-tiny-value" style="color: var(--text-primary); font-weight: 500;">Wants to connect with you</span>
           </div>
         </div>
 
-        <div class="tag-row">
-          <span class="tag">Cloud</span>
-          <span class="tag">DevOps</span>
+        <div class="person-actions">
+          <button class="btn-primary w-full">Accept</button>
+          <button class="btn-secondary w-full">Reject</button>
+        </div>
+        <a href="#" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary); font-size: 0.85rem; font-weight: 600; text-decoration: none;">View Profile</a>
+      </div>
+
+      <!-- Sent Request -->
+      <div class="person-card">
+        <div class="person-top">
+          <div class="avatar avatar-1">ER</div>
+          <div>
+            <div class="person-name">Elena Rostova</div>
+            <div class="person-role">Product Manager<br>TechFlow</div>
+          </div>
+        </div>
+
+        <div class="person-stats" style="margin-bottom: 1.25rem;">
+          <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
+            <span class="stat-tiny-value" style="color: var(--text-secondary);">Request sent &middot; 2 days ago</span>
+          </div>
         </div>
 
         <div class="person-actions">
           <a href="#" class="btn-primary w-full">View Profile</a>
-          <a href="#" class="btn-secondary w-full">Message</a>
+          <button class="btn-secondary w-full" disabled style="opacity: 0.6; cursor: default;">Pending</button>
         </div>
       </div>
 
