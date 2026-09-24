@@ -28,7 +28,7 @@
           <input class="code-box" maxlength="1" inputmode="numeric" />
         </div>
 
-        <a class="btn-primary" href="../onboarding/index.html">Verify &amp; Continue →</a>
+        <a class="btn-primary" id="verifyBtn" href="../../attendee/onboarding/index.html">Verify &amp; Continue →</a>
 
         <div class="verify-actions">
           <a class="btn-secondary" href="#">Resend Code</a>
@@ -56,6 +56,18 @@
         }
       });
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role');
+    const verifyBtn = document.getElementById('verifyBtn');
+    
+    if (role === 'organizer') {
+      verifyBtn.href = '../../organizer/dashboard.html';
+      verifyBtn.innerText = 'Continue to Organizer Portal →';
+    } else {
+      verifyBtn.href = '../../attendee/onboarding/index.html';
+      verifyBtn.innerText = 'Verify & Continue →';
+    }
   </script>
 </body>
 
