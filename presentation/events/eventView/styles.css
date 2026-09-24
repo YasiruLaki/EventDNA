@@ -370,6 +370,71 @@ a {
   max-width: 800px;
 }
 
+.organizer-section {
+  margin-bottom: 2rem;
+}
+
+.organizer-section h2, .event-interests-section h2 {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.organizer-flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.organizer-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  overflow: hidden;
+  flex: none;
+}
+
+.organizer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.organizer-role {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.15rem;
+}
+
+.organizer-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.event-interests-section {
+  margin: 2.5rem 0;
+}
+
+.event-interests-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.interest-pill {
+  background: #eef2f7;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+  min-height: 32px;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.84rem;
+}
+
 .why-heading {
   margin-top: 2.25rem;
 }
@@ -446,7 +511,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.25rem;
 }
 
 .reg-header h3 {
@@ -474,7 +539,24 @@ a {
   gap: 1rem;
   font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.reg-status {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.reg-count {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.reg-deadline {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
 }
 
 .spots-warning {

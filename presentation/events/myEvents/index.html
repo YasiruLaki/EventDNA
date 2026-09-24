@@ -13,25 +13,34 @@
 <body>
 
 <!-- Nav -->
-<nav class="nav">
-  <div class="container">
-    <div class="nav-logo">EventDNA</div>
-    <div class="nav-search">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input type="text" placeholder="Search events...">
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="../../attendee/dashboard/index.html" class="nav-logo">
+          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="../ExploreEvents/index.html" class="nav-link">Find Events</a>
+          <a href="#" class="nav-link active">My Events</a>
+          <a href="../../community/community-hub/index.html" class="nav-link">Connections</a>
+          <a href="#" class="nav-link">Community</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <span class="nav-profile-name">Yasiru</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
+            <a href="#" class="dropdown-item text-danger">Logout</a>
+          </div>
+        </div>
+      </div>
     </div>
-    <ul class="nav-links">
-      <li><a href="#">Discover</a></li>
-      <li><a href="#">Calendar</a></li>
-      <li><a href="#">Host</a></li>
-      <li><a href="#">Pricing</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a href="#" class="nav-login">Log In</a>
-      <a href="#" class="btn-primary btn-sm">Create Event</a>
-    </div>
-  </div>
-</nav>
+  </nav>
 
 <!-- Page header -->
 <header class="page-header">
