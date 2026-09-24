@@ -4,23 +4,30 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
+    max-width: 650px;
 }
 
 .photo-uploader {
+	margin-bottom: 2rem;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	gap: 0.9rem;
-	margin-top: 0.25rem;
+	gap: 1.5rem;
+    flex-direction: row;
 }
 
 .avatar-ring {
-	width: 104px;
-	height: 104px;
-	border-radius: 999px;
-	padding: 2px;
-	background: linear-gradient(180deg, rgba(79, 16, 255, 0.18), rgba(79, 16, 255, 0.05));
-	box-shadow: inset 0 0 0 1px rgba(79, 16, 255, 0.08);
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	border: 1px dashed var(--primary);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	background: transparent;
+	padding: 0;
+	flex-shrink: 0;
+	box-shadow: none;
 }
 
 .avatar-placeholder {
@@ -30,14 +37,14 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--neutral);
-	background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+	color: var(--primary);
+	background: transparent;
+	box-shadow: none;
 }
 
 .avatar-placeholder svg {
-	width: 34px;
-	height: 34px;
+	width: 32px;
+	height: 32px;
 }
 
 .upload-link {
@@ -46,20 +53,21 @@
 	color: var(--primary);
 	font-size: 0.8rem;
 	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
+	text-transform: none;
+	letter-spacing: normal;
 	cursor: pointer;
 	padding: 0;
+	margin-bottom: 0.5rem;
+	text-align: left;
+	display: block;
 }
 
 .form-group label {
 	display: block;
-	font-size: 0.8rem;
-	font-weight: 700;
+	font-size: 0.85rem;
+	font-weight: 600;
 	margin-bottom: 0.55rem;
-	color: var(--text-secondary);
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
+	color: var(--text-primary);
 }
 
 .textarea-wrapper {
@@ -101,24 +109,112 @@
 }
 
 .onboarding-footer-links {
-	margin-top: 0.25rem;
-	justify-content: flex-start;
+	margin-top: 1.5rem;
+	justify-content: center;
 	padding-top: 0;
 	border-top: none;
 }
 
 .skip-link {
 	color: var(--text-secondary);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 0.18em;
+	text-decoration: none;
+}
+
+.progress-bar-container {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.progress-bar-segment {
+	flex: 1;
+	height: 4px;
+	background-color: var(--divider-color);
+	border-radius: 2px;
+}
+
+.progress-bar-segment.active {
+	background-color: var(--primary);
+}
+
+.step-indicator {
+	color: var(--text-secondary);
+	font-size: 0.85rem;
+	font-weight: 600;
+}
+
+.onboarding-title {
+	font-size: 1.5rem;
+	text-align: left;
+}
+
+.onboarding-subtitle {
+	color: var(--text-secondary);
+	font-size: 0.95rem;
+	line-height: 1.5;
+	text-align: left;
+}
+
+.photo-desc-container {
+	text-align: left;
+}
+
+.photo-desc {
+	font-size: 0.85rem;
+	color: var(--text-secondary);
+	line-height: 1.4;
+	margin: 0;
+	max-width: 250px;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.form-input, .form-select {
+	width: 100%;
+	height: 48px;
+	border-radius: 8px;
+	border: 1px solid var(--border-color);
+	padding: 0 1rem;
+	box-sizing: border-box;
+	font-size: 0.95rem;
+	color: var(--text-primary);
+	outline: none;
+	background: #E6E6E6;
+	font-family: inherit;
+}
+
+.form-select {
+	background: #E6E6E6 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat right 1rem center;
+	appearance: none;
+}
+
+.bio-group {
+	margin-bottom: 2rem;
+}
+
+#bio {
+	background: #E6E6E6;
+	border: 1px solid var(--border-color);
+}
+
+.onboarding-submit {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+	text-align: center;
 }
 
 @media (max-width: 640px) {
-	.avatar-ring {
-		width: 88px;
-		height: 88px;
-	}
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 
 	.textarea-wrapper textarea {
 		min-height: 132px;

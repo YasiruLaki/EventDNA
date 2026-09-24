@@ -27,7 +27,7 @@
 .step-indicator {
 	color: var(--text-secondary);
 	font-size: 0.85rem;
-	font-weight: 600;     
+	font-weight: 600;
 }
 
 .onboarding-title {
@@ -40,37 +40,6 @@
 	font-size: 0.95rem;
 	line-height: 1.5;
 	text-align: left;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: #E6E6E6;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0 1rem;
-  height: 48px;
-  margin-bottom: 1rem;
-}
-
-.search-icon {
-  display: flex;
-  color: var(--text-tertiary);
-}
-
-.search-box input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-}
-
-.search-box input::placeholder {
-  color: var(--text-tertiary);
 }
 
 .skills-interests-section {
@@ -86,32 +55,46 @@
 
 .chip-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .chip {
-  padding: 0.5rem 0.9rem;
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
   font-family: inherit;
-  font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-secondary);
   background: #fff;
   border: 1px solid var(--border-color);
-  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .chip:hover {
   border-color: var(--primary);
-  transform: translateY(-1px);
 }
 
 .chip.selected {
   background-color: rgba(79, 16, 255, 0.1);
   border-color: var(--primary);
   color: var(--primary);
+}
+
+.chip-icon {
+  width: 18px;
+  height: 18px;
+  display: none;
+}
+
+.chip.selected .chip-icon {
+  display: block;
 }
 
 .onboarding-submit {
@@ -135,10 +118,4 @@
 .skip-link {
 	color: var(--text-secondary);
 	text-decoration: none;
-}
-
-@media (max-width: 640px) {
-  .chip-list {
-    gap: 0.5rem;
-  }
 }
