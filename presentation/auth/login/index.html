@@ -20,7 +20,7 @@
                 <h2>Login</h2>
                 <p class="subtitle">Welcome back to your networking journey.</p>
                 
-                <form action="../dashboard/index.html" method="get">
+                <form action="../../attendee/dashboard/index.html" method="get">
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <div class="input-wrapper">
@@ -55,5 +55,14 @@
             </div>
         </div>
     </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role');
+        if (role) {
+            document.querySelector('form').action = role === 'organizer' ? '../../organizer/dashboard.html' : '../../attendee/dashboard/index.html';
+            const registerLink = document.querySelector('.login-link a');
+            if (registerLink) registerLink.href = `../register/index.html?role=${role}`;
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Management - EventDNA Admin</title>
+  <link rel="stylesheet" href="../../globals.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../../images/logo.png" alt="EventDNA" />
+        <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.html" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.html" class="admin-nav-item active"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.html" class="admin-nav-item"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+      </nav>
+      <div class="admin-footer">
+        <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
+        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+      </div>
+    </aside>
+
+    <main class="admin-content">
+      <div class="page-header">
+        <h1 class="page-title">All Events</h1>
+      </div>
+
+      <div class="filters-bar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search events..." />
+        </div>
+        <select class="filter-select">
+          <option>All Statuses</option>
+          <option>Live</option>
+          <option>Upcoming</option>
+          <option>Draft</option>
+        </select>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Organizer</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600;">AI Innovation Summit 2026</td>
+            <td>Hanan Perera</td>
+            <td>Oct 24</td>
+            <td><span class="status-badge status-live">Live</span></td>
+            <td><a href="event-details.html" class="btn-view">View</a></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600;">Career Fair</td>
+            <td>Kamal Silva</td>
+            <td>Dec 03</td>
+            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+            <td><a href="event-details.html" class="btn-view">View</a></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600;">Design Masterclass</td>
+            <td>Sarah Fernando</td>
+            <td>Jan 18</td>
+            <td><span class="status-badge status-draft">Draft</span></td>
+            <td><a href="event-details.html" class="btn-view">View</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -68,5 +68,14 @@
             </div>
         </div>
     </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role');
+        if (role) {
+            document.querySelector('form').action = `../verify-email/index.html?role=${role}`;
+            const loginLink = document.querySelector('.login-link a');
+            if (loginLink) loginLink.href = `../login/index.html?role=${role}`;
+        }
+    </script>
 </body>
 </html>

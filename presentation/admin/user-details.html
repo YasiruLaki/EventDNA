@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Details - EventDNA Admin</title>
+  <link rel="stylesheet" href="../../globals.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../../images/logo.png" alt="EventDNA" />
+        <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.html" class="admin-nav-item active"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.html" class="admin-nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.html" class="admin-nav-item"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+      </nav>
+      <div class="admin-footer">
+        <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
+        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+      </div>
+    </aside>
+
+    <main class="admin-content">
+      <a href="users.html" class="back-link"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to Users</a>
+      
+      <div class="detail-card">
+        <div class="profile-header">
+          <div class="profile-photo">
+            <i data-lucide="user" style="width: 32px; height: 32px;"></i>
+          </div>
+          <div class="profile-info">
+            <h1>Yasiru Lakintha</h1>
+            <p>yasiru@example.com</p>
+          </div>
+        </div>
+        
+        <div class="data-grid">
+          <div class="data-block">
+            <label>Role</label>
+            <p>Attendee</p>
+          </div>
+          <div class="data-block">
+            <label>Status</label>
+            <p style="color: #16a34a; font-weight: 700;">Active</p>
+          </div>
+          <div class="data-block">
+            <label>Registered</label>
+            <p>12 Sep 2026</p>
+          </div>
+        </div>
+        
+        <div class="actions-bar">
+          <button class="btn btn-outline">Change Role</button>
+          <button class="btn btn-danger">Disable Account</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
