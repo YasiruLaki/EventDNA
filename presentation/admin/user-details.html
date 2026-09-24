@@ -6,37 +6,7 @@
   <title>User Details - EventDNA Admin</title>
   <link rel="stylesheet" href="../../globals.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    body { background-color: #f9f9f9; margin: 0; font-family: 'Inter', -apple-system, sans-serif; }
-    .admin-layout { display: flex; min-height: 100vh; }
-    .admin-sidebar { width: 250px; background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
-    .admin-logo { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); }
-    .admin-logo img { height: 28px; }
-    .admin-nav { padding: 1.5rem 1rem; flex: 1; }
-    .admin-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; transition: all 0.2s; }
-    .admin-nav-item:hover { background: #f8fafc; color: var(--secondary); }
-    .admin-nav-item.active { background: var(--primary-tint); color: var(--primary); }
-    .admin-footer { padding: 1.5rem 1rem; border-top: 1px solid var(--border-color); }
-    
-    .admin-content { flex: 1; padding: 2.5rem 3rem; overflow-y: auto; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; margin-bottom: 1.5rem; }
-    .back-link:hover { color: var(--secondary); }
-    
-    .detail-card { background: #fff; border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); max-width: 800px; }
-    .profile-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; }
-    .profile-photo { width: 80px; height: 80px; background: var(--primary-tint); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); }
-    .profile-info h1 { margin: 0 0 0.25rem 0; font-size: 1.5rem; font-weight: 800; color: var(--secondary); }
-    .profile-info p { margin: 0; color: var(--text-secondary); }
-    
-    .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem; }
-    .data-block label { display: block; font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-    .data-block p { margin: 0; font-size: 1rem; color: var(--secondary); font-weight: 500; }
-    
-    .actions-bar { display: flex; gap: 1rem; padding-top: 2rem; border-top: 1px solid var(--border-color); }
-    .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; }
-    .btn-outline { background: #fff; border: 1px solid var(--border-color); color: var(--secondary); }
-    .btn-danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
-  </style>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div class="admin-layout">

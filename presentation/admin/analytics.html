@@ -6,35 +6,7 @@
   <title>Admin Analytics - EventDNA Admin</title>
   <link rel="stylesheet" href="../../globals.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    body { background-color: #f9f9f9; margin: 0; font-family: 'Inter', -apple-system, sans-serif; }
-    .admin-layout { display: flex; min-height: 100vh; }
-    .admin-sidebar { width: 250px; background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
-    .admin-logo { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); }
-    .admin-logo img { height: 28px; }
-    .admin-nav { padding: 1.5rem 1rem; flex: 1; }
-    .admin-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; transition: all 0.2s; }
-    .admin-nav-item:hover { background: #f8fafc; color: var(--secondary); }
-    .admin-nav-item.active { background: var(--primary-tint); color: var(--primary); }
-    .admin-footer { padding: 1.5rem 1rem; border-top: 1px solid var(--border-color); }
-    
-    .admin-content { flex: 1; padding: 2.5rem 3rem; overflow-y: auto; }
-    .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; }
-    .page-title { font-size: 1.75rem; font-weight: 800; color: var(--secondary); margin: 0; }
-    
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
-    .stat-card { background: #fff; border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    .stat-value { font-size: 2rem; font-weight: 800; color: var(--secondary); margin: 0; }
-    .stat-label { color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; margin: 0.25rem 0 0 0; }
-    
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .chart-card { background: #fff; border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    .chart-card h3 { margin: 0 0 1.5rem 0; font-size: 1.1rem; font-weight: 800; color: var(--secondary); }
-    .placeholder-chart { height: 200px; display: flex; align-items: flex-end; gap: 10%; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1rem; }
-    .bar { flex: 1; background: var(--primary-tint); border-radius: 4px 4px 0 0; position: relative; }
-    .bar::after { content: ''; position: absolute; inset: 0; background: var(--primary); border-radius: 4px 4px 0 0; opacity: 0.8; }
-    
-  </style>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div class="admin-layout">
