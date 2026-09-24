@@ -391,20 +391,10 @@ a {
 
 .ticket-banner {
   position: relative;
-  height: 90px;
-  background:
-    linear-gradient(180deg, rgba(15,23,42,0.35), rgba(15,23,42,0.15)),
-    radial-gradient(circle at 30% 60%, rgba(124, 58, 255, 0.5), transparent 55%),
-    linear-gradient(135deg, #1d1440 0%, #2a1a5e 60%, #0b0a1f 100%);
-}
-
-.ticket-banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1.5px);
-  background-size: 18px 18px;
-  opacity: 0.15;
+  height: 100px;
+  background: 
+    linear-gradient(180deg, rgba(15,23,42,0.4), rgba(15,23,42,0.1)),
+    url('https://images.unsplash.com/photo-1542442828-287217bfb87f?auto=format&fit=crop&w=600&q=80') center/cover;
 }
 
 .ticket-badge {
@@ -489,31 +479,7 @@ a {
   right: -1.1rem;
 }
 
-.ticket-barcode-wrap {
-  padding: 0 1.1rem 1.1rem;
-  text-align: center;
-}
 
-.qr-code {
-  display: inline-block;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  background: #fff;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-}
-
-.qr-code img {
-  display: block;
-  width: 90px;
-  height: 90px;
-}
-
-.ticket-id {
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-  color: var(--text-tertiary);
-}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 720px) {

@@ -9,46 +9,45 @@
 </head>
 <body>
 
-<!-- Nav -->
-<nav class="top-nav">
-  <div class="nav-container">
-    <div class="nav-left">
-      <a href="../../attendee/dashboard/index.html" class="nav-logo">
-        <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
-      </a>
-      <div class="nav-links">
-        <a href="../ExploreEvents/index.html" class="nav-link">Find Events</a>
-        <a href="#" class="nav-link active">My Events</a>
-        <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
-        <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
+
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="../../attendee/dashboard/index.html" class="nav-logo">
+          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="#" class="nav-link active">Find Events</a>
+          <a href="../myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
+          <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
+        </div>
       </div>
-    </div>
-    <div class="nav-right">
-      <div class="nav-profile-menu">
-        <button class="nav-profile-btn" aria-label="Profile Menu">
-          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-          <span class="nav-profile-name">Yasiru</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <div class="nav-dropdown">
-          <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
-          <a href="#" class="dropdown-item text-danger">Logout</a>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <span class="nav-profile-name">Yasiru</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
+            <a href="#" class="dropdown-item text-danger">Logout</a>
+          </div>
         </div>
       </div>
     </div>
   </nav>
 
-<!-- Main Shell -->
 <div class="dashboard-shell">
-  
-  <!-- Page header (Dashboard Hero Style) -->
+
   <header class="hero-row">
     <div class="hero-copy">
       <h1 class="page-title">My Events</h1>
       <p class="supporting-copy">Manage your upcoming schedules and past attendances.</p>
     </div>
     <div class="hero-actions">
-      <!-- Added back the search feature but styled appropriately -->
+
       <div class="search-bar-premium">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <input type="text" placeholder="Search events...">
@@ -70,7 +69,7 @@
         </div>
       </div>
 
-      <!-- Event 1 -->
+
       <div class="event-card-horizontal">
         <div class="event-thumb" style="background: url('https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg') center/cover;">
           <div class="event-thumb-brand">EventDNA</div>
@@ -116,7 +115,7 @@
       </div>
 
       <div class="events-grid">
-        <!-- Event 2 -->
+
         <div class="event-card-vertical">
           <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80') center/cover;">
             <div class="event-thumb-brand">EventDNA</div>
@@ -157,7 +156,7 @@
           </div>
         </div>
 
-        <!-- Event 3 -->
+
         <div class="event-card-vertical">
           <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80') center/cover;">
             <div class="event-thumb-brand">EventDNA</div>
@@ -198,7 +197,7 @@
           </div>
         </div>
 
-        <!-- Event 4 -->
+
         <div class="event-card-vertical">
           <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1559136555-9ce7b5fda2d6?auto=format&fit=crop&w=800&q=80') center/cover;">
             <div class="event-thumb-brand">EventDNA</div>
@@ -270,7 +269,7 @@
   </div>
 </div>
 
-<!-- Event Pass Modal -->
+
 <div class="modal-overlay" id="eventPassModal">
   <div class="pass-modal">
     <button class="modal-close" id="closePassModal">
@@ -283,9 +282,8 @@
     </div>
 
     <div class="pass-modal-body">
-      <!-- Top section: split layout -->
+
       <div class="pass-top-row">
-        <!-- Left: Pass visual placeholder -->
         <div class="pass-visual">
           <span class="registered-pill">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -293,7 +291,6 @@
           </span>
         </div>
         
-        <!-- Right: Details -->
         <div class="pass-details-col">
           <div class="pass-info-card">
             <h3>Global Tech Summit 2024</h3>
@@ -330,7 +327,6 @@
         </div>
       </div>
 
-      <!-- Access Codes Section -->
       <div class="access-codes-section">
         <h3>Access Codes</h3>
         <div class="access-grid">
