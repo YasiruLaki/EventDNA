@@ -2,8 +2,6 @@
 /**
  * CREATE a group  —  POST /groups/create.php
  *
- * Follows: EventDNA Organizer Create Group Implementation Plan, section 7 & 10.
- *
  * Steps (must happen in this order, all inside one transaction):
  *   1. Check session (authenticated?)
  *   2. Check role == ORGANIZER
@@ -13,12 +11,8 @@
  *   6. INSERT group_interests
  *   7. INSERT notifications (to the organizer's own event attendees)
  *   8. COMMIT (or ROLLBACK on any failure)
- *
- * Expects POST:
- *   name         (required)
- *   description  (optional but validated/sanitized)
- *   interests[]  (optional, array of interest_id — every ID must exist & be ACTIVE)
- */
+
+ **/
 
 session_start();
 require_once __DIR__ . "/../../data/database.php";
