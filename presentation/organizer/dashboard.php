@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../attendee/dashboard/styles.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
   <nav class="top-nav">
     <div class="nav-container">
@@ -15,7 +17,8 @@
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
-          <a href="dashboard.html" class="nav-link active" style="box-shadow: inset 0 -2px 0 var(--primary); color: var(--primary); font-weight: 600;">Dashboard</a>
+          <a href="dashboard.html" class="nav-link active"
+            style="box-shadow: inset 0 -2px 0 var(--primary); color: var(--primary); font-weight: 600;">Dashboard</a>
           <a href="dashboard.html#events" class="nav-link">My Events</a>
           <a href="create-event.html" class="nav-link">Create Event</a>
         </div>
@@ -23,7 +26,8 @@
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80"
+              alt="Profile" class="nav-avatar" />
             <span class="nav-profile-name">Hanan</span>
             <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
           </button>
@@ -46,45 +50,55 @@
         </div>
       </section>
 
-      <section class="stats-grid" aria-label="Overview stats" style="grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+      <section class="stats-grid" aria-label="Overview stats"
+        style="grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
         <article class="stat-card" style="padding: 1.5rem;">
           <div class="stat-content">
             <h2 class="stat-value" style="font-size: 2rem; margin: 0; color: var(--secondary);">8</h2>
-            <p class="stat-label" style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">My Events</p>
+            <p class="stat-label" style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">My
+              Events</p>
           </div>
         </article>
-        
+
         <article class="stat-card" style="padding: 1.5rem;">
           <div class="stat-content">
             <h2 class="stat-value" style="font-size: 2rem; margin: 0; color: var(--secondary);">3</h2>
-            <p class="stat-label" style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">Upcoming Events</p>
+            <p class="stat-label" style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Upcoming Events</p>
           </div>
         </article>
-        
+
         <article class="stat-card" style="padding: 1.5rem;">
           <div class="stat-content">
             <h2 class="stat-value" style="font-size: 2rem; margin: 0; color: var(--secondary);">1,284</h2>
-            <p class="stat-label" style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">Total Registrations</p>
+            <p class="stat-label" style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">Total
+              Registrations</p>
           </div>
         </article>
       </section>
 
       <div style="margin-top: 3.5rem;">
-        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--secondary); margin-bottom: 1.5rem;">Currently Active</h2>
-        
-        <article class="stat-card" style="padding: 2.5rem; border-left: 4px solid var(--primary); display: flex; flex-direction: column; gap: 2rem; background: rgba(255, 255, 255, 0.95);">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--secondary); margin-bottom: 1.5rem;">Currently
+          Active</h2>
+
+        <article class="stat-card"
+          style="padding: 2.5rem; border-left: 4px solid var(--primary); display: flex; flex-direction: column; gap: 2rem; background: rgba(255, 255, 255, 0.95);">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-              <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin: 0 0 0.5rem 0;">AI Innovation Summit 2026</h3>
+              <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin: 0 0 0.5rem 0;">AI
+                Innovation Summit 2026</h3>
               <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">Oct 24–26, 2026 · Colombo</p>
             </div>
-            <span style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.85rem; font-weight: 800; padding: 0.5rem 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.4rem;">
-              <span style="display: inline-block; width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>LIVE
+            <span
+              style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.85rem; font-weight: 800; padding: 0.5rem 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 0.4rem;">
+              <span
+                style="display: inline-block; width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>LIVE
             </span>
           </div>
 
           <div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.75rem;">
+            <div
+              style="display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.75rem;">
               <span>312 registered</span>
               <span>248 checked in</span>
             </div>
@@ -94,8 +108,10 @@
           </div>
 
           <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-            <a href="event-details.html" class="btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">View Event</a>
-            <a href="event-details.html#qr" class="btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">Check-in</a>
+            <a href="event-details.html" class="btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">View
+              Event</a>
+            <a href="event-details.html#qr" class="btn-secondary"
+              style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">Check-in</a>
           </div>
         </article>
       </div>
@@ -103,19 +119,25 @@
       <div id="events" style="margin-top: 4rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
           <div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin: 0 0 0.5rem 0;">Your Events</h2>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin: 0 0 0.5rem 0;">Your Events
+            </h2>
             <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">Manage the events you've created.</p>
           </div>
           <a href="create-event.html" class="btn-primary">+ Create Event</a>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; overflow: hidden;">
-          <div style="padding: 1.5rem; border-bottom: 1px solid rgba(226, 232, 240, 0.9); display: flex; gap: 1rem; align-items: center; background: #fff;">
+        <div
+          style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 12px; overflow: hidden;">
+          <div
+            style="padding: 1.5rem; border-bottom: 1px solid rgba(226, 232, 240, 0.9); display: flex; gap: 1rem; align-items: center; background: #fff;">
             <div style="position: relative; flex: 1; max-width: 350px;">
-              <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-tertiary);"></i>
-              <input type="text" placeholder="Search events..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.95rem; background: #f8fafc; color: var(--secondary);">
+              <i data-lucide="search"
+                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-tertiary);"></i>
+              <input type="text" placeholder="Search events..."
+                style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.95rem; background: #f8fafc; color: var(--secondary);">
             </div>
-            <select style="padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.95rem; background: #f8fafc; color: var(--secondary); outline: none;">
+            <select
+              style="padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.95rem; background: #f8fafc; color: var(--secondary); outline: none;">
               <option>All statuses</option>
               <option>Live</option>
               <option>Upcoming</option>
@@ -124,10 +146,11 @@
               <option>Cancelled</option>
             </select>
           </div>
-          
+
           <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
-              <tr style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+              <tr
+                style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                 <th style="padding: 1rem 1.5rem;">Event</th>
                 <th style="padding: 1rem 1.5rem;">Date</th>
                 <th style="padding: 1rem 1.5rem;">Registrations</th>
@@ -141,36 +164,45 @@
                 <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary);">Oct 24–26</td>
                 <td style="padding: 1.25rem 1.5rem; font-weight: 500;">312</td>
                 <td style="padding: 1.25rem 1.5rem;">
-                  <span style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Live</span>
+                  <span
+                    style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Live</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
+                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary"
+                    style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
               </tr>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
                 <td style="padding: 1.25rem 1.5rem; font-weight: 600;">AI Founders Meetup</td>
                 <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary);">Nov 12</td>
                 <td style="padding: 1.25rem 1.5rem; font-weight: 500;">148</td>
                 <td style="padding: 1.25rem 1.5rem;">
-                  <span style="background: var(--primary-tint); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Upcoming</span>
+                  <span
+                    style="background: var(--primary-tint); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Upcoming</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
+                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary"
+                    style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
               </tr>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
                 <td style="padding: 1.25rem 1.5rem; font-weight: 600;">UCSC Career Fair</td>
                 <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary);">Dec 3–4</td>
                 <td style="padding: 1.25rem 1.5rem; font-weight: 500;">276</td>
                 <td style="padding: 1.25rem 1.5rem;">
-                  <span style="background: var(--primary-tint); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Upcoming</span>
+                  <span
+                    style="background: var(--primary-tint); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Upcoming</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
+                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary"
+                    style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
               </tr>
               <tr>
-                <td style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--text-secondary);">Design Systems Masterclass</td>
+                <td style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--text-secondary);">Design Systems
+                  Masterclass</td>
                 <td style="padding: 1.25rem 1.5rem; color: var(--text-tertiary);">Jan 18</td>
                 <td style="padding: 1.25rem 1.5rem; color: var(--text-tertiary); font-weight: 500;">0</td>
                 <td style="padding: 1.25rem 1.5rem;">
-                  <span style="background: rgba(148, 163, 184, 0.15); color: var(--text-secondary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Draft</span>
+                  <span
+                    style="background: rgba(148, 163, 184, 0.15); color: var(--text-secondary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Draft</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="create-event.html" class="btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Continue</a></td>
+                <td style="padding: 1.25rem 1.5rem;"><a href="create-event.html" class="btn-secondary"
+                    style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Continue</a></td>
               </tr>
             </tbody>
           </table>
@@ -181,21 +213,21 @@
 
   <script>
     lucide.createIcons();
-    
-    // Simple profile menu toggle
+
     const profileBtn = document.querySelector('.nav-profile-btn');
     const profileDropdown = document.querySelector('.nav-dropdown');
-    
+
     if (profileBtn && profileDropdown) {
       profileBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         profileDropdown.classList.toggle('show');
       });
-      
+
       document.addEventListener('click', () => {
         profileDropdown.classList.remove('show');
       });
     }
   </script>
 </body>
+
 </html>

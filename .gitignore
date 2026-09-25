@@ -1,2 +1,7 @@
 .env
 env
+
+data/eventdna.sql
+
+vendor/
+composer.phar
