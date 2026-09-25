@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Community — EventDNA</title>
+<title>Communities — EventDNA</title>
 <link rel="stylesheet" href="../../dashboard/styles.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
@@ -42,159 +42,117 @@
 <main class="dashboard-shell">
   <div class="container">
     <div class="hero-row">
-      <div class="hero-title">
-        <h1>Community</h1>
-        <p>Communities unlock once you're checked into an event. Catch up on posts, announcements, and discussions from the people around you.</p>
+      <div class="hero-copy">
+        <h1 class="page-title">Communities</h1>
+        <p class="supporting-copy">Discover groups, join communities that match your interests, and connect through discussions and shared resources.</p>
       </div>
     </div>
 
+    <div style="display: flex; align-items: center; gap: 0.75rem; background: #fff; padding: 0.8rem 1.25rem; border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 999px; max-width: 480px; margin-bottom: 2rem; margin-top: 1rem; box-shadow: 0 4px 12px rgba(15,23,42,0.03);">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: var(--text-tertiary);"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Search groups..." style="border: none; outline: none; background: transparent; font-size: 0.95rem; font-family: inherit; width: 100%; color: var(--text-primary);">
+    </div>
+
     <div class="category-pills">
-      <span class="pill active">All</span>
-      <span class="pill">Checked-in</span>
-      <span class="pill">Registered</span>
+      <span class="pill active">My Groups</span>
+      <span class="pill">Discover Groups</span>
     </div>
 
     <div class="section-title-row">
-      <h2>Your Communities</h2>
-      <span class="section-count">5 communities</span>
+      <h2>My Groups</h2>
+      <span class="section-count">3 groups</span>
     </div>
 
     <div class="community-grid">
-
       <a class="community-card" href="../group/index.html">
         <div class="community-cover">
-          <img src="https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="AI &amp; Robotics Summit 2026">
+          <img src="https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="AI &amp; Robotics">
         </div>
         <div class="community-body">
-          <span class="badge badge-success">Checked-in</span>
-          <h4>AI &amp; Robotics Summit 2026</h4>
-          <p class="community-meta">312 members · 48 posts today</p>
-          <div class="community-footer">
-            <div class="avatar-stack">
-              <span class="avatar avatar-sm">NK</span>
-              <span class="avatar avatar-sm">TP</span>
-              <span class="avatar avatar-sm">JS</span>
-            </div>
-            <span class="btn-secondary btn-sm">Enter</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">Technology</span>
+          </div>
+          <h4 style="margin-top: 0;">AI &amp; Robotics</h4>
+          <p class="community-meta">312 members</p>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">AI &middot; Robotics &middot; Innovation</div>
+          <div class="community-footer" style="justify-content: flex-end;">
+            <span class="btn-primary" style="display: flex; align-items: center; gap: 0.25rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">Enter &rarr;</span>
           </div>
         </div>
       </a>
 
       <a class="community-card" href="../group/index.html">
         <div class="community-cover">
-          <img src="https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Product Design Meetup">
+          <img src="https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Product Design">
         </div>
         <div class="community-body">
-          <span class="badge badge-info">Registered</span>
-          <h4>Product Design Meetup</h4>
-          <p class="community-meta">128 members · 12 posts today</p>
-          <div class="community-footer">
-            <div class="avatar-stack">
-              <span class="avatar avatar-sm">RL</span>
-              <span class="avatar avatar-sm">SD</span>
-            </div>
-            <span class="btn-secondary btn-sm">Enter</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">Design</span>
+          </div>
+          <h4 style="margin-top: 0;">Product Design</h4>
+          <p class="community-meta">128 members</p>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Design &middot; UX &middot; Research</div>
+          <div class="community-footer" style="justify-content: flex-end;">
+            <span class="btn-primary" style="display: flex; align-items: center; gap: 0.25rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">Enter &rarr;</span>
           </div>
         </div>
       </a>
 
       <a class="community-card" href="../group/index.html">
         <div class="community-cover">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Startup Founders Circle">
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Startup Founders">
         </div>
         <div class="community-body">
-          <span class="badge badge-success">Checked-in</span>
-          <h4>Startup Founders Circle</h4>
-          <p class="community-meta">241 members · 31 posts today</p>
-          <div class="community-footer">
-            <div class="avatar-stack">
-              <span class="avatar avatar-sm">MW</span>
-              <span class="avatar avatar-sm">HC</span>
-              <span class="avatar avatar-sm">+9</span>
-            </div>
-            <span class="btn-secondary btn-sm">Enter</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">Business</span>
+          </div>
+          <h4 style="margin-top: 0;">Startup Founders</h4>
+          <p class="community-meta">241 members</p>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Startups &middot; Business &middot; Growth</div>
+          <div class="community-footer" style="justify-content: flex-end;">
+            <span class="btn-primary" style="display: flex; align-items: center; gap: 0.25rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">Enter &rarr;</span>
           </div>
         </div>
       </a>
-
-      <a class="community-card" href="../group/index.html">
-        <div class="community-cover">
-          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Cybersecurity Conclave">
-        </div>
-        <div class="community-body">
-          <span class="badge badge-info">Registered</span>
-          <h4>Cybersecurity Conclave</h4>
-          <p class="community-meta">96 members · 5 posts today</p>
-          <div class="community-footer">
-            <div class="avatar-stack">
-              <span class="avatar avatar-sm">DP</span>
-              <span class="avatar avatar-sm">AK</span>
-            </div>
-            <span class="btn-secondary btn-sm">Enter</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="community-card" href="../group/index.html">
-        <div class="community-cover">
-          <img src="https://images.unsplash.com/photo-1531545514256-b1400bc00f31?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Campus Tech Fair">
-        </div>
-        <div class="community-body">
-          <span class="badge badge-success">Checked-in</span>
-          <h4>Campus Tech Fair</h4>
-          <p class="community-meta">470 members · 63 posts today</p>
-          <div class="community-footer">
-            <div class="avatar-stack">
-              <span class="avatar avatar-sm">YL</span>
-              <span class="avatar avatar-sm">IC</span>
-              <span class="avatar avatar-sm">+21</span>
-            </div>
-            <span class="btn-secondary btn-sm">Enter</span>
-          </div>
-        </div>
-      </a>
-
     </div>
 
     <div class="section-title-row trending-title">
-      <h2>Trending Posts</h2>
-      <a href="#" class="section-link">View All</a>
+      <h2>Recent Discussions</h2>
+      <a href="#" class="section-link">View All &rarr;</a>
     </div>
 
     <div class="card trending-list">
       <a href="../view-post/index.html" class="trending-item">
-        <span class="avatar avatar-md">NK</span>
         <div class="trending-item-body">
-          <p class="trending-item-title">Looking for a co-founder with backend + ML experience</p>
-          <p class="trending-item-meta">Nadia K. · AI &amp; Robotics Summit 2026 · 2h ago</p>
+          <p class="trending-item-title">Looking for a co-founder with ML experience</p>
+          <p class="trending-item-meta">AI &amp; Robotics &middot; 2h ago</p>
         </div>
-        <span class="trending-item-stat">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          54
-        </span>
       </a>
       <a href="../view-post/index.html" class="trending-item">
-        <span class="avatar avatar-md">TP</span>
         <div class="trending-item-body">
-          <p class="trending-item-title">Slides from the "Designing for Trust" talk are up</p>
-          <p class="trending-item-meta">Tharindu P. · Product Design Meetup · 4h ago</p>
+          <p class="trending-item-title">Slides from the Designing for Trust talk</p>
+          <p class="trending-item-meta">Product Design &middot; 4h ago</p>
         </div>
-        <span class="trending-item-stat">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          37
-        </span>
       </a>
       <a href="../view-post/index.html" class="trending-item">
-        <span class="avatar avatar-md">MW</span>
         <div class="trending-item-body">
-          <p class="trending-item-title">Anyone up for a founder dinner tonight at 7?</p>
-          <p class="trending-item-meta">Malith W. · Startup Founders Circle · 6h ago</p>
+          <p class="trending-item-title">Anyone up for a founder discussion tonight?</p>
+          <p class="trending-item-meta">Startup Founders &middot; 6h ago</p>
         </div>
-        <span class="trending-item-stat">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          29
-        </span>
       </a>
+    </div>
+    </div>
+
+    <div class="empty-state" style="display: none; text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 8px; margin-top: 1.5rem;">
+      <h3 style="font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">You haven't joined any groups yet</h3>
+      <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 400px; margin-left: auto; margin-right: auto;">Discover groups based on your interests and start connecting with the community.</p>
+      <button class="btn-primary" style="display: inline-flex; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer;">Discover Groups &rarr;</button>
+    </div>
+
+    <div class="empty-state-search" style="display: none; text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 8px; margin-top: 1.5rem;">
+      <h3 style="font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">No groups found</h3>
+      <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">Try another search or browse all groups.</p>
+      <button class="btn-secondary" style="display: inline-flex; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">Clear Search</button>
     </div>
 
   </div>

@@ -4,7 +4,7 @@
 @import url('../../shared/shell.css');
 
 body {
-  background-color: var(--bg-color);
+  background-color: #f9f9f9;
   margin: 0;
   font-family: var(--font-family-sans);
   color: var(--text-primary);
@@ -56,8 +56,8 @@ body {
 }
 
 .sidebar-widget {
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.92);
   border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
@@ -130,7 +130,7 @@ body {
 }
 
 .nav-item.active {
-  background: var(--surface-color);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--primary);
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
@@ -181,8 +181,8 @@ body {
 
 /* Cards & Forms */
 .settings-card {
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.92);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
@@ -621,8 +621,8 @@ input:checked + .slider:before {
 .save-bar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  background: var(--surface-color);
-  border-top: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid rgba(226, 232, 240, 0.92);
   padding: 1rem 2rem;
   box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
   transform: translateY(100%);

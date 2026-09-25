@@ -1,0 +1,98 @@
+@import url('../../attendee/theme.css');
+
+.verify-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.code-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.code-box {
+  width: 100%;
+  max-width: 64px;
+  height: 56px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: #fff;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  font-family: inherit;
+}
+
+.code-box:focus {
+  border-color: rgba(79, 16, 255, 0.65);
+  box-shadow: 0 0 0 4px rgba(79, 16, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.verify-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.verify-actions .btn-secondary {
+  flex: 1;
+  min-width: 160px;
+}
+
+.foot-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divider-color);
+}
+
+.resend,
+.alt-email,
+.skip {
+  color: var(--text-secondary);
+}
+
+.resend {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.resend a,
+.alt-email,
+.skip {
+  text-decoration: none;
+}
+
+.resend a:hover,
+.alt-email:hover,
+.skip:hover {
+  text-decoration: underline;
+}
+
+.alt-email {
+  display: block;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.skip {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .code-row {
+    gap: 0.5rem;
+  }
+
+  .code-box {
+    height: 52px;
+  }
+}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moderation Details - EventDNA Admin</title>
+  <link rel="stylesheet" href="../../globals.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../../images/logo.png" alt="EventDNA" />
+        <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.html" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.html" class="admin-nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.html" class="admin-nav-item active"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+      </nav>
+      <div class="admin-footer">
+        <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
+        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+      </div>
+    </aside>
+
+    <main class="admin-content">
+      <a href="moderation.html" class="back-link"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to Moderation</a>
+      
+      <div class="detail-card">
+        <div class="report-header">
+          <h1>Reported Content</h1>
+        </div>
+        
+        <div class="data-grid">
+          <div class="data-block">
+            <label>Author</label>
+            <p>John Doe</p>
+          </div>
+          <div class="data-block">
+            <label>Group</label>
+            <p>AI Founders</p>
+          </div>
+          <div class="data-block">
+            <label>Reported For</label>
+            <p style="color: #d97706; font-weight: 700;">Spam</p>
+          </div>
+          <div class="data-block">
+            <label>Reported</label>
+            <p>24 Sep 2026</p>
+          </div>
+        </div>
+        
+        <div class="content-box">
+          <label>Content</label>
+          <p>"Looking for attendees to buy my crypto coin before the summit ends! Guaranteed 10x ROI!!!"</p>
+        </div>
+        
+        <div class="actions-bar">
+          <button class="btn btn-outline">Keep Content</button>
+          <button class="btn btn-danger" id="removeBtn">Remove Content</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Remove Modal -->
+  <div id="removeModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Remove Content</h3>
+      <p>Are you sure you want to remove this content? The author will be notified.</p>
+      <label style="display: block; font-size: 0.85rem; color: var(--secondary); font-weight: 700; margin-bottom: 0.5rem;">Reason for removal</label>
+      <textarea placeholder="e.g. Violation of community spam guidelines..."></textarea>
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button id="cancelModalBtn" class="btn btn-outline" style="padding: 0.75rem 1.5rem;">Cancel</button>
+        <button class="btn btn-danger" style="padding: 0.75rem 1.5rem;">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const removeBtn = document.getElementById('removeBtn');
+    const removeModal = document.getElementById('removeModal');
+    const cancelBtn = document.getElementById('cancelModalBtn');
+
+    if(removeBtn && removeModal && cancelBtn) {
+      removeBtn.addEventListener('click', () => removeModal.style.display = 'flex');
+      cancelBtn.addEventListener('click', () => removeModal.style.display = 'none');
+      removeModal.addEventListener('click', (e) => {
+        if(e.target === removeModal) removeModal.style.display = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
