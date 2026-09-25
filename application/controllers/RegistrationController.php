@@ -111,6 +111,53 @@ class RegistrationController {
         ];
     }
 
+    public function updateAttendeeStatus($organizerId, $registrationId, $action) {
+        $registration = $this->registrationRepo->getRegistrationById($registrationId);
+
+        if (!$registration) {
+            return ["success" => false, "code" => "NOT_FOUND", "message" => "Registration not found."];
+        }
+
+        $event = $this->registrationRepo->getEventById($registration['event_id']);
+
+        if ($event['organizer_id'] != $organizerId) {
+            return ["success" => false, "code" => "FORBIDDEN", "message" => "You can only manage your own events."];
+        }
+        if ($event['status'] === 'CANCELLED') {
+            return ["success" => false, "code" => "EVENT_CANCELLED", "message" => "This event has been cancelled."];
+        }
+
+        $allowed = [
+            'approve' => ['PENDING'],
+            'reject' => ['PENDING'],
+            'remove' => ['REGISTERED', 'APPROVED']
+        ];
+
+        if (!isset($allowed[$action]) || !in_array($registration['status'], $allowed[$action])) {
+            return ["success" => false, "code" => "INVALID_TRANSITION", "message" => "This action is not allowed for the current status."];
+        }
+
+        if ($action === 'approve') {
+            $result = $this->registrationRepo->approveRegistration($registrationId, $registration['event_id']);
+
+            if ($result === "FULL") {
+                return ["success" => false, "code" => "EVENT_FULL", "message" => "The event is full. Remove an attendee before approving more."];
+            }
+            if ($result !== "OK") {
+                return ["success" => false, "code" => "SERVER_ERROR", "message" => "Could not approve the request. Please try again."];
+            }
+            return ["success" => true, "code" => "APPROVED", "message" => "Request approved."];
+        }
+
+        $status = ($action === 'reject') ? 'REJECTED' : 'REMOVED';
+
+        if (!$this->registrationRepo->updateStatus($registrationId, $status)) {
+            return ["success" => false, "code" => "SERVER_ERROR", "message" => "Could not update the registration. Please try again."];
+        }
+
+        return ["success" => true, "code" => $status, "message" => ($status === 'REJECTED') ? "Request rejected." : "Attendee removed."];
+    }
+
     public function getMyRegistrations($userId) {
         $registrations = $this->registrationRepo->getUserRegistrations($userId);
         $upcoming = [];

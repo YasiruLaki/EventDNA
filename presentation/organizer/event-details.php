@@ -10,6 +10,17 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
 
 $controller = new RegistrationController($conn);
 $eventId = (int) ($_GET['id'] ?? 0);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $result = $controller->updateAttendeeStatus($_SESSION['user_id'], (int) ($_POST['registration_id'] ?? 0), $_POST['action'] ?? '');
+    $_SESSION['flash'] = $result;
+    header("Location: event-details.php?id=" . $eventId . "#attendees");
+    exit;
+}
+
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
+
 $details = $controller->getOrganizerEvent($_SESSION['user_id'], $eventId);
 
 if (!$details['success']) {
@@ -95,6 +106,33 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       font-weight: 600;
       font-size: 0.95rem;
     }
+    .action-form {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0;
+    }
+    .action-form .btn-text {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .flash {
+      margin: 0 0 1.5rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .flash-success {
+      background: rgba(22, 163, 74, 0.08);
+      color: var(--success);
+    }
+    .flash-error {
+      background: rgba(220, 38, 38, 0.08);
+      color: var(--error);
+    }
     .attendee-status {
       font-weight: 600;
       font-size: 0.85rem;
@@ -111,7 +149,7 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
     }
     .status-rejected,
     .status-removed {
-      color: var(--danger);
+      color: var(--error);
     }
     .data-value {
       color: var(--secondary);
@@ -155,13 +193,17 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
         <h1 class="page-title" style="margin-bottom: 0.5rem;"><?php echo htmlspecialchars($event['name']); ?></h1>
         <div style="display: flex; gap: 1rem; align-items: center; color: var(--text-secondary); font-size: 0.95rem;">
           <?php if ($event['status'] === 'CANCELLED'): ?>
-            <span style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;">CANCELLED</span>
+            <span style="background: rgba(220, 38, 38, 0.1); color: var(--error); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;">CANCELLED</span>
           <?php else: ?>
             <span style="background: rgba(79, 16, 255, 0.1); color: var(--primary); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;"><?php echo $event['visibility'] === 'INVITE_ONLY' ? 'INVITE ONLY' : 'PUBLIC'; ?></span>
           <?php endif; ?>
           <span><?php echo $eventDate; ?> · <?php echo htmlspecialchars($event['location']); ?></span>
         </div>
       </div>
+
+      <?php if ($flash): ?>
+        <p class="flash <?php echo $flash['success'] ? 'flash-success' : 'flash-error'; ?>"><?php echo htmlspecialchars($flash['message']); ?></p>
+      <?php endif; ?>
 
       <nav class="manage-nav">
         <button class="manage-tab active" data-target="overview">Overview</button>
@@ -206,12 +248,12 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
           </div>
           <div class="data-row" style="margin-bottom: 1.5rem;">
             <span class="data-label">Registration</span>
-            <span class="data-value" style="color: <?php echo $details['registrationState'] === 'Open' ? 'var(--success)' : 'var(--danger)'; ?>;"><?php echo $details['registrationState']; ?></span>
+            <span class="data-value" style="color: <?php echo $details['registrationState'] === 'Open' ? 'var(--success)' : 'var(--error)'; ?>;"><?php echo $details['registrationState']; ?></span>
           </div>
 
           <div style="display: flex; gap: 1rem; margin-top: 2rem;">
             <button class="btn-primary" style="padding: 0.75rem 1.5rem;">Edit Event</button>
-            <button id="cancelEventBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem; color: var(--danger); border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.05);">Cancel Event</button>
+            <button id="cancelEventBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem; color: var(--error); border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.05);">Cancel Event</button>
           </div>
         </div>
       </section>
@@ -237,6 +279,7 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
                 <th style="padding: 1rem 1.5rem;">Email</th>
                 <th style="padding: 1rem 1.5rem;">Registered</th>
                 <th style="padding: 1rem 1.5rem;">Status</th>
+                <th style="padding: 1rem 1.5rem;">Action</th>
               </tr>
             </thead>
             <tbody id="attendeeRows" style="font-size: 0.95rem; color: var(--secondary);">
@@ -250,6 +293,22 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
                     <span class="attendee-status status-checked-in">Checked-in</span>
                   <?php else: ?>
                     <span class="attendee-status status-<?php echo strtolower($attendee['status']); ?>"><?php echo ucfirst(strtolower($attendee['status'])); ?></span>
+                  <?php endif; ?>
+                </td>
+                <td style="padding: 1rem 1.5rem;">
+                  <?php if ($event['status'] === 'ACTIVE' && $attendee['status'] === 'PENDING'): ?>
+                    <form method="post" class="action-form">
+                      <input type="hidden" name="registration_id" value="<?php echo $attendee['registration_id']; ?>">
+                      <button type="submit" name="action" value="approve" class="btn-text" style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Approve</button>
+                      <button type="submit" name="action" value="reject" class="btn-text" style="color: var(--error); font-size: 0.85rem; font-weight: 600;">Reject</button>
+                    </form>
+                  <?php elseif ($event['status'] === 'ACTIVE' && in_array($attendee['status'], ['REGISTERED', 'APPROVED'])): ?>
+                    <form method="post" class="action-form" onsubmit="return confirm('Remove this attendee from the event?');">
+                      <input type="hidden" name="registration_id" value="<?php echo $attendee['registration_id']; ?>">
+                      <button type="submit" name="action" value="remove" class="btn-text" style="color: var(--error); font-size: 0.85rem; font-weight: 600;">Remove</button>
+                    </form>
+                  <?php else: ?>
+                    <span style="color: var(--text-tertiary); font-size: 0.85rem;">—</span>
                   <?php endif; ?>
                 </td>
               </tr>
@@ -380,7 +439,7 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       
       <div style="display: flex; gap: 1rem; justify-content: flex-end;">
         <button id="closeModalBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem;">Keep Event</button>
-        <button class="btn-primary" style="padding: 0.75rem 1.5rem; background: var(--danger); border-color: var(--danger);">Cancel Event</button>
+        <button class="btn-primary" style="padding: 0.75rem 1.5rem; background: var(--error); border-color: var(--error);">Cancel Event</button>
       </div>
     </div>
   </div>

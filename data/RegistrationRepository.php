@@ -130,6 +130,35 @@ class RegistrationRepository {
         }
     }
 
+    public function approveRegistration($registrationId, $eventId) {
+        $this->conn->begin_transaction();
+        try {
+            $lockStmt = $this->conn->prepare("SELECT capacity FROM events WHERE event_id = ? FOR UPDATE");
+            $lockStmt->bind_param("i", $eventId);
+            $lockStmt->execute();
+            $event = $lockStmt->get_result()->fetch_assoc();
+
+            if ($this->countActiveRegistrations($eventId) >= $event['capacity']) {
+                $this->conn->rollback();
+                return "FULL";
+            }
+
+            $stmt = $this->conn->prepare("UPDATE event_registrations SET status = 'APPROVED', approved_at = NOW() WHERE registration_id = ? AND status = 'PENDING'");
+            $stmt->bind_param("i", $registrationId);
+
+            if (!$stmt->execute() || $stmt->affected_rows !== 1) {
+                $this->conn->rollback();
+                return "ERROR";
+            }
+
+            $this->conn->commit();
+            return "OK";
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            return "ERROR";
+        }
+    }
+
     public function getRegistrationById($registrationId) {
         $stmt = $this->conn->prepare("SELECT * FROM event_registrations WHERE registration_id = ?");
         $stmt->bind_param("i", $registrationId);
