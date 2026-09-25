@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $result = $auth->register($fullName, $email, $password, $confirmPassword, $roleName);
 
     if ($result["success"]) {
-        header("Location: ../verify-email/index.html?role=" . urlencode($roleName));
+        header("Location: ../verify-email/index.php?role=" . urlencode($roleName));
         exit;
     } else {
         $error = $result["message"];
