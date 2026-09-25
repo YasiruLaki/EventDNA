@@ -116,7 +116,7 @@
               </div>
             </div>
             <div class="feature-actions">
-              <a class="btn-primary" href="../../events/eventView/index.html">View Event Details</a>
+              <a class="btn-primary" href="../../events/eventView/index.php?id=1">View Event Details</a>
               <a class="btn-secondary" href="../../events/registrationModel/index.html">View Event Pass</a>
             </div>
           </article>

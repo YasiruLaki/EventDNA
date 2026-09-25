@@ -1,21 +1,75 @@
+<?php
+session_start();
+require_once "../../../data/database.php";
+require_once "../../../application/controllers/RegistrationController.php";
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../auth/login/index.php");
+    exit;
+}
+
+$controller = new RegistrationController($conn);
+$eventId = (int) ($_GET['id'] ?? 0);
+$details = $controller->getEventDetails($eventId, $_SESSION['user_id']);
+
+if (!$details) {
+    http_response_code(404);
+    echo "Event not found.";
+    exit;
+}
+
+$event = $details['event'];
+$state = $details['state'];
+$isInviteOnly = $event['visibility'] === 'INVITE_ONLY';
+
+$statusLabels = [
+    'OPEN' => 'Registration Open',
+    'FULL' => 'Event Full',
+    'NOT_OPEN' => 'Registration Not Open',
+    'CLOSED' => 'Registration Closed',
+    'EVENT_CANCELLED' => 'Event Cancelled',
+    'REGISTERED' => 'You are registered',
+    'APPROVED' => 'Your request was approved',
+    'PENDING' => 'Request pending approval',
+    'REJECTED' => 'Your request was declined',
+    'REMOVED' => 'Registration removed by organizer',
+    'OWN' => 'You are the organizer'
+];
+
+$buttonLabels = [
+    'FULL' => 'Event Full',
+    'NOT_OPEN' => 'Opens ' . date('M j, g:i A', strtotime($event['registration_open'])),
+    'CLOSED' => 'Registration Closed',
+    'EVENT_CANCELLED' => 'Event Cancelled',
+    'REGISTERED' => 'Registered',
+    'APPROVED' => 'Approved',
+    'PENDING' => 'Pending Approval',
+    'REJECTED' => 'Request Declined',
+    'REMOVED' => 'Registration Removed',
+    'OWN' => 'Your Event'
+];
+
+$eventDate = date('M j, Y', strtotime($event['event_date']));
+$eventTime = date('g:i A', strtotime($event['start_time'])) . ' – ' . date('g:i A', strtotime($event['end_time']));
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Innovation Summit 2026 — EventDNA</title>
+<title><?php echo htmlspecialchars($event['name']); ?> — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-<!-- Nav -->
   <nav class="top-nav">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="../../attendee/dashboard/index.html" class="nav-logo">
+        <a href="../../attendee/dashboard/index.php" class="nav-logo">
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
+        <div class="nav-links">
           <a href="../ExploreEvents/index.html" class="nav-link active">Find Events</a>
           <a href="../myEvents/index.html" class="nav-link">My Events</a>
           <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
@@ -26,11 +80,11 @@
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Yasiru</span>
+            <span class="nav-profile-name"><?php echo htmlspecialchars($_SESSION['full_name'] ?? ''); ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="nav-dropdown">
-            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
+            <a href="../../attendee/onboarding/index.php" class="dropdown-item">Profile</a>
             <a href="#" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
@@ -38,18 +92,14 @@
     </div>
   </nav>
 
-<!-- Hero -->
 <section class="hero">
   <div class="container hero-inner">
-    <span class="hero-badge">Technology &amp; Innovation</span>
-    <h1>AI Innovation Summit 2026</h1>
-    <p>
-      Connect with professionals, researchers, and innovators in artificial intelligence. Discover new ideas, exchange knowledge, and build meaningful connections.
-    </p>
+    <span class="hero-badge"><?php echo $isInviteOnly ? 'Invite Only' : 'Public Event'; ?></span>
+    <h1><?php echo htmlspecialchars($event['name']); ?></h1>
+    <p><?php echo htmlspecialchars($event['description'] ?? ''); ?></p>
   </div>
 </section>
 
-<!-- Info bar -->
 <div class="info-bar-wrap">
   <div class="container">
     <div class="info-bar">
@@ -59,7 +109,7 @@
         </div>
         <div>
           <div class="info-label">Date</div>
-          <div class="info-value">Oct 24–26, 2026</div>
+          <div class="info-value"><?php echo $eventDate; ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -68,7 +118,7 @@
         </div>
         <div>
           <div class="info-label">Time</div>
-          <div class="info-value">9:00 AM – 5:00 PM</div>
+          <div class="info-value"><?php echo $eventTime; ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -77,7 +127,7 @@
         </div>
         <div>
           <div class="info-label">Location</div>
-          <div class="info-value">BMICH, Colombo</div>
+          <div class="info-value"><?php echo htmlspecialchars($event['location']); ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -85,48 +135,48 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.6 2.2-4.7 5-4.7s5 2.1 5 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.8 4.5 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
         <div>
-          <div class="info-label">Event Type</div>
-          <div class="info-value">In-person</div>
+          <div class="info-label">Capacity</div>
+          <div class="info-value"><?php echo (int) $event['capacity']; ?> seats</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Body -->
 <section class="body-section">
   <div class="container body-grid">
-
     <div class="main-col">
       <div class="organizer-section">
         <h2>Organized by</h2>
         <div class="organizer-flex">
           <div class="organizer-avatar">
-            <img src="https://images.unsplash.com/photo-1542442828-287217bfb87f?auto=format&fit=crop&w=150&q=80" alt="EventDNA Sri Lanka">
+            <img src="https://images.unsplash.com/photo-1542442828-287217bfb87f?auto=format&fit=crop&w=150&q=80" alt="<?php echo htmlspecialchars($event['organizer_name']); ?>">
           </div>
           <div>
             <div class="organizer-role">Event Organizer</div>
-            <div class="organizer-name">EventDNA Sri Lanka</div>
+            <div class="organizer-name"><?php echo htmlspecialchars($event['organizer_name']); ?></div>
           </div>
         </div>
       </div>
 
       <h2>About Event</h2>
       <div class="about-text">
-        <p>
-          AI Innovation Summit brings together professionals, researchers, founders, and technology enthusiasts to explore current developments in artificial intelligence, machine learning, and emerging technologies.
-        </p>
+        <p><?php echo nl2br(htmlspecialchars($event['description'] ?? '')); ?></p>
+        <?php if (!empty($event['address'])): ?>
+          <p><strong>Address:</strong> <?php echo htmlspecialchars($event['address']); ?></p>
+        <?php endif; ?>
       </div>
 
+      <?php if (!empty($details['interests'])): ?>
       <div class="event-interests-section">
         <h2>Interests</h2>
         <div class="event-interests-flex">
-          <span class="interest-pill">Artificial Intelligence</span>
-          <span class="interest-pill">Machine Learning</span>
-          <span class="interest-pill">Technology</span>
-          <span class="interest-pill">Innovation</span>
+          <?php foreach ($details['interests'] as $interest): ?>
+            <span class="interest-pill"><?php echo htmlspecialchars($interest['interest_name']); ?></span>
+          <?php endforeach; ?>
         </div>
       </div>
+      <?php endif; ?>
 
       <h2 class="why-heading">Highlights</h2>
       <div class="why-grid">
@@ -158,29 +208,32 @@
       <div class="reg-card">
         <div class="reg-header">
           <h3>Registration</h3>
+          <?php if ($isInviteOnly): ?>
+            <span class="reg-badge">Invite Only</span>
+          <?php endif; ?>
         </div>
         <div class="reg-sub">
-          <span class="reg-status">Registration Open</span>
+          <span class="reg-status reg-status-<?php echo strtolower($state); ?>"><?php echo $statusLabels[$state]; ?></span>
         </div>
-        
         <div class="reg-count">
-          232 / 250 registered
+          <?php echo $details['registeredCount']; ?> / <?php echo (int) $event['capacity']; ?> registered
         </div>
         <div class="reg-deadline">
-          Registration closes Oct 20, 2026
+          Registration closes <?php echo date('M j, Y', strtotime($event['registration_close'])); ?>
         </div>
-
-        <button class="btn-primary reg-cta">
-          Register Now &rarr;
-        </button>
+        <?php if ($state === 'OPEN'): ?>
+          <button class="btn-primary reg-cta">
+            <?php echo $isInviteOnly ? 'Request to Join' : 'Register Now'; ?> &rarr;
+          </button>
+        <?php else: ?>
+          <button class="btn-primary reg-cta" disabled><?php echo $buttonLabels[$state]; ?></button>
+        <?php endif; ?>
       </div>
     </div>
-
   </div>
 </section>
 
-
-<!-- Registration Modal -->
+<?php if ($state === 'OPEN'): ?>
 <div class="modal-overlay" id="registrationModal">
   <div class="modal">
     <div class="modal-banner">
@@ -192,20 +245,20 @@
     </div>
 
     <div class="modal-body">
-      <h1>AI Innovation Summit 2024</h1>
+      <h1><?php echo htmlspecialchars($event['name']); ?></h1>
       <div class="hosted-by">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.6"/></svg>
-        Hosted by Google Developer Group
+        Hosted by <?php echo htmlspecialchars($event['organizer_name']); ?>
       </div>
 
       <div class="meta-row">
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          Oct 24, 9:00 AM
+          <?php echo date('M j', strtotime($event['event_date'])) . ', ' . date('g:i A', strtotime($event['start_time'])); ?>
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-          Moscone Center, SF
+          <?php echo htmlspecialchars($event['location']); ?>
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="7" x2="10" y2="17" stroke="currentColor" stroke-width="1.4" stroke-dasharray="1.8 2" stroke-linecap="round"/></svg>
@@ -215,7 +268,7 @@
 
       <div class="attending-row">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.6 2.2-4.7 5-4.7s5 2.1 5 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.8 4.5 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        250 Attending
+        <?php echo $details['registeredCount']; ?> Attending
       </div>
 
       <div class="info-box">
@@ -223,39 +276,31 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="11" x2="12" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="0.9" fill="currentColor"/></svg>
           What happens next?
         </div>
-
+        <?php if ($isInviteOnly): ?>
         <div class="info-list-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 6.5l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <div>
-            <div class="info-list-title">Confirmation Email &amp; Ticket</div>
-            <div class="info-list-sub">Your digital pass with QR code will be sent immediately.</div>
+            <div class="info-list-title">Organizer Approval</div>
+            <div class="info-list-sub">This is an invite-only event. The organizer will review your request.</div>
           </div>
         </div>
-
+        <?php else: ?>
         <div class="info-list-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 6.5l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <div>
-            <div class="info-list-title">Event Reminders</div>
-            <div class="info-list-sub">We'll notify you 24 hours before the event starts.</div>
+            <div class="info-list-title">Confirmation &amp; Event Pass</div>
+            <div class="info-list-sub">Your registration is confirmed immediately.</div>
           </div>
         </div>
-
+        <?php endif; ?>
         <div class="info-list-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3.8-6.5 10-6.5S22 12 22 12s-3.8 6.5-10 6.5S2 12 2 12z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/></svg>
           <div>
             <div class="info-list-title">Compatibility Matching</div>
-            <div class="info-list-sub">Opt-in to share your profile for networking opportunities.</div>
+            <div class="info-list-sub">Networking unlocks after you check in at the event.</div>
           </div>
         </div>
       </div>
-
-      <label class="check-row">
-        <input type="checkbox" checked>
-        <div>
-          <div class="check-label">Send me event updates and alerts</div>
-          <div class="check-sub">Receive notifications about schedule changes and important announcements.</div>
-        </div>
-      </label>
 
       <label class="check-row">
         <input type="checkbox">
@@ -267,10 +312,10 @@
 
       <div class="modal-actions">
         <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
-        <a href="../registrationSuccess/index.html" class="btn-primary" style="text-decoration: none;">
-          Register Now
+        <button class="btn-primary">
+          <?php echo $isInviteOnly ? 'Send Request' : 'Register Now'; ?>
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -281,10 +326,10 @@
     const modal = document.getElementById("registrationModal");
     const openBtn = document.querySelector(".reg-cta");
     const closeBtns = [document.getElementById("modalCloseBtn"), document.getElementById("modalCancelBtn")];
-    
+
     openBtn.addEventListener("click", () => {
       modal.classList.add("active");
-      document.body.style.overflow = "hidden"; 
+      document.body.style.overflow = "hidden";
     });
 
     closeBtns.forEach(btn => {
@@ -302,6 +347,6 @@
     });
   });
 </script>
-
+<?php endif; ?>
 </body>
 </html>

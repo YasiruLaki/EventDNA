@@ -8,6 +8,41 @@ class RegistrationController {
         $this->registrationRepo = new RegistrationRepository($conn);
     }
 
+    public function getEventDetails($eventId, $userId) {
+        $event = $this->registrationRepo->getEventById($eventId);
+
+        if (!$event) {
+            return null;
+        }
+
+        $registeredCount = $this->registrationRepo->countActiveRegistrations($eventId);
+        $registration = $this->registrationRepo->getRegistration($eventId, $userId);
+
+        if ($event['organizer_id'] == $userId) {
+            $state = 'OWN';
+        } elseif ($registration && $registration['status'] !== 'CANCELLED') {
+            $state = $registration['status'];
+        } elseif ($event['status'] === 'CANCELLED') {
+            $state = 'EVENT_CANCELLED';
+        } elseif ($event['db_now'] < $event['registration_open']) {
+            $state = 'NOT_OPEN';
+        } elseif ($event['db_now'] > $event['registration_close']) {
+            $state = 'CLOSED';
+        } elseif ($event['visibility'] === 'PUBLIC' && $registeredCount >= $event['capacity']) {
+            $state = 'FULL';
+        } else {
+            $state = 'OPEN';
+        }
+
+        return [
+            "event" => $event,
+            "interests" => $this->registrationRepo->getEventInterests($eventId),
+            "registeredCount" => $registeredCount,
+            "registration" => $registration,
+            "state" => $state
+        ];
+    }
+
     public function register($userId, $eventId) {
         $event = $this->registrationRepo->getEventById($eventId);
 
