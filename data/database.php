@@ -15,13 +15,9 @@ $user = $env["DB_USER"];
 $pass = $env["DB_PASSWORD"];
 $port = $env["DB_PORT"];
 
-echo "ENV loaded successfully<br>";
-
 $conn = new mysqli($host, $user, $pass, $db, $port);
 
 if ($conn->connect_error) {
     die("Database connection failed: " . $conn->connect_error);
 }
-
-echo "Database connected successfully!";
 ?>
