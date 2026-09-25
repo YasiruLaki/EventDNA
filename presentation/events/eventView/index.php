@@ -87,7 +87,7 @@ $eventTime = date('g:i A', strtotime($event['start_time'])) . ' – ' . date('g:
         </a>
         <div class="nav-links">
           <a href="../ExploreEvents/index.html" class="nav-link active">Find Events</a>
-          <a href="../myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../myEvents/index.php" class="nav-link">My Events</a>
           <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
           <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
         </div>

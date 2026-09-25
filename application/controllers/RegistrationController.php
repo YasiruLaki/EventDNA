@@ -77,5 +77,42 @@ class RegistrationController {
 
         return ["success" => true, "code" => $status, "message" => ($status === 'PENDING') ? "Your request has been sent to the organizer." : "You are registered for this event."];
     }
+
+    public function getMyRegistrations($userId) {
+        $registrations = $this->registrationRepo->getUserRegistrations($userId);
+        $upcoming = [];
+        $past = [];
+
+        foreach ($registrations as $registration) {
+            if ($registration['is_upcoming']) {
+                $upcoming[] = $registration;
+            } else {
+                $past[] = $registration;
+            }
+        }
+
+        return ["upcoming" => $upcoming, "past" => $past];
+    }
+
+    public function cancel($userId, $eventId) {
+        $event = $this->registrationRepo->getEventById($eventId);
+        $registration = $this->registrationRepo->getRegistration($eventId, $userId);
+
+        if (!$event || !$registration || $registration['status'] === 'CANCELLED') {
+            return ["success" => false, "code" => "NOT_REGISTERED", "message" => "You are not registered for this event."];
+        }
+        if (!in_array($registration['status'], ['REGISTERED', 'APPROVED', 'PENDING'])) {
+            return ["success" => false, "code" => "INVALID_STATUS", "message" => "This registration cannot be cancelled."];
+        }
+        if ($event['db_now'] > $event['event_date'] . ' ' . $event['start_time']) {
+            return ["success" => false, "code" => "EVENT_STARTED", "message" => "This event has already started."];
+        }
+
+        if (!$this->registrationRepo->updateStatus($registration['registration_id'], 'CANCELLED')) {
+            return ["success" => false, "code" => "SERVER_ERROR", "message" => "Could not cancel registration. Please try again."];
+        }
+
+        return ["success" => true, "code" => "CANCELLED", "message" => "Your registration has been cancelled."];
+    }
 }
 ?>

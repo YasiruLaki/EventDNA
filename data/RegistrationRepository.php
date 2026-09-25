@@ -46,6 +46,19 @@ class RegistrationRepository {
         return (int) $stmt->get_result()->fetch_assoc()['total'];
     }
 
+    public function getUserRegistrations($userId) {
+        $stmt = $this->conn->prepare("
+            SELECT r.registration_id, r.status, r.registered_at, e.event_id, e.name, e.event_date, e.start_time, e.location, e.visibility, e.status AS event_status, e.event_date >= CURDATE() AS is_upcoming
+            FROM event_registrations r
+            JOIN events e ON r.event_id = e.event_id
+            WHERE r.user_id = ? AND r.status <> 'CANCELLED'
+            ORDER BY e.event_date ASC, e.start_time ASC
+        ");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function createRegistration($eventId, $userId, $status) {
         $this->conn->begin_transaction();
         try {

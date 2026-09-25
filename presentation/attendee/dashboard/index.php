@@ -15,7 +15,7 @@
         </a>
         <div class="nav-links">
           <a href="../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-          <a href="../../events/myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
           <a href="../community/community-hub/index.html" class="nav-link">Communities</a>
           <a href="../myConnections/index.html" class="nav-link">Connections</a>
         </div>
@@ -189,7 +189,7 @@
                 </span>
                 <span>Find Events</span>
               </a>
-              <a class="quick-action" href="../../events/myEvents/index.html">
+              <a class="quick-action" href="../../events/myEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M6 6h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
@@ -201,7 +201,7 @@
                 </span>
                 <span>Check In</span>
               </a>
-              <a class="quick-action" href="../../events/myEvents/index.html">
+              <a class="quick-action" href="../../events/myEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M4.5 8.5h15M4.5 15.5h15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 </span>

@@ -39,7 +39,7 @@ $isPending = $details['state'] === 'PENDING';
         </a>
         <div class="nav-links">
           <a href="../ExploreEvents/index.html" class="nav-link">Find Events</a>
-          <a href="../myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../myEvents/index.php" class="nav-link">My Events</a>
           <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
           <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
         </div>
@@ -116,7 +116,7 @@ $isPending = $details['state'] === 'PENDING';
       </ul>
 
       <div class="left-actions">
-        <a href="../myEvents/index.html" class="btn-primary">Go to My Events &rarr;</a>
+        <a href="../myEvents/index.php" class="btn-primary">Go to My Events &rarr;</a>
         <a href="../ExploreEvents/index.html" class="btn-tint">Continue Exploring</a>
       </div>
     </div>
