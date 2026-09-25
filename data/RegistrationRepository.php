@@ -9,7 +9,7 @@ class RegistrationRepository {
 
     public function getEventById($eventId) {
         $stmt = $this->conn->prepare("
-            SELECT e.*, u.full_name AS organizer_name
+            SELECT e.*, u.full_name AS organizer_name, NOW() AS db_now
             FROM events e
             JOIN users u ON e.organizer_id = u.user_id
             WHERE e.event_id = ?
