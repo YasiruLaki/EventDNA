@@ -78,6 +78,38 @@ class RegistrationController {
         return ["success" => true, "code" => $status, "message" => ($status === 'PENDING') ? "Your request has been sent to the organizer." : "You are registered for this event."];
     }
 
+    public function getOrganizerEvent($organizerId, $eventId) {
+        $event = $this->registrationRepo->getEventById($eventId);
+
+        if (!$event) {
+            return ["success" => false, "code" => "EVENT_NOT_FOUND", "message" => "Event not found."];
+        }
+        if ($event['organizer_id'] != $organizerId) {
+            return ["success" => false, "code" => "FORBIDDEN", "message" => "You can only manage your own events."];
+        }
+
+        $counts = $this->registrationRepo->countRegistrationsByStatus($eventId);
+
+        if ($event['status'] === 'CANCELLED') {
+            $registrationState = 'Cancelled';
+        } elseif ($event['db_now'] < $event['registration_open']) {
+            $registrationState = 'Not Open Yet';
+        } elseif ($event['db_now'] > $event['registration_close']) {
+            $registrationState = 'Closed';
+        } else {
+            $registrationState = 'Open';
+        }
+
+        return [
+            "success" => true,
+            "event" => $event,
+            "interests" => $this->registrationRepo->getEventInterests($eventId),
+            "counts" => $counts,
+            "registeredCount" => $counts['REGISTERED'] + $counts['APPROVED'],
+            "registrationState" => $registrationState
+        ];
+    }
+
     public function getMyRegistrations($userId) {
         $registrations = $this->registrationRepo->getUserRegistrations($userId);
         $upcoming = [];

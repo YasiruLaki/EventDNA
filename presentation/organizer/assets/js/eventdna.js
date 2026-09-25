@@ -83,7 +83,7 @@
   ];
 
   var EVENT_TABS = [
-    { key: 'overview',   label: 'Overview',   href: 'event-details.html' },
+    { key: 'overview',   label: 'Overview',   href: 'event-details.php?id=1' },
     { key: 'attendees',  label: 'Attendees',  href: 'manage-attendees.html' },
     { key: 'attendance', label: 'Attendance', href: 'attendance-view.html' },
     { key: 'analytics',  label: 'Analytics',  href: 'analytics.html' },

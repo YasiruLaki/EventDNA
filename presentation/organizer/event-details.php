@@ -1,9 +1,33 @@
+<?php
+session_start();
+require_once "../../data/database.php";
+require_once "../../application/controllers/RegistrationController.php";
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
+    header("Location: ../auth/login/index.php");
+    exit;
+}
+
+$controller = new RegistrationController($conn);
+$eventId = (int) ($_GET['id'] ?? 0);
+$details = $controller->getOrganizerEvent($_SESSION['user_id'], $eventId);
+
+if (!$details['success']) {
+    http_response_code($details['code'] === 'FORBIDDEN' ? 403 : 404);
+    echo htmlspecialchars($details['message']);
+    exit;
+}
+
+$event = $details['event'];
+$counts = $details['counts'];
+$eventDate = date('M j, Y', strtotime($event['event_date']));
+?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manage Event - EventDNA</title>
+  <title><?php echo htmlspecialchars($event['name']); ?> - EventDNA</title>
   <link rel="stylesheet" href="../attendee/dashboard/styles.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -82,12 +106,12 @@
   <nav class="top-nav">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="dashboard.html" class="nav-logo">
-          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        <a href="dashboard.php" class="nav-logo">
+          <img src="../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
-          <a href="dashboard.html" class="nav-link">Dashboard</a>
-          <a href="dashboard.html#events" class="nav-link">My Events</a>
+          <a href="dashboard.php" class="nav-link">Dashboard</a>
+          <a href="dashboard.php#events" class="nav-link">My Events</a>
           <a href="create-event.html" class="nav-link">Create Event</a>
         </div>
       </div>
@@ -95,11 +119,11 @@
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Hanan</span>
+            <span class="nav-profile-name"><?php echo htmlspecialchars($_SESSION['full_name'] ?? ''); ?></span>
             <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
           </button>
           <div class="nav-dropdown">
-            <a href="../auth/login/index.html" class="dropdown-item text-danger">Logout</a>
+            <a href="../auth/login/index.php" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
       </div>
@@ -110,10 +134,14 @@
     <main class="dashboard-content" style="max-width: 900px; margin: 0 auto;">
       
       <div style="margin-bottom: 2rem;">
-        <h1 class="page-title" style="margin-bottom: 0.5rem;">AI Innovation Summit 2026</h1>
+        <h1 class="page-title" style="margin-bottom: 0.5rem;"><?php echo htmlspecialchars($event['name']); ?></h1>
         <div style="display: flex; gap: 1rem; align-items: center; color: var(--text-secondary); font-size: 0.95rem;">
-          <span style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;">LIVE</span>
-          <span>Oct 24–26, 2026 · Colombo</span>
+          <?php if ($event['status'] === 'CANCELLED'): ?>
+            <span style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;">CANCELLED</span>
+          <?php else: ?>
+            <span style="background: rgba(79, 16, 255, 0.1); color: var(--primary); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;"><?php echo $event['visibility'] === 'INVITE_ONLY' ? 'INVITE ONLY' : 'PUBLIC'; ?></span>
+          <?php endif; ?>
+          <span><?php echo $eventDate; ?> · <?php echo htmlspecialchars($event['location']); ?></span>
         </div>
       </div>
 
@@ -132,23 +160,35 @@
           
           <div class="data-row">
             <span class="data-label">Event Name</span>
-            <span class="data-value">AI Innovation Summit 2026</span>
+            <span class="data-value"><?php echo htmlspecialchars($event['name']); ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Date</span>
-            <span class="data-value">Oct 24–26, 2026</span>
+            <span class="data-value"><?php echo $eventDate; ?> · <?php echo date('g:i A', strtotime($event['start_time'])); ?> – <?php echo date('g:i A', strtotime($event['end_time'])); ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Location</span>
-            <span class="data-value">Colombo</span>
+            <span class="data-value"><?php echo htmlspecialchars($event['location']); ?></span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Visibility</span>
+            <span class="data-value"><?php echo $event['visibility'] === 'INVITE_ONLY' ? 'Invite Only' : 'Public'; ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Capacity</span>
-            <span class="data-value">500</span>
+            <span class="data-value"><?php echo $details['registeredCount']; ?> / <?php echo (int) $event['capacity']; ?> registered</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Pending Requests</span>
+            <span class="data-value" style="color: #D97706;"><?php echo $counts['PENDING']; ?></span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Registration Window</span>
+            <span class="data-value"><?php echo date('M j, g:i A', strtotime($event['registration_open'])); ?> – <?php echo date('M j, g:i A', strtotime($event['registration_close'])); ?></span>
           </div>
           <div class="data-row" style="margin-bottom: 1.5rem;">
             <span class="data-label">Registration</span>
-            <span class="data-value" style="color: var(--success);">Open</span>
+            <span class="data-value" style="color: <?php echo $details['registrationState'] === 'Open' ? 'var(--success)' : 'var(--danger)'; ?>;"><?php echo $details['registrationState']; ?></span>
           </div>
 
           <div style="display: flex; gap: 1rem; margin-top: 2rem;">
@@ -321,7 +361,7 @@
   <div id="cancelModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
     <div style="background: #fff; padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
       <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin: 0 0 1rem 0;">Cancel this event?</h3>
-      <p style="color: var(--text-secondary); margin: 0 0 2rem 0; line-height: 1.6;">Are you sure you want to cancel <strong>AI Innovation Summit 2026</strong>? This will permanently cancel the event and automatically notify all 312 registered attendees.</p>
+      <p style="color: var(--text-secondary); margin: 0 0 2rem 0; line-height: 1.6;">Are you sure you want to cancel <strong><?php echo htmlspecialchars($event['name']); ?></strong>? This will permanently cancel the event and automatically notify all <?php echo $details['registeredCount']; ?> registered attendees.</p>
       
       <div style="display: flex; gap: 1rem; justify-content: flex-end;">
         <button id="closeModalBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem;">Keep Event</button>

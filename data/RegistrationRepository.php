@@ -46,6 +46,19 @@ class RegistrationRepository {
         return (int) $stmt->get_result()->fetch_assoc()['total'];
     }
 
+    public function countRegistrationsByStatus($eventId) {
+        $stmt = $this->conn->prepare("SELECT status, COUNT(*) AS total FROM event_registrations WHERE event_id = ? GROUP BY status");
+        $stmt->bind_param("i", $eventId);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $counts = ['PENDING' => 0, 'APPROVED' => 0, 'REGISTERED' => 0, 'REJECTED' => 0, 'REMOVED' => 0, 'CANCELLED' => 0];
+        foreach ($rows as $row) {
+            $counts[$row['status']] = (int) $row['total'];
+        }
+        return $counts;
+    }
+
     public function getUserRegistrations($userId) {
         $stmt = $this->conn->prepare("
             SELECT r.registration_id, r.status, r.registered_at, e.event_id, e.name, e.event_date, e.start_time, e.location, e.visibility, e.status AS event_status, e.event_date >= CURDATE() AS is_upcoming

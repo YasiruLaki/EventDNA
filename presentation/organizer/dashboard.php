@@ -108,9 +108,9 @@
           </div>
 
           <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-            <a href="event-details.html" class="btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">View
+            <a href="event-details.php?id=1" class="btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">View
               Event</a>
-            <a href="event-details.html#qr" class="btn-secondary"
+            <a href="event-details.php?id=1#qr" class="btn-secondary"
               style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">Check-in</a>
           </div>
         </article>
@@ -167,7 +167,7 @@
                   <span
                     style="background: rgba(220, 38, 38, 0.1); color: var(--danger); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Live</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary"
+                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.php?id=1" class="btn-secondary"
                     style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
               </tr>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
@@ -178,7 +178,7 @@
                   <span
                     style="background: var(--primary-tint); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Upcoming</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary"
+                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.php?id=2" class="btn-secondary"
                     style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
               </tr>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
@@ -189,7 +189,7 @@
                   <span
                     style="background: var(--primary-tint); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 6px;">Upcoming</span>
                 </td>
-                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.html" class="btn-secondary"
+                <td style="padding: 1.25rem 1.5rem;"><a href="event-details.php?id=3" class="btn-secondary"
                     style="padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600;">Manage</a></td>
               </tr>
               <tr>
