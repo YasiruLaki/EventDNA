@@ -1063,3 +1063,13 @@ a {
 .reg-status-removed {
   color: #dc2626;
 }
+
+.reg-error {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+}

@@ -10,6 +10,22 @@ if (!isset($_SESSION['user_id'])) {
 
 $controller = new RegistrationController($conn);
 $eventId = (int) ($_GET['id'] ?? 0);
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (empty($_POST['agree'])) {
+        $error = "Please agree to the Community Guidelines.";
+    } else {
+        $result = $controller->register($_SESSION['user_id'], $eventId);
+
+        if ($result['success']) {
+            header("Location: ../registrationSuccess/index.php?id=" . $eventId);
+            exit;
+        }
+        $error = $result['message'];
+    }
+}
+
 $details = $controller->getEventDetails($eventId, $_SESSION['user_id']);
 
 if (!$details) {
@@ -221,6 +237,9 @@ $eventTime = date('g:i A', strtotime($event['start_time'])) . ' – ' . date('g:
         <div class="reg-deadline">
           Registration closes <?php echo date('M j, Y', strtotime($event['registration_close'])); ?>
         </div>
+        <?php if ($error): ?>
+          <p class="reg-error"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
         <?php if ($state === 'OPEN'): ?>
           <button class="btn-primary reg-cta">
             <?php echo $isInviteOnly ? 'Request to Join' : 'Register Now'; ?> &rarr;
@@ -302,8 +321,9 @@ $eventTime = date('g:i A', strtotime($event['start_time'])) . ' – ' . date('g:
         </div>
       </div>
 
+      <form method="post">
       <label class="check-row">
-        <input type="checkbox">
+        <input type="checkbox" name="agree" value="1" required>
         <div>
           <div class="check-label">I agree to the Community Guidelines <span class="req">*</span></div>
           <div class="check-sub">Read our code of conduct for a safe and respectful event.</div>
@@ -311,12 +331,13 @@ $eventTime = date('g:i A', strtotime($event['start_time'])) . ' – ' . date('g:
       </label>
 
       <div class="modal-actions">
-        <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
-        <button class="btn-primary">
+        <button type="button" class="btn-cancel" id="modalCancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary" id="registerSubmitBtn">
           <?php echo $isInviteOnly ? 'Send Request' : 'Register Now'; ?>
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -337,6 +358,10 @@ $eventTime = date('g:i A', strtotime($event['start_time'])) . ' – ' . date('g:
         modal.classList.remove("active");
         document.body.style.overflow = "";
       });
+    });
+
+    modal.querySelector("form").addEventListener("submit", () => {
+      document.getElementById("registerSubmitBtn").disabled = true;
     });
 
     modal.addEventListener("click", (e) => {
