@@ -105,6 +105,7 @@ class RegistrationController {
             "event" => $event,
             "interests" => $this->registrationRepo->getEventInterests($eventId),
             "counts" => $counts,
+            "attendees" => $this->registrationRepo->getEventAttendees($eventId),
             "registeredCount" => $counts['REGISTERED'] + $counts['APPROVED'],
             "registrationState" => $registrationState
         ];

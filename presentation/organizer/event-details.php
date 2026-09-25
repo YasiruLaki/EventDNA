@@ -95,6 +95,24 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       font-weight: 600;
       font-size: 0.95rem;
     }
+    .attendee-status {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .status-checked-in,
+    .status-approved {
+      color: var(--success);
+    }
+    .status-registered {
+      color: var(--text-secondary);
+    }
+    .status-pending {
+      color: #D97706;
+    }
+    .status-rejected,
+    .status-removed {
+      color: var(--danger);
+    }
     .data-value {
       color: var(--secondary);
       font-weight: 600;
@@ -202,46 +220,43 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       <section id="attendees" class="tab-content">
         <div class="manage-card" style="padding: 0; overflow: hidden;">
           <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0;">Attendees</h3>
+            <h3 style="margin: 0;">Attendees <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.95rem;">(<?php echo count($details['attendees']); ?>)</span></h3>
             <div style="position: relative; width: 250px;">
               <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-tertiary);"></i>
-              <input type="text" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
+              <input type="text" id="attendeeSearch" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
             </div>
           </div>
-          
+
+          <?php if (empty($details['attendees'])): ?>
+            <p style="padding: 2rem 1.5rem; margin: 0; color: var(--text-secondary); text-align: center;">No one has registered for this event yet.</p>
+          <?php else: ?>
           <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
               <tr style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
                 <th style="padding: 1rem 1.5rem;">Name</th>
                 <th style="padding: 1rem 1.5rem;">Email</th>
+                <th style="padding: 1rem 1.5rem;">Registered</th>
                 <th style="padding: 1rem 1.5rem;">Status</th>
-                <th style="padding: 1rem 1.5rem;">Action</th>
               </tr>
             </thead>
-            <tbody style="font-size: 0.95rem; color: var(--secondary);">
+            <tbody id="attendeeRows" style="font-size: 0.95rem; color: var(--secondary);">
+              <?php foreach ($details['attendees'] as $attendee): ?>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Kamal Perera</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">kamal@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--success); font-weight: 600; font-size: 0.85rem;">Checked-in</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Sarah Fernando</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">sarah@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Registered</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">James Doe</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">james@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: #D97706; font-weight: 600; font-size: 0.85rem;">Pending</span></td>
-                <td style="padding: 1rem 1.5rem; display: flex; gap: 0.5rem;">
-                  <button class="btn-text" style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Approve</button>
-                  <button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Reject</button>
+                <td style="padding: 1rem 1.5rem; font-weight: 600;"><?php echo htmlspecialchars($attendee['full_name']); ?></td>
+                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);"><?php echo htmlspecialchars($attendee['email']); ?></td>
+                <td style="padding: 1rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem;"><?php echo date('M j, g:i A', strtotime($attendee['registered_at'])); ?></td>
+                <td style="padding: 1rem 1.5rem;">
+                  <?php if ($attendee['checked_in']): ?>
+                    <span class="attendee-status status-checked-in">Checked-in</span>
+                  <?php else: ?>
+                    <span class="attendee-status status-<?php echo strtolower($attendee['status']); ?>"><?php echo ucfirst(strtolower($attendee['status'])); ?></span>
+                  <?php endif; ?>
                 </td>
               </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -396,6 +411,16 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       }
     }
     
+    const attendeeSearch = document.getElementById('attendeeSearch');
+    if (attendeeSearch) {
+      attendeeSearch.addEventListener('input', () => {
+        const term = attendeeSearch.value.toLowerCase();
+        document.querySelectorAll('#attendeeRows tr').forEach(row => {
+          row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+      });
+    }
+
     // Simple profile menu toggle
     const profileBtn = document.querySelector('.nav-profile-btn');
     const profileDropdown = document.querySelector('.nav-dropdown');

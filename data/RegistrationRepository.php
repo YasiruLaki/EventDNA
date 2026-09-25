@@ -59,6 +59,20 @@ class RegistrationRepository {
         return $counts;
     }
 
+    public function getEventAttendees($eventId) {
+        $stmt = $this->conn->prepare("
+            SELECT r.registration_id, r.status, r.registered_at, r.approved_at, u.user_id, u.full_name, u.email, a.checked_in, a.checked_in_at
+            FROM event_registrations r
+            JOIN users u ON r.user_id = u.user_id
+            LEFT JOIN attendance a ON a.event_id = r.event_id AND a.user_id = r.user_id
+            WHERE r.event_id = ? AND r.status <> 'CANCELLED'
+            ORDER BY FIELD(r.status, 'PENDING', 'REGISTERED', 'APPROVED', 'REJECTED', 'REMOVED'), r.registered_at ASC
+        ");
+        $stmt->bind_param("i", $eventId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function getUserRegistrations($userId) {
         $stmt = $this->conn->prepare("
             SELECT r.registration_id, r.status, r.registered_at, e.event_id, e.name, e.event_date, e.start_time, e.location, e.visibility, e.status AS event_status, e.event_date >= CURDATE() AS is_upcoming
