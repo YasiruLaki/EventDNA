@@ -42,9 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         unset($_SESSION['pending_role']);
         
         if ($pendingRole === 'organizer') {
-            header("Location: ../../organizer/dashboard.html");
+            header("Location: ../../organizer/dashboard.php");
         } else {
-            header("Location: ../../attendee/onboarding/index.html");
+            header("Location: ../../attendee/onboarding/index.php");
         }
         exit;
     } else {
