@@ -12,14 +12,14 @@
 <nav class="top-nav">
   <div class="nav-container">
     <div class="nav-left">
-      <a href="../../dashboard/index.html" class="nav-logo">
+      <a href="../../dashboard/index.php" class="nav-logo">
         <img src="../../../images/logo.png" alt="EventDNA" class="nav-logo-img">
       </a>
       <div class="nav-links">
-        <a href="../../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-        <a href="../../../events/myEvents/index.html" class="nav-link">My Events</a>
-        <a href="../community-hub/index.html" class="nav-link">Communities</a>
-        <a href="../../myConnections/index.html" class="nav-link">Connections</a>
+        <a href="../../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
+        <a href="../../../events/myEvents/index.php" class="nav-link">My Events</a>
+        <a href="../community-hub/index.php" class="nav-link">Communities</a>
+        <a href="../../myConnections/index.php" class="nav-link">Connections</a>
       </div>
     </div>
     <div class="nav-right">
@@ -30,9 +30,9 @@
           <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="nav-dropdown">
-          <a href="../../dashboard/index.html" class="dropdown-item">Dashboard</a>
+          <a href="../../dashboard/index.php" class="dropdown-item">Dashboard</a>
           <a href="#" class="dropdown-item">Settings</a>
-          <a href="../../../events/ExploreEvents/index.html" class="dropdown-item text-danger">Log Out</a>
+          <a href="../../../events/ExploreEvents/index.php" class="dropdown-item text-danger">Log Out</a>
         </div>
       </div>
     </div>

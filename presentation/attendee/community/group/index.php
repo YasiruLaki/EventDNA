@@ -12,14 +12,14 @@
 <nav class="top-nav">
   <div class="nav-container">
     <div class="nav-left">
-      <a href="../../dashboard/index.html" class="nav-logo">
+      <a href="../../dashboard/index.php" class="nav-logo">
         <img src="../../../images/logo.png" alt="EventDNA" class="nav-logo-img">
       </a>
       <div class="nav-links">
-        <a href="../../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-        <a href="../../../events/myEvents/index.html" class="nav-link">My Events</a>
-        <a href="../community-hub/index.html" class="nav-link active">Communities</a>
-        <a href="../../myConnections/index.html" class="nav-link">Connections</a>
+        <a href="../../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
+        <a href="../../../events/myEvents/index.php" class="nav-link">My Events</a>
+        <a href="../community-hub/index.php" class="nav-link active">Communities</a>
+        <a href="../../myConnections/index.php" class="nav-link">Connections</a>
       </div>
     </div>
     <div class="nav-right">
@@ -30,9 +30,9 @@
           <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="nav-dropdown">
-          <a href="../../dashboard/index.html" class="dropdown-item">Dashboard</a>
+          <a href="../../dashboard/index.php" class="dropdown-item">Dashboard</a>
           <a href="#" class="dropdown-item">Settings</a>
-          <a href="../../../events/ExploreEvents/index.html" class="dropdown-item text-danger">Log Out</a>
+          <a href="../../../events/ExploreEvents/index.php" class="dropdown-item text-danger">Log Out</a>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
   <div class="container">
     <div class="hero-row">
       <div class="hero-title" style="max-width:800px;">
-        <a href="../community-hub/index.html" class="back-link" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--text-secondary); margin-bottom:1.5rem; font-size:0.95rem; font-weight:500;">
+        <a href="../community-hub/index.php" class="back-link" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--text-secondary); margin-bottom:1.5rem; font-size:0.95rem; font-weight:500;">
           <svg viewBox="0 0 24 24" fill="none" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Back to Community
         </a>
@@ -80,7 +80,7 @@
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             86
           </button>
-          <a href="../view-post/index.html" class="post-action">
+          <a href="../view-post/index.php" class="post-action">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             12 comments
           </a>
@@ -101,7 +101,7 @@
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             21
           </button>
-          <a href="../view-post/index.html" class="post-action">
+          <a href="../view-post/index.php" class="post-action">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             5 comments
           </a>
@@ -122,7 +122,7 @@
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             54
           </button>
-          <a href="../view-post/index.html" class="post-action">
+          <a href="../view-post/index.php" class="post-action">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             18 comments
           </a>
