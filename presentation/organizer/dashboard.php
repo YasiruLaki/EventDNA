@@ -124,8 +124,8 @@ $activeNav = 'dashboard';
               attendees.</p>
           </div>
           <div class="org-flex-gap-1" >
-            <a href="create-group.html" class="btn-primary">+ Create Group</a>
-            <a href="manage-groups.html" class="btn-secondary">Manage Groups</a>
+            <a href="create-group.php" class="btn-primary">+ Create Group</a>
+            <a href="manage-groups.php" class="btn-secondary">Manage Groups</a>
           </div>
         </div>
       </div>
