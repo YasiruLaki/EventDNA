@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . "/../includes/guard.php";
+
+$hour = (int)date('G');
+$greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good Evening');
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,23 +20,22 @@
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
-          <a href="../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-          <a href="../../events/myEvents/index.html" class="nav-link">My Events</a>
-          <a href="../community/community-hub/index.html" class="nav-link">Communities</a>
-          <a href="../myConnections/index.html" class="nav-link">Connections</a>
+          <a href="../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
+          <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
+          <a href="../community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Yasiru</span>
+            <span class="nav-profile-name"><?= h(explode(' ', trim($attendeeName))[0]) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="nav-dropdown">
-            <a href="../onboarding/index.html" class="dropdown-item">Profile</a>
-            <a href="../settings/index.html" class="dropdown-item">Settings</a>
-            <a href="#" class="dropdown-item text-danger">Logout</a>
+            <a href="../settings/index.php" class="dropdown-item">Profile</a>
+            <a href="../../auth/logout/index.php" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
       </div>
@@ -41,14 +46,14 @@
     <main class="dashboard-content">
       <section class="hero-row hero-header">
         <div class="hero-copy">
-          <h1>Good Evening, Yasiru!</h1>
+          <h1><?= $greeting ?>, <?= h(explode(' ', trim($attendeeName))[0]) ?>!</h1>
           <p class="supporting-copy">
             Your profile is almost complete. Complete it to get better event and networking recommendations.
           </p>
         </div>
         <div class="hero-actions">
-          <a class="btn-secondary hero-btn hero-btn-soft" href="../onboarding/index.html">Complete Profile</a>
-          <a class="btn-primary hero-btn" href="../../events/ExploreEvents/index.html">Explore Events</a>
+          <a class="btn-secondary hero-btn hero-btn-soft" href="../onboarding/index.php">Complete Profile</a>
+          <a class="btn-primary hero-btn" href="../../events/ExploreEvents/index.php">Explore Events</a>
         </div>
       </section>
 
@@ -116,8 +121,8 @@
               </div>
             </div>
             <div class="feature-actions">
-              <a class="btn-primary" href="../../events/eventView/index.html">View Event Details</a>
-              <a class="btn-secondary" href="../../events/registrationModel/index.html">View Event Pass</a>
+              <a class="btn-primary" href="../../events/eventView/index.php">View Event Details</a>
+              <a class="btn-secondary" href="../../events/registrationModel/index.php">View Event Pass</a>
             </div>
           </article>
 
@@ -129,13 +134,13 @@
               <h3>Networking Locked</h3>
               <p>Check in at the event to unlock your personalized connections.</p>
             </div>
-            <a class="btn-secondary" href="../onboarding/index.html">Complete Profile</a>
+            <a class="btn-secondary" href="../onboarding/index.php">Complete Profile</a>
           </article>
 
           <section class="section-row">
             <div class="section-head">
               <h3>Recommended for You</h3>
-              <a href="../../events/ExploreEvents/index.html">View All &rarr;</a>
+              <a href="../../events/ExploreEvents/index.php">View All &rarr;</a>
             </div>
 
             <div class="recommendation-row">
@@ -183,13 +188,13 @@
             </div>
 
             <div class="quick-actions-grid">
-              <a class="quick-action" href="../../events/ExploreEvents/index.html">
+              <a class="quick-action" href="../../events/ExploreEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 </span>
                 <span>Find Events</span>
               </a>
-              <a class="quick-action" href="../../events/myEvents/index.html">
+              <a class="quick-action" href="../../events/myEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M6 6h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
@@ -201,13 +206,13 @@
                 </span>
                 <span>Check In</span>
               </a>
-              <a class="quick-action" href="../../events/myEvents/index.html">
+              <a class="quick-action" href="../../events/myEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M4.5 8.5h15M4.5 15.5h15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 </span>
                 <span>My Matches</span>
               </a>
-              <a class="quick-action" href="../community/community-hub/index.html">
+              <a class="quick-action" href="../community/community-hub/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 11a3 3 0 1 0-6 0 3 3 0 0 0 6 0Zm18 0a3 3 0 1 0-6 0 3 3 0 0 0 6 0ZM16 21a4 4 0 0 0-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
@@ -294,7 +299,7 @@
               </div>
             </div>
 
-            <a class="inline-link" href="../community/community-hub/index.html">View all requests</a>
+            <a class="inline-link" href="../community/community-hub/index.php">View all requests</a>
           </article>
 
           <article class="side-card alerts-card">
