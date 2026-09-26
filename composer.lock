@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7173d6a700b02b111e51b703acd8c8e",
+    "content-hash": "6f1216ad7a6aa91299c48c238e25ab3b",
     "packages": [
         {
             "name": "phpmailer/phpmailer",
@@ -87,6 +87,50 @@
                 }
             ],
             "time": "2026-05-18T08:06:14+00:00"
+        },
+        {
+            "name": "tekintian/phpqrcode",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tekintian/phpqrcode.git",
+                "reference": "8bc8c1189981a5dbd0d7a50fd6db4899834beff9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tekintian/phpqrcode/zipball/8bc8c1189981a5dbd0d7a50fd6db4899834beff9",
+                "reference": "8bc8c1189981a5dbd0d7a50fd6db4899834beff9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "tekintian\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "支持PHP5.3至php8.2的 qrcode 二维码工具类 改进版本，支持自定义LOGO，自定义输出目录和自定义返回类型 图片，base64图片数据, 二维码图片自定义，静态方法调用，方便快捷，高效，简洁的PHP二维码生成工具",
+            "homepage": "https://github.com/tekintian/phpqrcode",
+            "keywords": [
+                "PHP二维码",
+                "php qrcode with logo",
+                "phpqrcode",
+                "qrcode",
+                "tiny qrcode",
+                "二维码工具"
+            ],
+            "support": {
+                "forum": "https://github.com/tekintian/phpqrcode",
+                "issues": "https://github.com/tekintian/phpqrcode/issues",
+                "source": "https://github.com/tekintian/phpqrcode"
+            },
+            "time": "2023-11-06T12:08:32+00:00"
         }
     ],
     "packages-dev": [],
