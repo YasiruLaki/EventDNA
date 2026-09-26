@@ -1,51 +1,61 @@
+<?php
+require_once __DIR__ . "/../includes/guard.php";
+require_once "../../../data/database.php";
+require_once "../../../application/controllers/EventController.php";
+
+$eventController = new EventController($conn);
+$event = $eventController->getEventForAttendee($attendeeId, (int)($_GET['id'] ?? 0));
+if (!$event) {
+    http_response_code(404);
+    die("Event not found.");
+}
+
+$eventOver = in_array($event['display_status'], ['Cancelled', 'Completed'], true);
+$isRegistered = !$eventOver && in_array($event['my_registration'], ['PENDING', 'APPROVED', 'REGISTERED'], true);
+$wasTurnedAway = in_array($event['my_registration'], ['REJECTED', 'REMOVED'], true);
+$canRegister = !$isRegistered && !$wasTurnedAway && $event['registration_state'] === 'Open';
+
+// Label for the disabled button when the attendee cannot register
+if ($event['display_status'] === 'Cancelled') {
+    $closedLabel = 'Event Cancelled';
+} elseif ($event['display_status'] === 'Completed') {
+    $closedLabel = 'Event Ended';
+} elseif ($wasTurnedAway) {
+    $closedLabel = 'Registration Unavailable';
+} elseif ($event['registration_state'] === 'Full') {
+    $closedLabel = 'Fully Booked';
+} elseif ($event['registration_state'] === 'Not yet open') {
+    $closedLabel = 'Registration Not Yet Open';
+} else {
+    $closedLabel = 'Registration Closed';
+}
+$fewSeatsLeft = $event['remaining_seats'] > 0 && $event['remaining_seats'] <= max(5, (int)ceil($event['capacity'] * 0.1));
+$heroStyle = $event['cover_photo']
+    ? "background: linear-gradient(0deg, rgba(0, 0, 0, 0.904) 0%, rgba(7, 16, 32, 0.6) 45%, rgba(7, 16, 32, 0.32) 100%), url('" . h(cover_url($event['cover_photo'])) . "') center center / cover no-repeat;"
+    : "";
+$activeNav = 'explore';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Innovation Summit 2026 — EventDNA</title>
+<title><?= h($event['name']) ?> — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
 <!-- Nav -->
-  <nav class="top-nav">
-    <div class="nav-container">
-      <div class="nav-left">
-        <a href="../../attendee/dashboard/index.html" class="nav-logo">
-          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
-        </a>
-          <a href="../ExploreEvents/index.html" class="nav-link active">Find Events</a>
-          <a href="../myEvents/index.html" class="nav-link">My Events</a>
-          <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
-          <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
-        </div>
-      </div>
-      <div class="nav-right">
-        <div class="nav-profile-menu">
-          <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Yasiru</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="nav-dropdown">
-            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
-            <a href="#" class="dropdown-item text-danger">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+<?php include __DIR__ . "/../includes/nav.php"; ?>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero"<?= $heroStyle ? ' style="' . $heroStyle . '"' : '' ?>>
   <div class="container hero-inner">
-    <span class="hero-badge">Technology &amp; Innovation</span>
-    <h1>AI Innovation Summit 2026</h1>
-    <p>
-      Connect with professionals, researchers, and innovators in artificial intelligence. Discover new ideas, exchange knowledge, and build meaningful connections.
-    </p>
+    <?php if ($event['interest_names']): ?>
+      <span class="hero-badge"><?= h($event['interest_names'][0]) ?></span>
+    <?php endif; ?>
+    <h1><?= h($event['name']) ?></h1>
   </div>
 </section>
 
@@ -59,7 +69,7 @@
         </div>
         <div>
           <div class="info-label">Date</div>
-          <div class="info-value">Oct 24–26, 2026</div>
+          <div class="info-value"><?= h(format_event_date($event['event_date'])) ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -68,7 +78,7 @@
         </div>
         <div>
           <div class="info-label">Time</div>
-          <div class="info-value">9:00 AM – 5:00 PM</div>
+          <div class="info-value"><?= h(format_time_range($event['start_time'], $event['end_time'])) ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -77,7 +87,10 @@
         </div>
         <div>
           <div class="info-label">Location</div>
-          <div class="info-value">BMICH, Colombo</div>
+          <div class="info-value"><?= h($event['location']) ?></div>
+          <?php if ($event['address']): ?>
+            <div class="info-label"><?= h($event['address']) ?></div>
+          <?php endif; ?>
         </div>
       </div>
       <div class="info-item">
@@ -85,8 +98,8 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.6 2.2-4.7 5-4.7s5 2.1 5 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.8 4.5 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
         <div>
-          <div class="info-label">Event Type</div>
-          <div class="info-value">In-person</div>
+          <div class="info-label">Seats Left</div>
+          <div class="info-value"><?= $event['remaining_seats'] ?> of <?= (int)$event['capacity'] ?></div>
         </div>
       </div>
     </div>
@@ -101,32 +114,35 @@
       <div class="organizer-section">
         <h2>Organized by</h2>
         <div class="organizer-flex">
-          <div class="organizer-avatar">
-            <img src="https://images.unsplash.com/photo-1542442828-287217bfb87f?auto=format&fit=crop&w=150&q=80" alt="EventDNA Sri Lanka">
+          <div class="organizer-avatar" style="display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; font-weight: 700;">
+            <?= h(mb_strtoupper(mb_substr($event['organizer_name'], 0, 1))) ?>
           </div>
           <div>
             <div class="organizer-role">Event Organizer</div>
-            <div class="organizer-name">EventDNA Sri Lanka</div>
+            <div class="organizer-name"><?= h($event['organizer_name']) ?></div>
           </div>
         </div>
       </div>
 
+      <?php if ($event['description']): ?>
       <h2>About Event</h2>
       <div class="about-text">
         <p>
-          AI Innovation Summit brings together professionals, researchers, founders, and technology enthusiasts to explore current developments in artificial intelligence, machine learning, and emerging technologies.
+          <?= nl2br(h($event['description'])) ?>
         </p>
       </div>
+      <?php endif; ?>
 
+      <?php if ($event['interest_names']): ?>
       <div class="event-interests-section">
         <h2>Interests</h2>
         <div class="event-interests-flex">
-          <span class="interest-pill">Artificial Intelligence</span>
-          <span class="interest-pill">Machine Learning</span>
-          <span class="interest-pill">Technology</span>
-          <span class="interest-pill">Innovation</span>
+          <?php foreach ($event['interest_names'] as $interestName): ?>
+            <span class="interest-pill"><?= h($interestName) ?></span>
+          <?php endforeach; ?>
         </div>
       </div>
+      <?php endif; ?>
 
       <h2 class="why-heading">Highlights</h2>
       <div class="why-grid">
@@ -160,19 +176,44 @@
           <h3>Registration</h3>
         </div>
         <div class="reg-sub">
-          <span class="reg-status">Registration Open</span>
+          <?php if ($event['display_status'] === 'Cancelled'): ?>
+            <span class="reg-status" style="color: var(--text-secondary);">Event Cancelled</span>
+          <?php elseif ($event['display_status'] === 'Completed'): ?>
+            <span class="reg-status" style="color: var(--text-secondary);">Event Ended</span>
+          <?php elseif ($event['registration_state'] === 'Open'): ?>
+            <span class="reg-status">Registration Open</span>
+          <?php else: ?>
+            <span class="reg-status" style="color: var(--text-secondary);">Registration <?= h($event['registration_state']) ?></span>
+          <?php endif; ?>
         </div>
         
         <div class="reg-count">
-          232 / 250 registered
+          <?= (int)$event['registered_count'] ?> / <?= (int)$event['capacity'] ?> registered
+        </div>
+        <div class="reg-count<?= $fewSeatsLeft ? ' spots-warning' : '' ?>">
+          <?= $event['remaining_seats'] === 0 ? 'No spots left' : h(seats_label($event['remaining_seats'])) ?>
         </div>
         <div class="reg-deadline">
-          Registration closes Oct 20, 2026
+          <?php if ($event['registration_state'] === 'Not yet open'): ?>
+            Registration opens <?= h(format_event_date($event['registration_open'])) ?>
+          <?php else: ?>
+            Registration closes <?= h(format_event_date($event['registration_close'])) ?>
+          <?php endif; ?>
         </div>
 
-        <button class="btn-primary reg-cta">
-          Register Now &rarr;
-        </button>
+        <?php if ($isRegistered): ?>
+          <a href="../myEvents/index.php" class="btn-primary reg-cta" style="text-decoration: none;">
+            <?= $event['my_registration'] === 'PENDING' ? 'Awaiting Approval' : "You're Registered" ?> &middot; My Events
+          </a>
+        <?php elseif ($canRegister): ?>
+          <button class="btn-primary reg-cta">
+            Register Now &rarr;
+          </button>
+        <?php else: ?>
+          <button class="btn-primary reg-cta" disabled style="opacity: 0.5; cursor: not-allowed;">
+            <?= $closedLabel ?>
+          </button>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -192,20 +233,20 @@
     </div>
 
     <div class="modal-body">
-      <h1>AI Innovation Summit 2024</h1>
+      <h1><?= h($event['name']) ?></h1>
       <div class="hosted-by">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.6"/></svg>
-        Hosted by Google Developer Group
+        Hosted by <?= h($event['organizer_name']) ?>
       </div>
 
       <div class="meta-row">
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          Oct 24, 9:00 AM
+          <?= h(date('M j', strtotime($event['event_date']))) ?>, <?= h(format_time($event['start_time'])) ?>
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-          Moscone Center, SF
+          <?= h($event['location']) ?>
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="7" x2="10" y2="17" stroke="currentColor" stroke-width="1.4" stroke-dasharray="1.8 2" stroke-linecap="round"/></svg>
@@ -215,7 +256,7 @@
 
       <div class="attending-row">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.6 2.2-4.7 5-4.7s5 2.1 5 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.8 4.5 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        250 Attending
+        <?= (int)$event['registered_count'] ?> Attending &middot; <?= h(seats_label($event['remaining_seats'])) ?>
       </div>
 
       <div class="info-box">
@@ -279,13 +320,15 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("registrationModal");
-    const openBtn = document.querySelector(".reg-cta");
+    const openBtn = document.querySelector("button.reg-cta:not([disabled])");
     const closeBtns = [document.getElementById("modalCloseBtn"), document.getElementById("modalCancelBtn")];
     
-    openBtn.addEventListener("click", () => {
-      modal.classList.add("active");
-      document.body.style.overflow = "hidden"; 
-    });
+    if (openBtn) {
+      openBtn.addEventListener("click", () => {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      });
+    }
 
     closeBtns.forEach(btn => {
       btn.addEventListener("click", () => {

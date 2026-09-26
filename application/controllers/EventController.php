@@ -167,6 +167,79 @@ class EventController {
         ];
     }
 
+    // Active public events for the explore page. The soonest one is featured; the rest are listed.
+    public function getExploreEvents($search = '', $interestId = 0) {
+        $search = mb_substr(trim((string)$search), 0, 100);
+        $events = $this->eventRepo->getPublicUpcomingEvents(date('Y-m-d'), date('H:i:s'), $search, (int)$interestId);
+
+        foreach ($events as &$event) {
+            $this->addAttendeeFields($event);
+        }
+        unset($event);
+
+        return [
+            "featured" => $events ? array_shift($events) : null,
+            "events" => $events,
+            "interests" => $this->eventRepo->getPublicEventInterests(),
+        ];
+    }
+
+    // Returns the event if the attendee may see it: active public events, or any event they are registered for
+    public function getEventForAttendee($userId, $eventId) {
+        $event = $this->eventRepo->getEventById((int)$eventId);
+        if (!$event) {
+            return null;
+        }
+
+        $registration = $this->eventRepo->getRegistrationStatus($event['event_id'], (int)$userId);
+        $isPublic = $event['status'] === 'ACTIVE' && $event['visibility'] === 'PUBLIC';
+        if (!$isPublic && $registration === null) {
+            return null;
+        }
+
+        $this->addAttendeeFields($event);
+        $event['interest_names'] = $this->eventRepo->getEventInterestNames($event['event_id']);
+        $event['my_registration'] = $registration;
+        return $event;
+    }
+
+    // The attendee's registered events, split into upcoming and past
+    public function getAttendeeEvents($userId) {
+        $events = $this->eventRepo->getEventsByAttendee((int)$userId);
+
+        $upcoming = [];
+        $past = [];
+        $thisMonth = [];
+        $attended = 0;
+        $month = date('Y-m');
+
+        foreach ($events as $event) {
+            $event['display_status'] = $this->getDisplayStatus($event);
+            if ((int)$event['checked_in'] === 1) {
+                $attended++;
+            }
+
+            if ($event['display_status'] === 'Upcoming' || $event['display_status'] === 'Live') {
+                $upcoming[] = $event;
+                if (substr($event['event_date'], 0, 7) === $month) {
+                    $thisMonth[] = $event;
+                }
+            } else {
+                $past[] = $event;
+            }
+        }
+
+        return [
+            "upcoming" => $upcoming,
+            "past" => array_reverse($past),   // most recent first
+            "this_month" => $thisMonth,
+            "stats" => [
+                "upcoming" => count($upcoming),
+                "attended" => $attended,
+            ],
+        ];
+    }
+
     public function getDisplayStatus($event) {
         if ($event['status'] === 'CANCELLED') {
             return 'Cancelled';
@@ -196,6 +269,12 @@ class EventController {
             return 'Full';
         }
         return 'Open';
+    }
+
+    private function addAttendeeFields(&$event) {
+        $event['display_status'] = $this->getDisplayStatus($event);
+        $event['registration_state'] = $this->getRegistrationState($event);
+        $event['remaining_seats'] = max(0, (int)$event['capacity'] - (int)$event['registered_count']);
     }
 
     private function isEditable($event) {
