@@ -1040,3 +1040,36 @@ a {
   width: 14px;
   height: 14px;
 }
+.reg-cta:disabled {
+  background: #e2e8f0;
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.reg-status-registered,
+.reg-status-approved {
+  color: #16a34a;
+}
+
+.reg-status-pending {
+  color: #d97706;
+}
+
+.reg-status-full,
+.reg-status-closed,
+.reg-status-not_open,
+.reg-status-event_cancelled,
+.reg-status-rejected,
+.reg-status-removed {
+  color: #dc2626;
+}
+
+.reg-error {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+}

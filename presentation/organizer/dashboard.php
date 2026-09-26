@@ -36,7 +36,7 @@ $activeNav = 'dashboard';
           <a href="dashboard.php" class="nav-link active"
             style="box-shadow: inset 0 -2px 0 var(--primary); color: var(--primary); font-weight: 600;">Dashboard</a>
           <a href="dashboard.php#events" class="nav-link">My Events</a>
-          <a href="create-event.html" class="nav-link">Create Event</a>
+          <a href="create-event.php" class="nav-link">Create Event</a>
         </div>
       </div>
       <div class="nav-right">

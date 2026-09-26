@@ -2,14 +2,35 @@
 require_once __DIR__ . "/../includes/guard.php";
 require_once "../../../data/database.php";
 require_once "../../../application/controllers/EventController.php";
+require_once "../../../application/controllers/RegistrationController.php";
 
 $eventController = new EventController($conn);
-$event = $eventController->getEventForAttendee($attendeeId, (int)($_GET['id'] ?? 0));
+$eventId = (int)($_GET['id'] ?? 0);
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } elseif (empty($_POST['agree'])) {
+        $error = "Please agree to the Community Guidelines.";
+    } else {
+        $registrationController = new RegistrationController($conn);
+        $result = $registrationController->register($attendeeId, $eventId);
+        if ($result["success"]) {
+            header("Location: ../registrationSuccess/index.php?id=" . $eventId);
+            exit;
+        }
+        $error = $result["message"];
+    }
+}
+
+$event = $eventController->getEventForAttendee($attendeeId, $eventId);
 if (!$event) {
     http_response_code(404);
     die("Event not found.");
 }
 
+$isInviteOnly = $event['visibility'] === 'INVITE_ONLY';
 $eventOver = in_array($event['display_status'], ['Cancelled', 'Completed'], true);
 $isRegistered = !$eventOver && in_array($event['my_registration'], ['PENDING', 'APPROVED', 'REGISTERED'], true);
 $wasTurnedAway = in_array($event['my_registration'], ['REJECTED', 'REMOVED'], true);
@@ -174,6 +195,9 @@ $activeNav = 'explore';
       <div class="reg-card">
         <div class="reg-header">
           <h3>Registration</h3>
+          <?php if ($isInviteOnly): ?>
+            <span class="reg-badge">Invite Only</span>
+          <?php endif; ?>
         </div>
         <div class="reg-sub">
           <?php if ($event['display_status'] === 'Cancelled'): ?>
@@ -201,13 +225,17 @@ $activeNav = 'explore';
           <?php endif; ?>
         </div>
 
+        <?php if ($error): ?>
+          <p class="reg-error" role="alert"><?= h($error) ?></p>
+        <?php endif; ?>
+
         <?php if ($isRegistered): ?>
           <a href="../myEvents/index.php" class="btn-primary reg-cta" style="text-decoration: none;">
             <?= $event['my_registration'] === 'PENDING' ? 'Awaiting Approval' : "You're Registered" ?> &middot; My Events
           </a>
         <?php elseif ($canRegister): ?>
           <button class="btn-primary reg-cta">
-            Register Now &rarr;
+            <?= $isInviteOnly ? 'Request to Join' : 'Register Now' ?> &rarr;
           </button>
         <?php else: ?>
           <button class="btn-primary reg-cta" disabled style="opacity: 0.5; cursor: not-allowed;">
@@ -221,6 +249,7 @@ $activeNav = 'explore';
 </section>
 
 
+<?php if ($canRegister): ?>
 <!-- Registration Modal -->
 <div class="modal-overlay" id="registrationModal">
   <div class="modal">
@@ -268,8 +297,13 @@ $activeNav = 'explore';
         <div class="info-list-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 6.5l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <div>
-            <div class="info-list-title">Confirmation Email &amp; Ticket</div>
-            <div class="info-list-sub">Your digital pass with QR code will be sent immediately.</div>
+            <?php if ($isInviteOnly): ?>
+              <div class="info-list-title">Organizer Approval</div>
+              <div class="info-list-sub">This is an invite-only event. The organizer will review your request.</div>
+            <?php else: ?>
+              <div class="info-list-title">Confirmation &amp; Event Pass</div>
+              <div class="info-list-sub">Your registration is confirmed immediately.</div>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -290,29 +324,24 @@ $activeNav = 'explore';
         </div>
       </div>
 
-      <label class="check-row">
-        <input type="checkbox" checked>
-        <div>
-          <div class="check-label">Send me event updates and alerts</div>
-          <div class="check-sub">Receive notifications about schedule changes and important announcements.</div>
-        </div>
-      </label>
+      <form method="post">
+        <?= csrf_field() ?>
+        <label class="check-row">
+          <input type="checkbox" name="agree" value="1" required>
+          <div>
+            <div class="check-label">I agree to the Community Guidelines <span class="req">*</span></div>
+            <div class="check-sub">Read our code of conduct for a safe and respectful event.</div>
+          </div>
+        </label>
 
-      <label class="check-row">
-        <input type="checkbox">
-        <div>
-          <div class="check-label">I agree to the Community Guidelines <span class="req">*</span></div>
-          <div class="check-sub">Read our code of conduct for a safe and respectful event.</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="modalCancelBtn">Cancel</button>
+          <button type="submit" class="btn-primary" id="registerSubmitBtn">
+            <?= $isInviteOnly ? 'Send Request' : 'Register Now' ?>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
-      </label>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
-        <a href="../registrationSuccess/index.html" class="btn-primary" style="text-decoration: none;">
-          Register Now
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
+      </form>
     </div>
   </div>
 </div>
@@ -337,6 +366,10 @@ $activeNav = 'explore';
       });
     });
 
+    modal.querySelector("form").addEventListener("submit", () => {
+      document.getElementById("registerSubmitBtn").disabled = true;
+    });
+
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
         modal.classList.remove("active");
@@ -345,6 +378,7 @@ $activeNav = 'explore';
     });
   });
 </script>
+<?php endif; ?>
 
 </body>
 </html>

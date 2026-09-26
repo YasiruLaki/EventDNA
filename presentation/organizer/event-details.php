@@ -2,8 +2,10 @@
 require_once __DIR__ . "/includes/guard.php";
 require_once "../../data/database.php";
 require_once "../../application/controllers/EventController.php";
+require_once "../../application/controllers/RegistrationController.php";
 
 $eventController = new EventController($conn);
+$registrationController = new RegistrationController($conn);
 $eventId = (int)($_GET['id'] ?? 0);
 $error = "";
 
@@ -18,13 +20,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'cance
         }
         $error = $result["message"];
     }
+} elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!csrf_valid()) {
+        $_SESSION['flash'] = ["success" => false, "message" => "Your session expired. Please try again."];
+    } else {
+        $_SESSION['flash'] = $registrationController->updateAttendeeStatus($organizerId, $eventId, (int)($_POST['registration_id'] ?? 0), $_POST['action'] ?? '');
+    }
+    header("Location: event-details.php?id=" . $eventId . "#attendees");
+    exit;
 }
+
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 
 $event = $eventController->getOwnedEvent($organizerId, $eventId);
 if (!$event) {
     http_response_code(404);
     die("Event not found.");
 }
+
+$registrations = $registrationController->getEventAttendees($organizerId, $eventId);
+$attendees = $registrations['attendees'];
+$counts = $registrations['counts'];
+$canManageAttendees = $event['editable'];
 
 $notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : "");
 $registrationColors = ['Open' => 'var(--success)', 'Full' => 'var(--danger)'];
@@ -124,35 +142,42 @@ $activeNav = 'events';
       background: rgba(220, 38, 38, 0.06);
       color: var(--danger);
     }
+    .action-form {
+      display: flex;
+      gap: 0.75rem;
+      margin: 0;
+    }
+    .action-form .btn-text {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .attendee-status {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .status-checked-in,
+    .status-approved {
+      color: var(--success);
+    }
+    .status-registered {
+      color: var(--text-secondary);
+    }
+    .status-pending {
+      color: #D97706;
+    }
+    .status-rejected,
+    .status-removed {
+      color: var(--danger);
+    }
   </style>
 </head>
 <body style="background-color: #f9f9f9; min-height: 100vh;">
-  <nav class="top-nav">
-    <div class="nav-container">
-      <div class="nav-left">
-        <a href="dashboard.php" class="nav-logo">
-          <img src="../images/logo.png" alt="EventDNA" class="nav-logo-img">
-        </a>
-        <div class="nav-links">
-          <a href="dashboard.php" class="nav-link">Dashboard</a>
-          <a href="dashboard.php#events" class="nav-link">My Events</a>
-          <a href="create-event.html" class="nav-link">Create Event</a>
-        </div>
-      </div>
-      <div class="nav-right">
-        <div class="nav-profile-menu">
-          <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Hanan</span>
-            <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
-          </button>
-          <div class="nav-dropdown">
-            <a href="../auth/login/index.php" class="dropdown-item text-danger">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <?php include __DIR__ . "/includes/nav.php"; ?>
 
   <div class="dashboard-shell">
     <main class="dashboard-content" style="max-width: 900px; margin: 0 auto;">
@@ -162,6 +187,9 @@ $activeNav = 'events';
       <?php endif; ?>
       <?php if ($error): ?>
         <div class="flash flash-error" role="alert"><?= h($error) ?></div>
+      <?php endif; ?>
+      <?php if ($flash): ?>
+        <div class="flash <?= $flash['success'] ? 'flash-ok' : 'flash-error' ?>" role="status"><?= h($flash['message']) ?></div>
       <?php endif; ?>
 
       <div style="margin-bottom: 2rem;">
@@ -215,6 +243,12 @@ $activeNav = 'events';
             <span class="data-label">Capacity</span>
             <span class="data-value"><?= (int)$event['registered_count'] ?> / <?= (int)$event['capacity'] ?> registered</span>
           </div>
+          <?php if ($event['visibility'] === 'INVITE_ONLY'): ?>
+          <div class="data-row">
+            <span class="data-label">Pending Requests</span>
+            <span class="data-value" style="color: #D97706;"><?= $counts['PENDING'] ?></span>
+          </div>
+          <?php endif; ?>
           <div class="data-row">
             <span class="data-label">Visibility</span>
             <span class="data-value"><?= $event['visibility'] === 'PUBLIC' ? 'Public' : 'Invite Only' ?></span>
@@ -245,46 +279,62 @@ $activeNav = 'events';
       <section id="attendees" class="tab-content">
         <div class="manage-card" style="padding: 0; overflow: hidden;">
           <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0;">Attendees</h3>
+            <h3 style="margin: 0;">Attendees <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.95rem;">(<?= count($attendees) ?>)</span></h3>
             <div style="position: relative; width: 250px;">
               <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-tertiary);"></i>
-              <input type="text" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
+              <input type="text" id="attendeeSearch" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
             </div>
           </div>
-          
+
+          <?php if (!$attendees): ?>
+            <p style="padding: 2rem 1.5rem; margin: 0; color: var(--text-secondary); text-align: center;">No one has registered for this event yet.</p>
+          <?php else: ?>
           <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
               <tr style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
                 <th style="padding: 1rem 1.5rem;">Name</th>
                 <th style="padding: 1rem 1.5rem;">Email</th>
+                <th style="padding: 1rem 1.5rem;">Registered</th>
                 <th style="padding: 1rem 1.5rem;">Status</th>
                 <th style="padding: 1rem 1.5rem;">Action</th>
               </tr>
             </thead>
-            <tbody style="font-size: 0.95rem; color: var(--secondary);">
+            <tbody id="attendeeRows" style="font-size: 0.95rem; color: var(--secondary);">
+              <?php foreach ($attendees as $attendee): ?>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Kamal Perera</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">kamal@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--success); font-weight: 600; font-size: 0.85rem;">Checked-in</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Sarah Fernando</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">sarah@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Registered</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">James Doe</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">james@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: #D97706; font-weight: 600; font-size: 0.85rem;">Pending</span></td>
-                <td style="padding: 1rem 1.5rem; display: flex; gap: 0.5rem;">
-                  <button class="btn-text" style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Approve</button>
-                  <button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Reject</button>
+                <td style="padding: 1rem 1.5rem; font-weight: 600;"><?= h($attendee['full_name']) ?></td>
+                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);"><?= h($attendee['email']) ?></td>
+                <td style="padding: 1rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem;"><?= h(date('M j, g:i A', strtotime($attendee['registered_at']))) ?></td>
+                <td style="padding: 1rem 1.5rem;">
+                  <?php if ((int)$attendee['checked_in'] === 1): ?>
+                    <span class="attendee-status status-checked-in">Checked-in</span>
+                  <?php else: ?>
+                    <span class="attendee-status status-<?= h(strtolower($attendee['status'])) ?>"><?= h(ucfirst(strtolower($attendee['status']))) ?></span>
+                  <?php endif; ?>
+                </td>
+                <td style="padding: 1rem 1.5rem;">
+                  <?php if ($canManageAttendees && $attendee['status'] === 'PENDING'): ?>
+                    <form method="post" class="action-form">
+                      <?= csrf_field() ?>
+                      <input type="hidden" name="registration_id" value="<?= (int)$attendee['registration_id'] ?>">
+                      <button type="submit" name="action" value="approve" class="btn-text" style="color: var(--primary);">Approve</button>
+                      <button type="submit" name="action" value="reject" class="btn-text" style="color: var(--danger);">Reject</button>
+                    </form>
+                  <?php elseif ($canManageAttendees && in_array($attendee['status'], ['REGISTERED', 'APPROVED'], true)): ?>
+                    <form method="post" class="action-form" onsubmit="return confirm('Remove this attendee from the event?');">
+                      <?= csrf_field() ?>
+                      <input type="hidden" name="registration_id" value="<?= (int)$attendee['registration_id'] ?>">
+                      <button type="submit" name="action" value="remove" class="btn-text" style="color: var(--danger);">Remove</button>
+                    </form>
+                  <?php else: ?>
+                    <span style="color: var(--text-tertiary); font-size: 0.85rem;">—</span>
+                  <?php endif; ?>
                 </td>
               </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -441,6 +491,16 @@ $activeNav = 'events';
       }
     }
     
+    const attendeeSearch = document.getElementById('attendeeSearch');
+    if (attendeeSearch) {
+      attendeeSearch.addEventListener('input', () => {
+        const term = attendeeSearch.value.toLowerCase();
+        document.querySelectorAll('#attendeeRows tr').forEach(row => {
+          row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+      });
+    }
+
     // Simple profile menu toggle
     const profileBtn = document.querySelector('.nav-profile-btn');
     const profileDropdown = document.querySelector('.nav-dropdown');

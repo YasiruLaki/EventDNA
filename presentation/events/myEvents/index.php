@@ -2,6 +2,21 @@
 require_once __DIR__ . "/../includes/guard.php";
 require_once "../../../data/database.php";
 require_once "../../../application/controllers/EventController.php";
+require_once "../../../application/controllers/RegistrationController.php";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!csrf_valid()) {
+        $_SESSION['flash'] = ["success" => false, "message" => "Your session expired. Please try again."];
+    } else {
+        $registrationController = new RegistrationController($conn);
+        $_SESSION['flash'] = $registrationController->cancel($attendeeId, (int)($_POST['event_id'] ?? 0));
+    }
+    header("Location: index.php");
+    exit;
+}
+
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
 
 $eventController = new EventController($conn);
 $myEvents = $eventController->getAttendeeEvents($attendeeId);
@@ -73,6 +88,13 @@ function upcoming_card($event, $layout) {
                data-location="<?= h($event['location']) ?>"
                data-starts="<?= h(starts_in($event)) ?>">View Pass</a>
             <?php endif; ?>
+            <?php if ($event['display_status'] === 'Upcoming' || ($event['display_status'] === 'Live' && date('H:i:s') < $event['start_time'])): ?>
+            <form method="post" onsubmit="return confirm('<?= $pending ? 'Withdraw your request for this event?' : 'Cancel your registration for this event?' ?>');">
+              <?= csrf_field() ?>
+              <input type="hidden" name="event_id" value="<?= (int)$event['event_id'] ?>">
+              <button type="submit" class="btn-secondary btn-cancel-reg"><?= $pending ? 'Withdraw Request' : 'Cancel Registration' ?></button>
+            </form>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -110,6 +132,10 @@ $others = array_slice($myEvents['upcoming'], 1);
       </div>
     </div>
   </header>
+
+  <?php if ($flash): ?>
+    <p class="flash <?= $flash['success'] ? 'flash-success' : 'flash-error' ?>" role="status"><?= h($flash['message']) ?></p>
+  <?php endif; ?>
 
   <div class="dashboard-content main-grid">
     <div class="main-col">

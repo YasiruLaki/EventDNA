@@ -949,3 +949,59 @@ a {
   color: #64748b;
   margin: 0;
 }
+.registered-badge.badge-pending {
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.1);
+}
+
+.registered-badge.badge-pending::before {
+  background: #d97706;
+}
+
+.registered-badge.badge-approved {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.1);
+}
+
+.registered-badge.badge-approved::before {
+  background: #16a34a;
+}
+
+.registered-badge.badge-rejected,
+.registered-badge.badge-removed {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.registered-badge.badge-rejected::before,
+.registered-badge.badge-removed::before {
+  background: #dc2626;
+}
+
+.event-actions form {
+  margin: 0;
+}
+
+.btn-cancel-reg {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  font-family: inherit;
+}
+
+.flash {
+  margin: 0 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.flash-success {
+  background: rgba(22, 163, 74, 0.08);
+  color: #16a34a;
+}
+
+.flash-error {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+}

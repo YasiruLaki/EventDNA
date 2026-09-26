@@ -83,7 +83,7 @@
   ];
 
   var EVENT_TABS = [
-    { key: 'overview',   label: 'Overview',   href: 'event-details.html' },
+    { key: 'overview',   label: 'Overview',   href: 'event-details.php?id=1' },
     { key: 'attendees',  label: 'Attendees',  href: 'manage-attendees.html' },
     { key: 'attendance', label: 'Attendance', href: 'attendance-view.html' },
     { key: 'analytics',  label: 'Analytics',  href: 'analytics.html' },
@@ -103,7 +103,7 @@
         '<nav class="nav" aria-label="Organizer sections">' + links + '</nav>' +
         '<div class="topbar__right">' +
           '<a class="topbar__link" href="dashboard.html">Hanan</a>' +
-          '<a class="btn btn--primary btn--sm" href="create-event.html">Create event</a>' +
+          '<a class="btn btn--primary btn--sm" href="create-event.php">Create event</a>' +
           '<span class="avatar" title="Hanan Mohamed · Organizer">HM</span>' +
         '</div>' +
       '</div>';
