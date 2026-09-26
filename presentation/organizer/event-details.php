@@ -2,8 +2,10 @@
 require_once __DIR__ . "/includes/guard.php";
 require_once "../../data/database.php";
 require_once "../../application/controllers/EventController.php";
+require_once "../../application/controllers/QrController.php";
 
 $eventController = new EventController($conn);
+$qrController = new QrController($conn);
 $eventId = (int)($_GET['id'] ?? 0);
 $error = "";
 
@@ -20,13 +22,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'cance
     }
 }
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'generate_qr') {
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } else {
+        $result = $qrController->generateEventQr($organizerId, $eventId);
+        if ($result["success"]) {
+            // Only the hash is in the database, so the raw token is kept in the session to redraw the QR
+            $_SESSION['event_qr_tokens'][$eventId] = $result["token"];
+            header("Location: event-details.php?id=" . $eventId . "&qr=1#qr");
+            exit;
+        }
+        $error = $result["message"];
+    }
+}
+
 $event = $eventController->getOwnedEvent($organizerId, $eventId);
 if (!$event) {
     http_response_code(404);
     die("Event not found.");
 }
 
-$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : "");
+$qr = $qrController->getEventQr($eventId, $_SESSION['event_qr_tokens'][$eventId] ?? null);
+
+$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : (isset($_GET['qr']) ? "Check-in QR generated. Any previous QR no longer works." : ""));
 $registrationColors = ['Open' => 'var(--success)', 'Full' => 'var(--danger)'];
 $activeNav = 'events';
 ?>
@@ -292,12 +311,30 @@ $activeNav = 'events';
       <section id="qr" class="tab-content">
         <div class="manage-card" style="text-align: center; max-width: 500px; margin: 0 auto;">
           <h3>Event QR</h3>
-          <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Show this QR code at the event entrance.</p>
-          
-          <div style="background: #fff; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-            <!-- Mock QR Code visual -->
-            <div style="width: 200px; height: 200px; background: url('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=AIInnovationSummit2026') no-repeat center center; background-size: contain;"></div>
-          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Show this QR code at the event entrance. Attendees scan it to check in.</p>
+
+          <?php if ($qr['svg']): ?>
+            <div style="background: #fff; padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+              <div style="width: 240px; height: 240px;"><?= $qr['svg'] ?></div>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+              <a href="data:image/svg+xml;base64,<?= base64_encode($qr['svg']) ?>" download="event-<?= (int)$event['event_id'] ?>-checkin-qr.svg" class="btn-text" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">Download QR (SVG)</a>
+            </div>
+          <?php elseif ($qr['active']): ?>
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px dashed var(--border-color); margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+              A check-in QR is active (generated <?= h(date('M j, g:i A', strtotime($qr['created_at']))) ?>).<br>
+              For security it can't be shown again from this browser session.
+              Use the copy you downloaded, or regenerate it. The old QR will stop working.
+            </div>
+          <?php else: ?>
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px dashed var(--border-color); margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+              No check-in QR has been generated for this event yet.
+            </div>
+          <?php endif; ?>
+
+          <?php if ($qr['active']): ?>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin: 0 0 1.5rem 0;">Valid until <?= h(date('M j, Y g:i A', strtotime($qr['expires_at']))) ?></p>
+          <?php endif; ?>
 
           <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1rem 0;"><?= h($event['name']) ?></h4>
 
@@ -312,7 +349,13 @@ $activeNav = 'events';
             </div>
           </div>
 
-          <button class="btn-secondary" style="padding: 0.75rem 1.5rem;">Regenerate QR</button>
+          <?php if ($event['editable']): ?>
+            <form method="post" <?= $qr['active'] ? 'onsubmit="return confirm(\'Regenerate the QR? The current QR code will stop working.\');"' : '' ?>>
+              <?= csrf_field() ?>
+              <input type="hidden" name="action" value="generate_qr">
+              <button type="submit" class="<?= $qr['active'] ? 'btn-secondary' : 'btn-primary' ?>" style="padding: 0.75rem 1.5rem;"><?= $qr['active'] ? 'Regenerate QR' : 'Generate QR' ?></button>
+            </form>
+          <?php endif; ?>
         </div>
       </section>
 
