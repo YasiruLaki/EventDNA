@@ -184,7 +184,8 @@ class EventController {
         ];
     }
 
-    // Returns the event if the attendee may see it: active public events, or any event they are registered for
+    // Returns the event if the attendee may see it: any active event (invite-only ones are reached by direct link,
+    // not listed on explore), or any event they are registered for
     public function getEventForAttendee($userId, $eventId) {
         $event = $this->eventRepo->getEventById((int)$eventId);
         if (!$event) {
@@ -192,8 +193,7 @@ class EventController {
         }
 
         $registration = $this->eventRepo->getRegistrationStatus($event['event_id'], (int)$userId);
-        $isPublic = $event['status'] === 'ACTIVE' && $event['visibility'] === 'PUBLIC';
-        if (!$isPublic && $registration === null) {
+        if ($event['status'] !== 'ACTIVE' && $registration === null) {
             return null;
         }
 
