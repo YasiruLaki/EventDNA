@@ -131,7 +131,7 @@ $activeNav = 'events';
     <div class="nav-container">
       <div class="nav-left">
         <a href="dashboard.php" class="nav-logo">
-          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+          <img src="../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
           <a href="dashboard.php" class="nav-link">Dashboard</a>
