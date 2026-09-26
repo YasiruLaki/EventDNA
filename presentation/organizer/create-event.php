@@ -85,28 +85,56 @@ $activeNav = $isEdit ? 'events' : 'create';
   <link rel="stylesheet" href="../attendee/dashboard/styles.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    .dashboard-shell {
+      width: min(1500px, calc(100% - 2rem)) !important;
+      margin: 0 auto;
+    }
+    .org-form-container {
+      max-width: 100% !important;
+    }
     .form-card {
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      border-radius: 12px;
+      background: #ffffff;
+      border-radius: 16px;
       padding: 2.5rem;
       margin-bottom: 2rem;
+      box-shadow: 0 4px 24px -4px rgba(0,0,0,0.03), 0 2px 8px -2px rgba(0,0,0,0.02);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 3rem;
+      row-gap: 1.5rem;
     }
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 0;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .org-form-section-title {
+      grid-column: 1 / -1;
+      margin-bottom: 0.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .step-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #f1f5f9;
     }
     .form-group label {
       display: block;
       font-size: 0.9rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
       color: var(--secondary);
     }
     .form-input, .form-textarea, .form-select {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1.25rem;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 10px;
       font-family: inherit;
       font-size: 0.95rem;
       background: #f8fafc;
@@ -117,14 +145,39 @@ $activeNav = $isEdit ? 'events' : 'create';
       outline: none;
       border-color: var(--primary);
       background: #fff;
-      box-shadow: 0 0 0 3px rgba(79, 16, 255, 0.1);
+      box-shadow: 0 0 0 4px rgba(79, 16, 255, 0.08);
+    }
+    .form-input[type="file"] {
+      padding: 0.5rem;
+      background: #fff;
+      border: 2px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+    }
+    .form-input[type="file"]::file-selector-button {
+      background: var(--primary-tint);
+      color: var(--primary);
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-right: 1rem;
+      transition: background 0.2s;
+    }
+    .form-input[type="file"]::file-selector-button:hover {
+      background: rgba(79, 16, 255, 0.15);
+    }
+    .form-input[type="file"]:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
     }
     .form-row {
-      display: flex;
-      gap: 1.5rem;
-    }
-    .form-row > * {
-      flex: 1;
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem 3rem;
     }
     .radio-group {
       display: flex;
@@ -134,41 +187,46 @@ $activeNav = $isEdit ? 'events' : 'create';
     .radio-label {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 1rem;
+      gap: 1.25rem;
+      padding: 1.25rem;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      background: #f8fafc;
+      background: #fff;
       transition: all 0.2s;
     }
     .radio-label:has(input:checked) {
       border-color: var(--primary);
       background: var(--primary-tint);
+      box-shadow: 0 2px 8px rgba(79, 16, 255, 0.05);
     }
     .radio-label input {
       accent-color: var(--primary);
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
     }
     .radio-content strong {
       display: block;
       font-size: 0.95rem;
       color: var(--secondary);
+      margin-bottom: 0.25rem;
     }
     .radio-content span {
       font-size: 0.85rem;
       color: var(--text-secondary);
+      line-height: 1.4;
+      display: block;
     }
     .hint {
       font-size: 0.8rem;
       color: var(--text-secondary);
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
     }
     .tag-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.6rem;
       max-height: 220px;
       overflow-y: auto;
       padding: 0.25rem;
@@ -176,57 +234,145 @@ $activeNav = $isEdit ? 'events' : 'create';
     .tag-chip {
       display: inline-flex;
       align-items: center;
-      padding: 0.4rem 0.8rem;
+      padding: 0.5rem 1rem;
       border: 1px solid var(--border-color);
       border-radius: 999px;
       font-size: 0.85rem;
       cursor: pointer;
       background: #f8fafc;
       color: var(--secondary);
+      transition: all 0.2s;
       user-select: none;
+    }
+    .tag-chip:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
     }
     .tag-chip input {
       display: none;
     }
     .tag-chip:has(input:checked) {
       border-color: var(--primary);
-      background: var(--primary-tint);
-      color: var(--primary);
+      background: var(--primary);
+      color: #fff;
       font-weight: 600;
+      box-shadow: 0 4px 12px rgba(79, 16, 255, 0.2);
     }
     .error-box {
       background: rgba(220, 38, 38, 0.06);
       border: 1px solid rgba(220, 38, 38, 0.25);
       color: var(--danger);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
       margin-bottom: 2rem;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
     .error-box ul {
-      margin: 0.5rem 0 0 1.25rem;
+      margin: 0.75rem 0 0 1.25rem;
       padding: 0;
     }
     .cover-preview {
       width: 100%;
-      max-height: 200px;
+      max-height: 240px;
       object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .stepper-wrap {
+      margin-bottom: 2.5rem;
+    }
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      z-index: 2;
+      width: 100px;
+    }
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+    .step.active .step-circle {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+    .step.completed .step-circle {
+      border-color: var(--success);
+      background: var(--success);
+      color: #fff;
+    }
+    .step-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .step.active .step-label {
+      color: var(--primary);
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border-color);
+      margin: 0 -30px;
+      margin-bottom: 1.5rem;
+      z-index: 1;
+      transition: all 0.3s;
+    }
+    .step-line.completed {
+      background: var(--success);
+    }
+    .form-step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .form-step.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .step-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
     }
     @media (max-width: 640px) {
       .form-row { flex-direction: column; gap: 0; }
       .form-card { padding: 1.5rem; }
     }
   </style>
+
+  <link rel="stylesheet" href="organizer.css" />
 </head>
-<body style="background-color: #f9f9f9; min-height: 100vh;">
+<body class="org-page-wrapper" >
 <?php include __DIR__ . "/includes/nav.php"; ?>
 
   <div class="dashboard-shell">
-    <main class="dashboard-content" style="max-width: 800px; margin: 0 auto; padding-bottom: 4rem;">
+    <main class="dashboard-content org-form-container" >
 
-      <div style="margin-bottom: 2rem;">
+      <div class="org-hero-header" >
         <h1 class="page-title"><?= $isEdit ? 'Edit Event' : 'Create Event' ?></h1>
         <p class="supporting-copy"><?= $isEdit ? 'Update the details of ' . h($event['name']) . '.' : 'Set up a new event for your organization.' ?></p>
       </div>
@@ -242,22 +388,36 @@ $activeNav = $isEdit ? 'events' : 'create';
         </div>
       <?php endif; ?>
 
-      <form method="post" enctype="multipart/form-data" novalidate>
+      <div class="stepper-wrap">
+        <div class="stepper">
+          <div class="step active" id="indicator-1">
+            <div class="step-circle"><i data-lucide="info" style="width: 16px;"></i></div>
+            <div class="step-label">Basic Info</div>
+          </div>
+          <div class="step-line" id="line-1"></div>
+          <div class="step" id="indicator-2">
+            <div class="step-circle"><i data-lucide="map-pin" style="width: 16px;"></i></div>
+            <div class="step-label">Location</div>
+          </div>
+          <div class="step-line" id="line-2"></div>
+          <div class="step" id="indicator-3">
+            <div class="step-circle"><i data-lucide="users" style="width: 16px;"></i></div>
+            <div class="step-label">Registration</div>
+          </div>
+        </div>
+      </div>
+
+      <form id="eventForm" method="post" enctype="multipart/form-data">
         <?= csrf_field() ?>
 
-        <div class="form-card">
-          <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">Basic Information</h2>
+        <div class="form-step active" id="step-1">
+          <div class="form-card">
+          <h2 class="org-form-section-title" >Basic Information</h2>
 
           <div class="form-group">
             <label for="name">Event Name</label>
             <input type="text" id="name" name="name" class="form-input" maxlength="200" required
               placeholder="e.g. AI Innovation Summit 2026" value="<?= field('name') ?>">
-          </div>
-
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" class="form-textarea" rows="4"
-              placeholder="Briefly describe what this event is about..."><?= field('description') ?></textarea>
           </div>
 
           <div class="form-group">
@@ -267,6 +427,12 @@ $activeNav = $isEdit ? 'events' : 'create';
             <?php endif; ?>
             <input type="file" id="cover_photo" name="cover_photo" class="form-input" accept="image/jpeg,image/png,image/webp">
             <p class="hint">JPG, PNG or WebP, up to 5 MB.<?= $isEdit ? ' Leave empty to keep the current photo.' : '' ?></p>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" class="form-textarea" rows="4"
+              placeholder="Briefly describe what this event is about..."><?= field('description') ?></textarea>
           </div>
 
           <div class="form-row">
@@ -283,10 +449,16 @@ $activeNav = $isEdit ? 'events' : 'create';
               <input type="time" id="end_time" name="end_time" class="form-input" required value="<?= field('end_time') ?>">
             </div>
           </div>
+
+          <div class="step-actions">
+            <a href="<?= $isEdit ? 'event-details.php?id=' . $eventId : 'dashboard.php' ?>" class="btn-secondary" style="padding: 0.75rem 1.5rem; text-decoration: none;">Cancel</a>
+            <button type="button" class="btn-primary org-btn-pad" onclick="nextStep(1)">Next Step <i data-lucide="arrow-right" style="width: 16px; margin-left: 0.4rem;"></i></button>
+          </div>
         </div>
 
-        <div class="form-card">
-          <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">Location & Details</h2>
+        <div class="form-step" id="step-2">
+          <div class="form-card">
+          <h2 class="org-form-section-title" >Location & Details</h2>
 
           <div class="form-group">
             <label for="location">Venue / Location</label>
@@ -309,9 +481,9 @@ $activeNav = $isEdit ? 'events' : 'create';
             <?php endif; ?>
           </div>
 
-          <div class="form-group" style="margin-bottom: 0;">
-            <label>Interest Tags <span style="font-weight: 400; color: var(--text-secondary);">(up to <?= EventController::MAX_INTERESTS ?>, used for matching)</span></label>
-            <input type="text" id="tagFilter" class="form-input" placeholder="Filter tags..." style="margin-bottom: 0.75rem;">
+          <div class="form-group org-mb-0" >
+            <label>Interest Tags <span class="org-font-normal-sec" >(up to <?= EventController::MAX_INTERESTS ?>, used for matching)</span></label>
+            <input type="text" id="tagFilter" class="form-input org-mb-0-75" placeholder="Filter tags..." >
             <div class="tag-list" id="tagList">
               <?php foreach ($interests as $interest): ?>
                 <label class="tag-chip">
@@ -322,10 +494,16 @@ $activeNav = $isEdit ? 'events' : 'create';
               <?php endforeach; ?>
             </div>
           </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn-secondary org-btn-pad" onclick="prevStep(2)"><i data-lucide="arrow-left" style="width: 16px; margin-right: 0.4rem;"></i> Back</button>
+            <button type="button" class="btn-primary org-btn-pad" onclick="nextStep(2)">Next Step <i data-lucide="arrow-right" style="width: 16px; margin-left: 0.4rem;"></i></button>
+          </div>
         </div>
 
-        <div class="form-card">
-          <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1.5rem 0; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">Registration</h2>
+        <div class="form-step" id="step-3">
+          <div class="form-card">
+          <h2 class="org-form-section-title" >Registration</h2>
 
           <div class="form-row">
             <div class="form-group">
@@ -338,9 +516,9 @@ $activeNav = $isEdit ? 'events' : 'create';
             </div>
           </div>
 
-          <div class="form-group" style="margin-bottom: 0;">
+          <div class="form-group full-width" >
             <label>Visibility</label>
-            <div class="radio-group">
+            <div class="radio-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
               <label class="radio-label">
                 <input type="radio" name="visibility" value="PUBLIC" <?= ($form['visibility'] ?? '') === 'PUBLIC' ? 'checked' : '' ?>>
                 <div class="radio-content">
@@ -357,11 +535,13 @@ $activeNav = $isEdit ? 'events' : 'create';
               </label>
             </div>
           </div>
-        </div>
+            </div>
+          </div>
 
-        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-          <a href="<?= $isEdit ? 'event-details.php?id=' . $eventId : 'dashboard.php' ?>" class="btn-secondary" style="padding: 0.75rem 1.5rem; text-decoration: none;">Cancel</a>
-          <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem;"><?= $isEdit ? 'Save Changes' : 'Create Event' ?></button>
+          <div class="step-actions">
+            <button type="button" class="btn-secondary org-btn-pad" onclick="prevStep(3)"><i data-lucide="arrow-left" style="width: 16px; margin-right: 0.4rem;"></i> Back</button>
+            <button type="button" class="btn-primary org-btn-pad" onclick="submitForm()"><i data-lucide="check-circle" style="width: 16px; margin-right: 0.4rem;"></i> <?= $isEdit ? 'Save Changes' : 'Create Event' ?></button>
+          </div>
         </div>
       </form>
 
@@ -408,6 +588,63 @@ $activeNav = $isEdit ? 'events' : 'create';
     }
     [eventDate, regOpen, regClose].forEach(el => el.addEventListener('change', syncDateLimits));
     syncDateLimits();
+
+    // Multi-step form logic
+    function nextStep(currentStep) {
+      // Validate current step
+      const stepEl = document.getElementById(`step-${currentStep}`);
+      const inputs = stepEl.querySelectorAll('input[required], select[required], textarea[required]');
+      let isValid = true;
+      for (const input of inputs) {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          isValid = false;
+          break;
+        }
+      }
+      if (!isValid) return;
+
+      // Update UI
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      document.getElementById(`step-${currentStep + 1}`).classList.add('active');
+      
+      document.getElementById(`indicator-${currentStep}`).classList.add('completed');
+      document.getElementById(`line-${currentStep}`).classList.add('completed');
+      
+      document.getElementById(`indicator-${currentStep + 1}`).classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevStep(currentStep) {
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      document.getElementById(`step-${currentStep - 1}`).classList.add('active');
+      
+      document.getElementById(`indicator-${currentStep}`).classList.remove('active');
+      document.getElementById(`indicator-${currentStep - 1}`).classList.remove('completed');
+      document.getElementById(`line-${currentStep - 1}`).classList.remove('completed');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function submitForm() {
+      // Validate step 3
+      const stepEl = document.getElementById('step-3');
+      const inputs = stepEl.querySelectorAll('input[required], select[required], textarea[required]');
+      for (const input of inputs) {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          return;
+        }
+      }
+      
+      const form = document.getElementById('eventForm');
+      if (form.checkValidity()) {
+        form.submit();
+      } else {
+        form.reportValidity();
+      }
+    }
   </script>
 </body>
 </html>

@@ -69,7 +69,7 @@ class EventRepository {
 
     public function getEventsByOrganizer($organizerId) {
         $stmt = $this->conn->prepare("
-            SELECT e.event_id, e.name, e.event_date, e.start_time, e.end_time, e.location, e.capacity,
+            SELECT e.event_id, e.name, e.cover_photo, e.event_date, e.start_time, e.end_time, e.location, e.capacity,
                    e.visibility, e.status, e.registration_open, e.registration_close,
                    (SELECT COUNT(*) FROM event_registrations r
                      WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count,

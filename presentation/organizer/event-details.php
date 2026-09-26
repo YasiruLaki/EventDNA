@@ -124,28 +124,188 @@ $activeNav = 'events';
       background: rgba(220, 38, 38, 0.06);
       color: var(--danger);
     }
+    .manage-hero {
+      position: relative;
+      overflow: visible;
+      min-height: 400px;
+      display: flex;
+      align-items: flex-end;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.904) 0%, rgba(7, 16, 32, 0.6) 45%, rgba(7, 16, 32, 0.32) 100%),
+        url('../../<?= h($event['cover_photo'] ?: 'https://images.unsplash.com/photo-1542442828-287217bfb87f?auto=format&fit=crop&w=1920&q=80') ?>') center center / cover no-repeat;
+    }
+    .manage-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      padding-bottom: 4.5rem;
+      width: min(1280px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 0.8rem;
+      border-radius: 999px;
+      background: rgba(79, 16, 255, 0.42);
+      color: #fff;
+      font-size: 0.76rem;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+    .hero-inner h1 {
+      margin: 0.9rem 0 0;
+      color: #fff;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+    .hero-inner p {
+      margin: 1rem 0 0;
+      max-width: 700px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .info-bar-wrap {
+      position: relative;
+      z-index: 2;
+      margin-top: -2rem;
+      margin-bottom: 3rem;
+    }
+    .info-bar-container {
+      width: min(1280px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .info-bar {
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      background: rgb(255, 255, 255);
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem;
+    }
+    .info-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: rgba(79, 16, 255, 0.08);
+      color: var(--primary);
+    }
+    .info-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .info-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.15rem;
+    }
+    .info-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    @media (max-width: 900px) {
+      .info-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .info-bar {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
+
+  <link rel="stylesheet" href="organizer.css" />
 </head>
-<body style="background-color: #f9f9f9; min-height: 100vh;">
+<body class="org-page-wrapper" >
   <?php include 'includes/nav.php'; ?>
 
-  <div class="dashboard-shell">
-    <main class="dashboard-content" style="max-width: 900px; margin: 0 auto;">
+  <?php if ($notice): ?>
+    <div class="flash flash-ok" role="status" style="width: min(1280px, calc(100% - 2rem)); margin: 1rem auto;"><?= h($notice) ?></div>
+  <?php endif; ?>
+  <?php if ($error): ?>
+    <div class="flash flash-error" role="alert" style="width: min(1280px, calc(100% - 2rem)); margin: 1rem auto;"><?= h($error) ?></div>
+  <?php endif; ?>
 
-      <?php if ($notice): ?>
-        <div class="flash flash-ok" role="status"><?= h($notice) ?></div>
+  <section class="manage-hero">
+    <div class="hero-inner">
+      <span class="hero-badge" style="<?= status_badge_style($event['display_status']) ?>"><?= h($event['display_status']) ?></span>
+      <h1><?= h($event['name']) ?></h1>
+      <?php if (!empty($event['description'])): ?>
+      <p><?= h(strlen($event['description']) > 150 ? substr($event['description'], 0, 150) . '...' : $event['description']) ?></p>
       <?php endif; ?>
-      <?php if ($error): ?>
-        <div class="flash flash-error" role="alert"><?= h($error) ?></div>
-      <?php endif; ?>
+    </div>
+  </section>
 
-      <div style="margin-bottom: 2rem;">
-        <h1 class="page-title" style="margin-bottom: 0.5rem;"><?= h($event['name']) ?></h1>
-        <div style="display: flex; gap: 1rem; align-items: center; color: var(--text-secondary); font-size: 0.95rem; flex-wrap: wrap;">
-          <span style="<?= status_badge_style($event['display_status']) ?> font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px; text-transform: uppercase;"><?= h($event['display_status']) ?></span>
-          <span><?= h(format_event_date($event['event_date'])) ?> · <?= h($event['location']) ?></span>
+  <div class="info-bar-wrap">
+    <div class="info-bar-container">
+      <div class="info-bar">
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="info-label">Date</div>
+            <div class="info-value"><?= h(format_event_date($event['event_date'])) ?></div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div class="info-label">Time</div>
+            <div class="info-value"><?= h(format_time_range($event['start_time'], $event['end_time'])) ?></div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+          <div>
+            <div class="info-label">Location</div>
+            <div class="info-value"><?= h($event['location']) ?></div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.6 2.2-4.7 5-4.7s5 2.1 5 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.8 4.5 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="info-label">Event Type</div>
+            <div class="info-value">In-person</div>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="dashboard-shell">
+    <main class="dashboard-content">
 
       <nav class="manage-nav">
         <button class="manage-tab active" data-target="overview">Overview</button>
@@ -158,33 +318,20 @@ $activeNav = 'events';
       <!-- Overview Tab -->
       <section id="overview" class="tab-content active">
         <div class="manage-card">
-          <h3>Event Information</h3>
-          
-          <?php if (!empty($event['cover_photo'])): ?>
-            <img src="../../<?= h($event['cover_photo']) ?>" alt="Cover photo" style="width: 100%; max-height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem;">
-          <?php endif; ?>
-
-          <div class="data-row">
-            <span class="data-label">Event Name</span>
-            <span class="data-value"><?= h($event['name']) ?></span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;">Event Information</h3>
+            <a href="edit-event.php?id=<?= $eventId ?>" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 6px;">Edit Details</a>
           </div>
+
           <?php if (!empty($event['description'])): ?>
-            <div class="data-row" style="flex-direction: column; gap: 0.5rem;">
-              <span class="data-label">Description</span>
-              <span style="color: var(--secondary); font-size: 0.95rem; line-height: 1.6; white-space: pre-line;"><?= h($event['description']) ?></span>
+            <div class="data-row org-flex-col-gap-0-5" >
+              <span class="data-label">Full Description</span>
+              <span class="org-text-pre-line" ><?= h($event['description']) ?></span>
             </div>
           <?php endif; ?>
           <div class="data-row">
-            <span class="data-label">Date</span>
-            <span class="data-value"><?= h(format_event_date($event['event_date'])) ?></span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Time</span>
-            <span class="data-value"><?= h(format_time_range($event['start_time'], $event['end_time'])) ?></span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Location</span>
-            <span class="data-value"><?= h($event['location']) ?><?= $event['address'] ? '<br><span style="font-weight: 400; color: var(--text-secondary);">' . h($event['address']) . '</span>' : '' ?></span>
+            <span class="data-label">Address</span>
+            <span class="data-value"><?= h($event['address'] ?: 'Not specified') ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Capacity</span>
@@ -202,15 +349,15 @@ $activeNav = 'events';
             <span class="data-label">Registration</span>
             <span class="data-value" style="color: <?= $registrationColors[$event['registration_state']] ?? 'var(--text-secondary)' ?>;"><?= h($event['registration_state']) ?></span>
           </div>
-          <div class="data-row" style="margin-bottom: 1.5rem;">
+          <div class="data-row org-mb-1-5" >
             <span class="data-label">Interest Tags</span>
-            <span class="data-value"><?= $event['interest_names'] ? h(implode(', ', $event['interest_names'])) : '<span style="font-weight: 400; color: var(--text-secondary);">None</span>' ?></span>
+            <span class="data-value"><?= $event['interest_names'] ? h(implode(', ', $event['interest_names'])) : '<span class="org-font-normal-sec" >None</span>' ?></span>
           </div>
 
           <?php if ($event['editable']): ?>
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <div class="org-actions-row" >
               <a href="create-event.php?id=<?= (int)$event['event_id'] ?>" class="btn-primary" style="padding: 0.75rem 1.5rem; text-decoration: none;">Edit Event</a>
-              <button id="cancelEventBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem; color: var(--danger); border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.05);">Cancel Event</button>
+              <button id="cancelEventBtn" class="btn-secondary org-btn-danger-outline" >Cancel Event</button>
             </div>
           <?php endif; ?>
         </div>
@@ -218,44 +365,44 @@ $activeNav = 'events';
 
       <!-- Attendees Tab -->
       <section id="attendees" class="tab-content">
-        <div class="manage-card" style="padding: 0; overflow: hidden;">
-          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0;">Attendees</h3>
-            <div style="position: relative; width: 250px;">
-              <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-tertiary);"></i>
-              <input type="text" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
+        <div class="manage-card org-p-0-overflow-hidden" >
+          <div class="org-card-header" >
+            <h3 class="org-m-0" >Attendees</h3>
+            <div class="org-relative-w-250" >
+              <i class="org-icon-left-sm" data-lucide="search" ></i>
+              <input class="org-input-sm-icon" type="text" placeholder="Search attendees..." >
             </div>
           </div>
           
-          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <table class="org-table-base" >
             <thead>
-              <tr style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
-                <th style="padding: 1rem 1.5rem;">Name</th>
-                <th style="padding: 1rem 1.5rem;">Email</th>
-                <th style="padding: 1rem 1.5rem;">Status</th>
-                <th style="padding: 1rem 1.5rem;">Action</th>
+              <tr class="org-table-header-sm" >
+                <th class="org-table-cell-pad" >Name</th>
+                <th class="org-table-cell-pad" >Email</th>
+                <th class="org-table-cell-pad" >Status</th>
+                <th class="org-table-cell-pad" >Action</th>
               </tr>
             </thead>
-            <tbody style="font-size: 0.95rem; color: var(--secondary);">
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Kamal Perera</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">kamal@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--success); font-weight: 600; font-size: 0.85rem;">Checked-in</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
+            <tbody class="org-text-secondary-md" >
+              <tr class="org-border-b" >
+                <td class="org-font-semibold-pad" >Kamal Perera</td>
+                <td class="org-text-sec-pad" >kamal@email.com</td>
+                <td class="org-table-cell-pad" ><span class="org-text-success-sm" >Checked-in</span></td>
+                <td class="org-table-cell-pad" ><button class="btn-text org-text-danger-sm" >Remove</button></td>
               </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Sarah Fernando</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">sarah@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Registered</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
+              <tr class="org-border-b" >
+                <td class="org-font-semibold-pad" >Sarah Fernando</td>
+                <td class="org-text-sec-pad" >sarah@email.com</td>
+                <td class="org-table-cell-pad" ><span class="org-text-sec-sm" >Registered</span></td>
+                <td class="org-table-cell-pad" ><button class="btn-text org-text-danger-sm" >Remove</button></td>
               </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">James Doe</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">james@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: #D97706; font-weight: 600; font-size: 0.85rem;">Pending</span></td>
-                <td style="padding: 1rem 1.5rem; display: flex; gap: 0.5rem;">
-                  <button class="btn-text" style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Approve</button>
-                  <button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Reject</button>
+              <tr class="org-border-b" >
+                <td class="org-font-semibold-pad" >James Doe</td>
+                <td class="org-text-sec-pad" >james@email.com</td>
+                <td class="org-table-cell-pad" ><span class="org-text-warning-sm" >Pending</span></td>
+                <td class="org-flex-gap-0-5-pad" >
+                  <button class="btn-text org-text-primary-sm" >Approve</button>
+                  <button class="btn-text org-text-danger-sm" >Reject</button>
                 </td>
               </tr>
             </tbody>
@@ -265,29 +412,29 @@ $activeNav = 'events';
 
       <!-- QR Check-in Tab -->
       <section id="qr" class="tab-content">
-        <div class="manage-card" style="text-align: center; max-width: 500px; margin: 0 auto;">
+        <div class="manage-card org-modal-center" >
           <h3>Event QR</h3>
-          <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Show this QR code at the event entrance.</p>
+          <p class="org-modal-subtitle" >Show this QR code at the event entrance.</p>
           
-          <div style="background: #fff; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+          <div class="org-qr-card" >
             <!-- Mock QR Code visual -->
-            <div style="width: 200px; height: 200px; background: url('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=AIInnovationSummit2026') no-repeat center center; background-size: contain;"></div>
+            <div class="org-qr-image" ></div>
           </div>
 
-          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1rem 0;"><?= h($event['name']) ?></h4>
+          <h4 class="org-qr-title" ><?= h($event['name']) ?></h4>
 
-          <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
-            <div style="text-align: center;">
-              <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--secondary);"><?= (int)$event['registered_count'] ?></span>
-              <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Registered</span>
+          <div class="org-qr-stats-row" >
+            <div class="org-text-center" >
+              <span class="org-stat-lg" ><?= (int)$event['registered_count'] ?></span>
+              <span class="org-stat-label-sm" >Registered</span>
             </div>
-            <div style="text-align: center;">
-              <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary);"><?= (int)$event['checked_in_count'] ?></span>
-              <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Checked-in</span>
+            <div class="org-text-center" >
+              <span class="org-stat-lg-primary" ><?= (int)$event['checked_in_count'] ?></span>
+              <span class="org-stat-label-sm" >Checked-in</span>
             </div>
           </div>
 
-          <button class="btn-secondary" style="padding: 0.75rem 1.5rem;">Regenerate QR</button>
+          <button class="btn-secondary org-btn-pad" >Regenerate QR</button>
         </div>
       </section>
 
@@ -296,50 +443,50 @@ $activeNav = 'events';
         <div class="manage-card">
           <h3>Event Analytics</h3>
           
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
-            <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
-              <span style="display: block; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Registrations</span>
-              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--secondary);"><?= (int)$event['registered_count'] ?></span>
+          <div class="org-grid-3-mb-3" >
+            <div class="org-info-card" >
+              <span class="org-info-label" >Registrations</span>
+              <span class="org-info-val" ><?= (int)$event['registered_count'] ?></span>
             </div>
-            <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
-              <span style="display: block; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Check-ins</span>
-              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--secondary);"><?= (int)$event['checked_in_count'] ?></span>
+            <div class="org-info-card" >
+              <span class="org-info-label" >Check-ins</span>
+              <span class="org-info-val" ><?= (int)$event['checked_in_count'] ?></span>
             </div>
-            <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
-              <span style="display: block; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Attendance Rate</span>
-              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--primary);"><?= (int)$event['registered_count'] > 0 ? round($event['checked_in_count'] / $event['registered_count'] * 100) : 0 ?>%</span>
+            <div class="org-info-card" >
+              <span class="org-info-label" >Attendance Rate</span>
+              <span class="org-info-val-primary" ><?= (int)$event['registered_count'] > 0 ? round($event['checked_in_count'] / $event['registered_count'] * 100) : 0 ?>%</span>
             </div>
           </div>
 
-          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1.5rem 0;">Interest Distribution</h4>
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <h4 class="org-section-title-sm" >Interest Distribution</h4>
+          <div class="org-flex-col-gap-1" >
             <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.4rem;">
+              <div class="org-flex-between-sm" >
                 <span>Technology</span>
                 <span>42%</span>
               </div>
-              <div style="height: 6px; background: #e2e8f0; border-radius: 999px;"><div style="width: 42%; height: 100%; background: var(--primary); border-radius: 999px;"></div></div>
+              <div class="org-progress-track-sm" ><div class="org-progress-fill-primary" ></div></div>
             </div>
             <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.4rem;">
+              <div class="org-flex-between-sm" >
                 <span>Business</span>
                 <span>28%</span>
               </div>
-              <div style="height: 6px; background: #e2e8f0; border-radius: 999px;"><div style="width: 28%; height: 100%; background: #8568FF; border-radius: 999px;"></div></div>
+              <div class="org-progress-track-sm" ><div class="org-progress-fill-purple" ></div></div>
             </div>
             <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.4rem;">
+              <div class="org-flex-between-sm" >
                 <span>Research</span>
                 <span>18%</span>
               </div>
-              <div style="height: 6px; background: #e2e8f0; border-radius: 999px;"><div style="width: 18%; height: 100%; background: #a78bfa; border-radius: 999px;"></div></div>
+              <div class="org-progress-track-sm" ><div class="org-progress-fill-light" ></div></div>
             </div>
             <div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.4rem;">
+              <div class="org-flex-between-sm" >
                 <span>Other</span>
                 <span>12%</span>
               </div>
-              <div style="height: 6px; background: #e2e8f0; border-radius: 999px;"><div style="width: 12%; height: 100%; background: #cbd5e1; border-radius: 999px;"></div></div>
+              <div class="org-progress-track-sm" ><div class="org-progress-fill-gray" ></div></div>
             </div>
           </div>
         </div>
@@ -350,24 +497,24 @@ $activeNav = 'events';
         <div class="manage-card">
           <h3>Event Reports</h3>
           
-          <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 12px; background: #f8fafc;">
+          <div class="org-flex-col-gap-1-5" >
+            <div class="org-info-row" >
               <div>
-                <strong style="display: block; font-size: 1rem; color: var(--secondary); margin-bottom: 0.25rem;">Registration Report</strong>
-                <span style="color: var(--text-secondary); font-size: 0.9rem;">List of registered attendees.</span>
+                <strong class="org-info-row-title" >Registration Report</strong>
+                <span class="org-info-row-desc" >List of registered attendees.</span>
               </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 12px; background: #f8fafc;">
+            <div class="org-info-row" >
               <div>
-                <strong style="display: block; font-size: 1rem; color: var(--secondary); margin-bottom: 0.25rem;">Attendance Report</strong>
-                <span style="color: var(--text-secondary); font-size: 0.9rem;">Check-in and attendance information.</span>
+                <strong class="org-info-row-title" >Attendance Report</strong>
+                <span class="org-info-row-desc" >Check-in and attendance information.</span>
               </div>
             </div>
           </div>
 
-          <div style="display: flex; gap: 1rem;">
-            <button class="btn-primary" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="download" style="width:16px;height:16px;"></i> Export CSV</button>
-            <button class="btn-secondary" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text" style="width:16px;height:16px;"></i> Export PDF</button>
+          <div class="org-flex-gap-1" >
+            <button class="btn-primary org-btn-with-icon" ><i class="org-icon-md" data-lucide="download" ></i> Export CSV</button>
+            <button class="btn-secondary org-btn-with-icon" ><i class="org-icon-md" data-lucide="file-text" ></i> Export PDF</button>
           </div>
         </div>
       </section>
@@ -376,16 +523,16 @@ $activeNav = 'events';
   </div>
 
   <!-- Cancel Modal -->
-  <div id="cancelModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div style="background: #fff; padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-      <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin: 0 0 1rem 0;">Cancel this event?</h3>
-      <p style="color: var(--text-secondary); margin: 0 0 2rem 0; line-height: 1.6;">Are you sure you want to cancel <strong><?= h($event['name']) ?></strong>? This can't be undone. Registration will close and the <?= (int)$event['registered_count'] ?> registered attendees will see the event as cancelled.</p>
+  <div class="org-modal-overlay" id="cancelModal" >
+    <div class="org-modal-content" >
+      <h3 class="org-modal-title" >Cancel this event?</h3>
+      <p class="org-modal-desc" >Are you sure you want to cancel <strong><?= h($event['name']) ?></strong>? This can't be undone. Registration will close and the <?= (int)$event['registered_count'] ?> registered attendees will see the event as cancelled.</p>
 
-      <form method="post" style="display: flex; gap: 1rem; justify-content: flex-end;">
+      <form class="org-modal-actions" method="post" >
         <?= csrf_field() ?>
         <input type="hidden" name="action" value="cancel">
-        <button type="button" id="closeModalBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem;">Keep Event</button>
-        <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem; background: var(--danger); border-color: var(--danger);">Cancel Event</button>
+        <button type="button" id="closeModalBtn" class="btn-secondary org-btn-pad" >Keep Event</button>
+        <button type="submit" class="btn-primary org-btn-danger" >Cancel Event</button>
       </form>
     </div>
   </div>

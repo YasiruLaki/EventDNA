@@ -137,31 +137,33 @@ $activeNav = 'events';
             background: #e2e8f0;
         }
     </style>
+
+  <link rel="stylesheet" href="organizer.css" />
 </head>
 
-<body style="background-color: #f8fafc; min-height: 100vh;">
+<body class="org-page-bg" >
     <?php include 'includes/nav.php'; ?>
 
     <div class="dashboard-shell">
         <main class="dashboard-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div class="org-page-header-flex" >
                 <div>
-                    <h1 class="page-title" style="margin: 0; font-size: 1.75rem;">My Events</h1>
-                    <p class="supporting-copy" style="margin: 0.5rem 0 0 0;">Manage and edit your upcoming and past
+                    <h1 class="page-title org-page-title-lg" >My Events</h1>
+                    <p class="supporting-copy org-page-subtitle" >Manage and edit your upcoming and past
                         events.</p>
                 </div>
-                <a href="create-event.php" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 8px;">
+                <a href="create-event.php" class="btn-primary org-btn-rounded" >
                     Create New Event
                 </a>
             </div>
 
             <?php if (empty($events)): ?>
-                <div
-                    style="text-align: center; padding: 4rem; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                    <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">No Events Found</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">You haven't created any events yet.</p>
-                    <a href="create-event.php" class="btn-primary"
-                        style="padding: 0.75rem 1.5rem; border-radius: 8px;">Create Your First Event</a>
+                <div class="org-empty-state-dashed"
+                    >
+                    <h3 class="org-empty-state-title" >No Events Found</h3>
+                    <p class="org-empty-state-desc" >You haven't created any events yet.</p>
+                    <a href="create-event.php" class="btn-primary org-btn-rounded"
+                        >Create Your First Event</a>
                 </div>
             <?php else: ?>
                 <section class="events-grid">
@@ -171,8 +173,8 @@ $activeNav = 'events';
                                 <?php if (!empty($event['cover_photo'])): ?>
                                     <img src="../../<?= htmlspecialchars($event['cover_photo']) ?>" alt="Cover Photo">
                                 <?php else: ?>
-                                    <div
-                                        style="width: 100%; height: 100%; background: var(--tertiary); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary);">
+                                    <div class="org-no-cover"
+                                        >
                                         No Cover</div>
                                 <?php endif; ?>
                                 <span class="date-tag"><?= date('M d', strtotime($event['event_date'])) ?></span>
@@ -181,7 +183,7 @@ $activeNav = 'events';
                                 <span class="event-chip"><?= htmlspecialchars($event['display_status']) ?></span>
                                 <h4><?= htmlspecialchars($event['name']) ?></h4>
                                 <p>
-                                    <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i>
+                                    <i class="org-icon-sm" data-lucide="map-pin" ></i>
                                     <?= htmlspecialchars($event['location']) ?>
                                 </p>
                                 <div class="event-card-actions">
