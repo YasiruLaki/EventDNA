@@ -26,7 +26,34 @@ $activeNav = 'dashboard';
 </head>
 
 <body>
-<?php include __DIR__ . "/includes/nav.php"; ?>
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="#" class="nav-logo">
+          <img src="../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="dashboard.php" class="nav-link active"
+            style="box-shadow: inset 0 -2px 0 var(--primary); color: var(--primary); font-weight: 600;">Dashboard</a>
+          <a href="dashboard.php#events" class="nav-link">My Events</a>
+          <a href="create-event.html" class="nav-link">Create Event</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80"
+              alt="Profile" class="nav-avatar" />
+            <span class="nav-profile-name">Hanan</span>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../auth/login/index.php" class="dropdown-item text-danger">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <div class="dashboard-shell">
     <main class="dashboard-content">
@@ -111,6 +138,22 @@ $activeNav = 'dashboard';
         </article>
       </div>
       <?php endif; ?>
+
+      <!-- ===== COMMUNITY SECTION — new, per Organizer Create Group Implementation Plan section 4 ===== -->
+      <div id="community" style="margin-top: 4rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin: 0 0 0.5rem 0;">Community
+            </h2>
+            <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">Create and manage groups for your
+              attendees.</p>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <a href="create-group.html" class="btn-primary">+ Create Group</a>
+            <a href="manage-groups.html" class="btn-secondary">Manage Groups</a>
+          </div>
+        </div>
+      </div>
 
       <div id="events" style="margin-top: 4rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">

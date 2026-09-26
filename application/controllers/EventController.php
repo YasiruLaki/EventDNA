@@ -4,8 +4,8 @@ require_once __DIR__ . '/../../data/EventRepository.php';
 class EventController {
     private $eventRepo;
 
-    const UPLOAD_DIR = 'uploads/events/';           // relative to project root
-    const MAX_COVER_BYTES = 5 * 1024 * 1024;        // 5 MB
+    const UPLOAD_DIR = 'uploads/events/';         
+    const MAX_COVER_BYTES = 5 * 1024 * 1024;     
     const COVER_TYPES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
     const MAX_INTERESTS = 10;
 

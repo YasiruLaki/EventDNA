@@ -127,7 +127,32 @@ $activeNav = 'events';
   </style>
 </head>
 <body style="background-color: #f9f9f9; min-height: 100vh;">
-<?php include __DIR__ . "/includes/nav.php"; ?>
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="dashboard.php" class="nav-logo">
+          <img src="../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="dashboard.php" class="nav-link">Dashboard</a>
+          <a href="dashboard.php#events" class="nav-link">My Events</a>
+          <a href="create-event.html" class="nav-link">Create Event</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <span class="nav-profile-name">Hanan</span>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../auth/login/index.php" class="dropdown-item text-danger">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <div class="dashboard-shell">
     <main class="dashboard-content" style="max-width: 900px; margin: 0 auto;">
