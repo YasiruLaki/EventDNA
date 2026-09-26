@@ -2,9 +2,41 @@
 require_once __DIR__ . "/../includes/guard.php";
 require_once "../../../data/database.php";
 require_once "../../../application/controllers/EventController.php";
+require_once "../../../application/controllers/RegistrationController.php";
+
+$eventId = (int)($_GET['id'] ?? 0);
+$error = "";
+$notice = isset($_GET['cancelled']) ? "Your registration has been cancelled." : "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $action = $_POST['action'] ?? '';
+    $registrationController = new RegistrationController($conn);
+
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } elseif ($action === 'register') {
+        if (empty($_POST['agree_guidelines'])) {
+            $error = "Please agree to the Community Guidelines to register.";
+        } else {
+            $result = $registrationController->register($attendeeId, $eventId);
+            if ($result["success"]) {
+                header("Location: ../registrationSuccess/index.php?id=" . $eventId);
+                exit;
+            }
+            $error = $result["message"];
+        }
+    } elseif ($action === 'cancel_registration') {
+        $result = $registrationController->cancelRegistration($attendeeId, $eventId);
+        if ($result["success"]) {
+            header("Location: index.php?id=" . $eventId . "&cancelled=1");
+            exit;
+        }
+        $error = $result["message"];
+    }
+}
 
 $eventController = new EventController($conn);
-$event = $eventController->getEventForAttendee($attendeeId, (int)($_GET['id'] ?? 0));
+$event = $eventController->getEventForAttendee($attendeeId, $eventId);
 if (!$event) {
     http_response_code(404);
     die("Event not found.");
@@ -14,6 +46,8 @@ $eventOver = in_array($event['display_status'], ['Cancelled', 'Completed'], true
 $isRegistered = !$eventOver && in_array($event['my_registration'], ['PENDING', 'APPROVED', 'REGISTERED'], true);
 $wasTurnedAway = in_array($event['my_registration'], ['REJECTED', 'REMOVED'], true);
 $canRegister = !$isRegistered && !$wasTurnedAway && $event['registration_state'] === 'Open';
+$canCancel = $isRegistered && date('Y-m-d H:i:s') < $event['event_date'] . ' ' . $event['start_time'];
+$isInviteOnly = $event['visibility'] === 'INVITE_ONLY';
 
 // Label for the disabled button when the attendee cannot register
 if ($event['display_status'] === 'Cancelled') {
@@ -201,13 +235,32 @@ $activeNav = 'explore';
           <?php endif; ?>
         </div>
 
+        <?php if ($isInviteOnly && !$eventOver): ?>
+          <div class="reg-deadline">Invite-only &middot; the organizer approves each request</div>
+        <?php endif; ?>
+
+        <?php if ($error): ?>
+          <div role="alert" style="background: rgba(220, 38, 38, 0.06); color: var(--danger); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 600;"><?= h($error) ?></div>
+        <?php elseif ($notice): ?>
+          <div role="status" style="background: rgba(22, 163, 74, 0.08); color: var(--success); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 600;"><?= h($notice) ?></div>
+        <?php endif; ?>
+
         <?php if ($isRegistered): ?>
           <a href="../myEvents/index.php" class="btn-primary reg-cta" style="text-decoration: none;">
             <?= $event['my_registration'] === 'PENDING' ? 'Awaiting Approval' : "You're Registered" ?> &middot; My Events
           </a>
+          <?php if ($canCancel): ?>
+            <form method="post" onsubmit="return confirm('Cancel your registration for this event? Your seat will be released.');" style="margin-top: 0.75rem;">
+              <?= csrf_field() ?>
+              <input type="hidden" name="action" value="cancel_registration">
+              <button type="submit" class="btn-cancel" style="width: 100%; color: var(--danger);">
+                <?= $event['my_registration'] === 'PENDING' ? 'Withdraw Request' : 'Cancel Registration' ?>
+              </button>
+            </form>
+          <?php endif; ?>
         <?php elseif ($canRegister): ?>
           <button class="btn-primary reg-cta">
-            Register Now &rarr;
+            <?= $isInviteOnly ? 'Request to Join' : 'Register Now' ?> &rarr;
           </button>
         <?php else: ?>
           <button class="btn-primary reg-cta" disabled style="opacity: 0.5; cursor: not-allowed;">
@@ -290,6 +343,10 @@ $activeNav = 'explore';
         </div>
       </div>
 
+      <form method="post">
+      <?= csrf_field() ?>
+      <input type="hidden" name="action" value="register">
+
       <label class="check-row">
         <input type="checkbox" checked>
         <div>
@@ -299,7 +356,7 @@ $activeNav = 'explore';
       </label>
 
       <label class="check-row">
-        <input type="checkbox">
+        <input type="checkbox" name="agree_guidelines" value="1" required>
         <div>
           <div class="check-label">I agree to the Community Guidelines <span class="req">*</span></div>
           <div class="check-sub">Read our code of conduct for a safe and respectful event.</div>
@@ -307,12 +364,13 @@ $activeNav = 'explore';
       </label>
 
       <div class="modal-actions">
-        <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
-        <a href="../registrationSuccess/index.html" class="btn-primary" style="text-decoration: none;">
-          Register Now
+        <button type="button" class="btn-cancel" id="modalCancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary">
+          <?= $isInviteOnly ? 'Send Request' : 'Register Now' ?>
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        </button>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -335,6 +393,11 @@ $activeNav = 'explore';
         modal.classList.remove("active");
         document.body.style.overflow = "";
       });
+    });
+
+    // Stop a double click from sending the registration twice
+    modal.querySelector("form").addEventListener("submit", (e) => {
+      if (e.submitter) e.submitter.disabled = true;
     });
 
     modal.addEventListener("click", (e) => {
