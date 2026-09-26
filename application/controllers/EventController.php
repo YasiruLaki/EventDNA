@@ -304,7 +304,7 @@ class EventController {
             return ["success" => true, "path" => null];
         }
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            return ["success" => false, "message" => "Cover photo upload failed. Please try again."];
+            return ["success" => false, "message" => "Cover photo upload failed (error code " . $file['error'] . ")."];
         }
         if ($file['size'] > self::MAX_COVER_BYTES) {
             return ["success" => false, "message" => "Cover photo must be 5 MB or smaller."];
