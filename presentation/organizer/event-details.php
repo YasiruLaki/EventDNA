@@ -1,19 +1,31 @@
 <?php
-session_start();
+require_once __DIR__ . "/includes/guard.php";
 require_once "../../data/database.php";
+require_once "../../application/controllers/EventController.php";
 require_once "../../application/controllers/RegistrationController.php";
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
-    header("Location: ../auth/login/index.php");
-    exit;
-}
+$eventController = new EventController($conn);
+$registrationController = new RegistrationController($conn);
+$eventId = (int)($_GET['id'] ?? 0);
+$error = "";
 
-$controller = new RegistrationController($conn);
-$eventId = (int) ($_GET['id'] ?? 0);
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $result = $controller->updateAttendeeStatus($_SESSION['user_id'], (int) ($_POST['registration_id'] ?? 0), $_POST['action'] ?? '');
-    $_SESSION['flash'] = $result;
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'cancel') {
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } else {
+        $result = $eventController->cancelEvent($organizerId, $eventId);
+        if ($result["success"]) {
+            header("Location: event-details.php?id=" . $eventId . "&cancelled=1");
+            exit;
+        }
+        $error = $result["message"];
+    }
+} elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!csrf_valid()) {
+        $_SESSION['flash'] = ["success" => false, "message" => "Your session expired. Please try again."];
+    } else {
+        $_SESSION['flash'] = $registrationController->updateAttendeeStatus($organizerId, $eventId, (int)($_POST['registration_id'] ?? 0), $_POST['action'] ?? '');
+    }
     header("Location: event-details.php?id=" . $eventId . "#attendees");
     exit;
 }
@@ -21,24 +33,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 
-$details = $controller->getOrganizerEvent($_SESSION['user_id'], $eventId);
-
-if (!$details['success']) {
-    http_response_code($details['code'] === 'FORBIDDEN' ? 403 : 404);
-    echo htmlspecialchars($details['message']);
-    exit;
+$event = $eventController->getOwnedEvent($organizerId, $eventId);
+if (!$event) {
+    http_response_code(404);
+    die("Event not found.");
 }
 
-$event = $details['event'];
-$counts = $details['counts'];
-$eventDate = date('M j, Y', strtotime($event['event_date']));
+$registrations = $registrationController->getEventAttendees($organizerId, $eventId);
+$attendees = $registrations['attendees'];
+$counts = $registrations['counts'];
+$canManageAttendees = $event['editable'];
+
+$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : "");
+$registrationColors = ['Open' => 'var(--success)', 'Full' => 'var(--danger)'];
+$activeNav = 'events';
 ?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?php echo htmlspecialchars($event['name']); ?> - EventDNA</title>
+  <title><?= h($event['name']) ?> - EventDNA</title>
   <link rel="stylesheet" href="../attendee/dashboard/styles.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -106,9 +121,30 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       font-weight: 600;
       font-size: 0.95rem;
     }
+    .data-value {
+      color: var(--secondary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-align: right;
+    }
+    .flash {
+      border-radius: 8px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .flash-ok {
+      background: rgba(22, 163, 74, 0.08);
+      color: var(--success);
+    }
+    .flash-error {
+      background: rgba(220, 38, 38, 0.06);
+      color: var(--danger);
+    }
     .action-form {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
       margin: 0;
     }
     .action-form .btn-text {
@@ -117,21 +153,8 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       padding: 0;
       cursor: pointer;
       font-family: inherit;
-    }
-    .flash {
-      margin: 0 0 1.5rem;
-      padding: 0.85rem 1rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
-    }
-    .flash-success {
-      background: rgba(22, 163, 74, 0.08);
-      color: var(--success);
-    }
-    .flash-error {
-      background: rgba(220, 38, 38, 0.08);
-      color: var(--error);
     }
     .attendee-status {
       font-weight: 600;
@@ -149,61 +172,33 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
     }
     .status-rejected,
     .status-removed {
-      color: var(--error);
-    }
-    .data-value {
-      color: var(--secondary);
-      font-weight: 600;
-      font-size: 0.95rem;
+      color: var(--danger);
     }
   </style>
 </head>
 <body style="background-color: #f9f9f9; min-height: 100vh;">
-  <nav class="top-nav">
-    <div class="nav-container">
-      <div class="nav-left">
-        <a href="dashboard.php" class="nav-logo">
-          <img src="../images/logo.png" alt="EventDNA" class="nav-logo-img">
-        </a>
-        <div class="nav-links">
-          <a href="dashboard.php" class="nav-link">Dashboard</a>
-          <a href="dashboard.php#events" class="nav-link">My Events</a>
-          <a href="create-event.html" class="nav-link">Create Event</a>
-        </div>
-      </div>
-      <div class="nav-right">
-        <div class="nav-profile-menu">
-          <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name"><?php echo htmlspecialchars($_SESSION['full_name'] ?? ''); ?></span>
-            <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
-          </button>
-          <div class="nav-dropdown">
-            <a href="../auth/login/index.php" class="dropdown-item text-danger">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <?php include __DIR__ . "/includes/nav.php"; ?>
 
   <div class="dashboard-shell">
     <main class="dashboard-content" style="max-width: 900px; margin: 0 auto;">
-      
+
+      <?php if ($notice): ?>
+        <div class="flash flash-ok" role="status"><?= h($notice) ?></div>
+      <?php endif; ?>
+      <?php if ($error): ?>
+        <div class="flash flash-error" role="alert"><?= h($error) ?></div>
+      <?php endif; ?>
+      <?php if ($flash): ?>
+        <div class="flash <?= $flash['success'] ? 'flash-ok' : 'flash-error' ?>" role="status"><?= h($flash['message']) ?></div>
+      <?php endif; ?>
+
       <div style="margin-bottom: 2rem;">
-        <h1 class="page-title" style="margin-bottom: 0.5rem;"><?php echo htmlspecialchars($event['name']); ?></h1>
-        <div style="display: flex; gap: 1rem; align-items: center; color: var(--text-secondary); font-size: 0.95rem;">
-          <?php if ($event['status'] === 'CANCELLED'): ?>
-            <span style="background: rgba(220, 38, 38, 0.1); color: var(--error); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;">CANCELLED</span>
-          <?php else: ?>
-            <span style="background: rgba(79, 16, 255, 0.1); color: var(--primary); font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px;"><?php echo $event['visibility'] === 'INVITE_ONLY' ? 'INVITE ONLY' : 'PUBLIC'; ?></span>
-          <?php endif; ?>
-          <span><?php echo $eventDate; ?> · <?php echo htmlspecialchars($event['location']); ?></span>
+        <h1 class="page-title" style="margin-bottom: 0.5rem;"><?= h($event['name']) ?></h1>
+        <div style="display: flex; gap: 1rem; align-items: center; color: var(--text-secondary); font-size: 0.95rem; flex-wrap: wrap;">
+          <span style="<?= status_badge_style($event['display_status']) ?> font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.6rem; border-radius: 999px; text-transform: uppercase;"><?= h($event['display_status']) ?></span>
+          <span><?= h(format_event_date($event['event_date'])) ?> · <?= h($event['location']) ?></span>
         </div>
       </div>
-
-      <?php if ($flash): ?>
-        <p class="flash <?php echo $flash['success'] ? 'flash-success' : 'flash-error'; ?>"><?php echo htmlspecialchars($flash['message']); ?></p>
-      <?php endif; ?>
 
       <nav class="manage-nav">
         <button class="manage-tab active" data-target="overview">Overview</button>
@@ -218,43 +213,65 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
         <div class="manage-card">
           <h3>Event Information</h3>
           
+          <?php if (!empty($event['cover_photo'])): ?>
+            <img src="../../<?= h($event['cover_photo']) ?>" alt="Cover photo" style="width: 100%; max-height: 240px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem;">
+          <?php endif; ?>
+
           <div class="data-row">
             <span class="data-label">Event Name</span>
-            <span class="data-value"><?php echo htmlspecialchars($event['name']); ?></span>
+            <span class="data-value"><?= h($event['name']) ?></span>
           </div>
+          <?php if (!empty($event['description'])): ?>
+            <div class="data-row" style="flex-direction: column; gap: 0.5rem;">
+              <span class="data-label">Description</span>
+              <span style="color: var(--secondary); font-size: 0.95rem; line-height: 1.6; white-space: pre-line;"><?= h($event['description']) ?></span>
+            </div>
+          <?php endif; ?>
           <div class="data-row">
             <span class="data-label">Date</span>
-            <span class="data-value"><?php echo $eventDate; ?> · <?php echo date('g:i A', strtotime($event['start_time'])); ?> – <?php echo date('g:i A', strtotime($event['end_time'])); ?></span>
+            <span class="data-value"><?= h(format_event_date($event['event_date'])) ?></span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Time</span>
+            <span class="data-value"><?= h(format_time_range($event['start_time'], $event['end_time'])) ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Location</span>
-            <span class="data-value"><?php echo htmlspecialchars($event['location']); ?></span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Visibility</span>
-            <span class="data-value"><?php echo $event['visibility'] === 'INVITE_ONLY' ? 'Invite Only' : 'Public'; ?></span>
+            <span class="data-value"><?= h($event['location']) ?><?= $event['address'] ? '<br><span style="font-weight: 400; color: var(--text-secondary);">' . h($event['address']) . '</span>' : '' ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Capacity</span>
-            <span class="data-value"><?php echo $details['registeredCount']; ?> / <?php echo (int) $event['capacity']; ?> registered</span>
+            <span class="data-value"><?= (int)$event['registered_count'] ?> / <?= (int)$event['capacity'] ?> registered</span>
           </div>
+          <?php if ($event['visibility'] === 'INVITE_ONLY'): ?>
           <div class="data-row">
             <span class="data-label">Pending Requests</span>
-            <span class="data-value" style="color: #D97706;"><?php echo $counts['PENDING']; ?></span>
+            <span class="data-value" style="color: #D97706;"><?= $counts['PENDING'] ?></span>
+          </div>
+          <?php endif; ?>
+          <div class="data-row">
+            <span class="data-label">Visibility</span>
+            <span class="data-value"><?= $event['visibility'] === 'PUBLIC' ? 'Public' : 'Invite Only' ?></span>
           </div>
           <div class="data-row">
             <span class="data-label">Registration Window</span>
-            <span class="data-value"><?php echo date('M j, g:i A', strtotime($event['registration_open'])); ?> – <?php echo date('M j, g:i A', strtotime($event['registration_close'])); ?></span>
+            <span class="data-value"><?= h(format_event_date($event['registration_open'])) ?> – <?= h(format_event_date($event['registration_close'])) ?></span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Registration</span>
+            <span class="data-value" style="color: <?= $registrationColors[$event['registration_state']] ?? 'var(--text-secondary)' ?>;"><?= h($event['registration_state']) ?></span>
           </div>
           <div class="data-row" style="margin-bottom: 1.5rem;">
-            <span class="data-label">Registration</span>
-            <span class="data-value" style="color: <?php echo $details['registrationState'] === 'Open' ? 'var(--success)' : 'var(--error)'; ?>;"><?php echo $details['registrationState']; ?></span>
+            <span class="data-label">Interest Tags</span>
+            <span class="data-value"><?= $event['interest_names'] ? h(implode(', ', $event['interest_names'])) : '<span style="font-weight: 400; color: var(--text-secondary);">None</span>' ?></span>
           </div>
 
-          <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-            <button class="btn-primary" style="padding: 0.75rem 1.5rem;">Edit Event</button>
-            <button id="cancelEventBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem; color: var(--error); border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.05);">Cancel Event</button>
-          </div>
+          <?php if ($event['editable']): ?>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+              <a href="create-event.php?id=<?= (int)$event['event_id'] ?>" class="btn-primary" style="padding: 0.75rem 1.5rem; text-decoration: none;">Edit Event</a>
+              <button id="cancelEventBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem; color: var(--danger); border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.05);">Cancel Event</button>
+            </div>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -262,14 +279,14 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
       <section id="attendees" class="tab-content">
         <div class="manage-card" style="padding: 0; overflow: hidden;">
           <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0;">Attendees <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.95rem;">(<?php echo count($details['attendees']); ?>)</span></h3>
+            <h3 style="margin: 0;">Attendees <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.95rem;">(<?= count($attendees) ?>)</span></h3>
             <div style="position: relative; width: 250px;">
               <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-tertiary);"></i>
               <input type="text" id="attendeeSearch" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
             </div>
           </div>
 
-          <?php if (empty($details['attendees'])): ?>
+          <?php if (!$attendees): ?>
             <p style="padding: 2rem 1.5rem; margin: 0; color: var(--text-secondary); text-align: center;">No one has registered for this event yet.</p>
           <?php else: ?>
           <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -283,29 +300,31 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
               </tr>
             </thead>
             <tbody id="attendeeRows" style="font-size: 0.95rem; color: var(--secondary);">
-              <?php foreach ($details['attendees'] as $attendee): ?>
+              <?php foreach ($attendees as $attendee): ?>
               <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;"><?php echo htmlspecialchars($attendee['full_name']); ?></td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);"><?php echo htmlspecialchars($attendee['email']); ?></td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem;"><?php echo date('M j, g:i A', strtotime($attendee['registered_at'])); ?></td>
+                <td style="padding: 1rem 1.5rem; font-weight: 600;"><?= h($attendee['full_name']) ?></td>
+                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);"><?= h($attendee['email']) ?></td>
+                <td style="padding: 1rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem;"><?= h(date('M j, g:i A', strtotime($attendee['registered_at']))) ?></td>
                 <td style="padding: 1rem 1.5rem;">
-                  <?php if ($attendee['checked_in']): ?>
+                  <?php if ((int)$attendee['checked_in'] === 1): ?>
                     <span class="attendee-status status-checked-in">Checked-in</span>
                   <?php else: ?>
-                    <span class="attendee-status status-<?php echo strtolower($attendee['status']); ?>"><?php echo ucfirst(strtolower($attendee['status'])); ?></span>
+                    <span class="attendee-status status-<?= h(strtolower($attendee['status'])) ?>"><?= h(ucfirst(strtolower($attendee['status']))) ?></span>
                   <?php endif; ?>
                 </td>
                 <td style="padding: 1rem 1.5rem;">
-                  <?php if ($event['status'] === 'ACTIVE' && $attendee['status'] === 'PENDING'): ?>
+                  <?php if ($canManageAttendees && $attendee['status'] === 'PENDING'): ?>
                     <form method="post" class="action-form">
-                      <input type="hidden" name="registration_id" value="<?php echo $attendee['registration_id']; ?>">
-                      <button type="submit" name="action" value="approve" class="btn-text" style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Approve</button>
-                      <button type="submit" name="action" value="reject" class="btn-text" style="color: var(--error); font-size: 0.85rem; font-weight: 600;">Reject</button>
+                      <?= csrf_field() ?>
+                      <input type="hidden" name="registration_id" value="<?= (int)$attendee['registration_id'] ?>">
+                      <button type="submit" name="action" value="approve" class="btn-text" style="color: var(--primary);">Approve</button>
+                      <button type="submit" name="action" value="reject" class="btn-text" style="color: var(--danger);">Reject</button>
                     </form>
-                  <?php elseif ($event['status'] === 'ACTIVE' && in_array($attendee['status'], ['REGISTERED', 'APPROVED'])): ?>
+                  <?php elseif ($canManageAttendees && in_array($attendee['status'], ['REGISTERED', 'APPROVED'], true)): ?>
                     <form method="post" class="action-form" onsubmit="return confirm('Remove this attendee from the event?');">
-                      <input type="hidden" name="registration_id" value="<?php echo $attendee['registration_id']; ?>">
-                      <button type="submit" name="action" value="remove" class="btn-text" style="color: var(--error); font-size: 0.85rem; font-weight: 600;">Remove</button>
+                      <?= csrf_field() ?>
+                      <input type="hidden" name="registration_id" value="<?= (int)$attendee['registration_id'] ?>">
+                      <button type="submit" name="action" value="remove" class="btn-text" style="color: var(--danger);">Remove</button>
                     </form>
                   <?php else: ?>
                     <span style="color: var(--text-tertiary); font-size: 0.85rem;">—</span>
@@ -330,15 +349,15 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
             <div style="width: 200px; height: 200px; background: url('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=AIInnovationSummit2026') no-repeat center center; background-size: contain;"></div>
           </div>
 
-          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1rem 0;">AI Innovation Summit 2026</h4>
-          
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin: 0 0 1rem 0;"><?= h($event['name']) ?></h4>
+
           <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
             <div style="text-align: center;">
-              <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--secondary);">312</span>
+              <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--secondary);"><?= (int)$event['registered_count'] ?></span>
               <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Registered</span>
             </div>
             <div style="text-align: center;">
-              <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary);">248</span>
+              <span style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary);"><?= (int)$event['checked_in_count'] ?></span>
               <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Checked-in</span>
             </div>
           </div>
@@ -355,15 +374,15 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
             <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
               <span style="display: block; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Registrations</span>
-              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--secondary);">312</span>
+              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--secondary);"><?= (int)$event['registered_count'] ?></span>
             </div>
             <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
               <span style="display: block; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Check-ins</span>
-              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--secondary);">248</span>
+              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--secondary);"><?= (int)$event['checked_in_count'] ?></span>
             </div>
             <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
               <span style="display: block; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Attendance Rate</span>
-              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--primary);">79%</span>
+              <span style="display: block; font-size: 2rem; font-weight: 800; color: var(--primary);"><?= (int)$event['registered_count'] > 0 ? round($event['checked_in_count'] / $event['registered_count'] * 100) : 0 ?>%</span>
             </div>
           </div>
 
@@ -435,12 +454,14 @@ $eventDate = date('M j, Y', strtotime($event['event_date']));
   <div id="cancelModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
     <div style="background: #fff; padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
       <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--secondary); margin: 0 0 1rem 0;">Cancel this event?</h3>
-      <p style="color: var(--text-secondary); margin: 0 0 2rem 0; line-height: 1.6;">Are you sure you want to cancel <strong><?php echo htmlspecialchars($event['name']); ?></strong>? This will permanently cancel the event and automatically notify all <?php echo $details['registeredCount']; ?> registered attendees.</p>
-      
-      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-        <button id="closeModalBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem;">Keep Event</button>
-        <button class="btn-primary" style="padding: 0.75rem 1.5rem; background: var(--error); border-color: var(--error);">Cancel Event</button>
-      </div>
+      <p style="color: var(--text-secondary); margin: 0 0 2rem 0; line-height: 1.6;">Are you sure you want to cancel <strong><?= h($event['name']) ?></strong>? This can't be undone. Registration will close and the <?= (int)$event['registered_count'] ?> registered attendees will see the event as cancelled.</p>
+
+      <form method="post" style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="cancel">
+        <button type="button" id="closeModalBtn" class="btn-secondary" style="padding: 0.75rem 1.5rem;">Keep Event</button>
+        <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem; background: var(--danger); border-color: var(--danger);">Cancel Event</button>
+      </form>
     </div>
   </div>
 

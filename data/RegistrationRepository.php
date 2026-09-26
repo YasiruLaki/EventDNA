@@ -1,35 +1,11 @@
 <?php
+require_once __DIR__ . '/EventRepository.php';
 
 class RegistrationRepository {
     private $conn;
 
     public function __construct($conn) {
         $this->conn = $conn;
-    }
-
-    public function getEventById($eventId) {
-        $stmt = $this->conn->prepare("
-            SELECT e.*, u.full_name AS organizer_name, NOW() AS db_now
-            FROM events e
-            JOIN users u ON e.organizer_id = u.user_id
-            WHERE e.event_id = ?
-        ");
-        $stmt->bind_param("i", $eventId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
-
-    public function getEventInterests($eventId) {
-        $stmt = $this->conn->prepare("
-            SELECT i.interest_name
-            FROM event_interests ei
-            JOIN interests i ON ei.interest_id = i.interest_id
-            WHERE ei.event_id = ?
-            ORDER BY i.interest_name ASC
-        ");
-        $stmt->bind_param("i", $eventId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
     public function getRegistration($eventId, $userId) {
@@ -39,11 +15,11 @@ class RegistrationRepository {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function countActiveRegistrations($eventId) {
-        $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM event_registrations WHERE event_id = ? AND status IN ('REGISTERED', 'APPROVED')");
-        $stmt->bind_param("i", $eventId);
+    public function getRegistrationById($registrationId) {
+        $stmt = $this->conn->prepare("SELECT * FROM event_registrations WHERE registration_id = ?");
+        $stmt->bind_param("i", $registrationId);
         $stmt->execute();
-        return (int) $stmt->get_result()->fetch_assoc()['total'];
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function countRegistrationsByStatus($eventId) {
@@ -61,7 +37,8 @@ class RegistrationRepository {
 
     public function getEventAttendees($eventId) {
         $stmt = $this->conn->prepare("
-            SELECT r.registration_id, r.status, r.registered_at, r.approved_at, u.user_id, u.full_name, u.email, a.checked_in, a.checked_in_at
+            SELECT r.registration_id, r.status, r.registered_at, r.approved_at, u.user_id, u.full_name, u.email,
+                   COALESCE(a.checked_in, 0) AS checked_in
             FROM event_registrations r
             JOIN users u ON r.user_id = u.user_id
             LEFT JOIN attendance a ON a.event_id = r.event_id AND a.user_id = r.user_id
@@ -73,19 +50,8 @@ class RegistrationRepository {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getUserRegistrations($userId) {
-        $stmt = $this->conn->prepare("
-            SELECT r.registration_id, r.status, r.registered_at, e.event_id, e.name, e.event_date, e.start_time, e.location, e.visibility, e.status AS event_status, e.event_date >= CURDATE() AS is_upcoming
-            FROM event_registrations r
-            JOIN events e ON r.event_id = e.event_id
-            WHERE r.user_id = ? AND r.status <> 'CANCELLED'
-            ORDER BY e.event_date ASC, e.start_time ASC
-        ");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-
+    // Creates (or re-activates a cancelled) registration while holding a lock on the event row,
+    // so two people cannot take the last seat at the same time.
     public function createRegistration($eventId, $userId, $status) {
         $this->conn->begin_transaction();
         try {
@@ -99,12 +65,19 @@ class RegistrationRepository {
             $existingStmt->execute();
             $existing = $existingStmt->get_result()->fetch_assoc();
 
+            if ($existing && in_array($existing['status'], ['REJECTED', 'REMOVED'])) {
+                $this->conn->rollback();
+                return "BLOCKED";
+            }
             if ($existing && $existing['status'] !== 'CANCELLED') {
                 $this->conn->rollback();
                 return "DUPLICATE";
             }
 
-            if ($status === 'REGISTERED' && $this->countActiveRegistrations($eventId) >= $event['capacity']) {
+            $countStmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM event_registrations WHERE event_id = ? AND status IN (" . EventRepository::SEAT_STATUSES . ")");
+            $countStmt->bind_param("i", $eventId);
+            $countStmt->execute();
+            if ((int) $countStmt->get_result()->fetch_assoc()['total'] >= (int) $event['capacity']) {
                 $this->conn->rollback();
                 return "FULL";
             }
@@ -130,50 +103,15 @@ class RegistrationRepository {
         }
     }
 
-    public function approveRegistration($registrationId, $eventId) {
-        $this->conn->begin_transaction();
-        try {
-            $lockStmt = $this->conn->prepare("SELECT capacity FROM events WHERE event_id = ? FOR UPDATE");
-            $lockStmt->bind_param("i", $eventId);
-            $lockStmt->execute();
-            $event = $lockStmt->get_result()->fetch_assoc();
+    // Moves a registration to a new status only if it is still in one of the expected statuses
+    public function updateStatus($registrationId, $fromStatuses, $toStatus) {
+        $placeholders = implode(',', array_fill(0, count($fromStatuses), '?'));
+        $approvedAt = ($toStatus === 'APPROVED') ? ", approved_at = NOW()" : "";
 
-            if ($this->countActiveRegistrations($eventId) >= $event['capacity']) {
-                $this->conn->rollback();
-                return "FULL";
-            }
+        $stmt = $this->conn->prepare("UPDATE event_registrations SET status = ?" . $approvedAt . " WHERE registration_id = ? AND status IN ($placeholders)");
+        $stmt->bind_param("si" . str_repeat("s", count($fromStatuses)), $toStatus, $registrationId, ...$fromStatuses);
 
-            $stmt = $this->conn->prepare("UPDATE event_registrations SET status = 'APPROVED', approved_at = NOW() WHERE registration_id = ? AND status = 'PENDING'");
-            $stmt->bind_param("i", $registrationId);
-
-            if (!$stmt->execute() || $stmt->affected_rows !== 1) {
-                $this->conn->rollback();
-                return "ERROR";
-            }
-
-            $this->conn->commit();
-            return "OK";
-        } catch (Exception $e) {
-            $this->conn->rollback();
-            return "ERROR";
-        }
-    }
-
-    public function getRegistrationById($registrationId) {
-        $stmt = $this->conn->prepare("SELECT * FROM event_registrations WHERE registration_id = ?");
-        $stmt->bind_param("i", $registrationId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
-
-    public function updateStatus($registrationId, $status) {
-        if ($status === 'APPROVED') {
-            $stmt = $this->conn->prepare("UPDATE event_registrations SET status = ?, approved_at = NOW() WHERE registration_id = ?");
-        } else {
-            $stmt = $this->conn->prepare("UPDATE event_registrations SET status = ? WHERE registration_id = ?");
-        }
-        $stmt->bind_param("si", $status, $registrationId);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows === 1;
     }
 }
 ?>

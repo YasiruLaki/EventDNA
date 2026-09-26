@@ -5,3 +5,5 @@ data/eventdna.sql
 
 vendor/
 composer.phar
+
+uploads/

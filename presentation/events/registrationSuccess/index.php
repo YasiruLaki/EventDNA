@@ -1,64 +1,31 @@
 <?php
-session_start();
+require_once __DIR__ . "/../includes/guard.php";
 require_once "../../../data/database.php";
-require_once "../../../application/controllers/RegistrationController.php";
+require_once "../../../application/controllers/EventController.php";
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../auth/login/index.php");
-    exit;
-}
+$eventController = new EventController($conn);
+$eventId = (int)($_GET['id'] ?? 0);
+$event = $eventController->getEventForAttendee($attendeeId, $eventId);
 
-$controller = new RegistrationController($conn);
-$eventId = (int) ($_GET['id'] ?? 0);
-$details = $controller->getEventDetails($eventId, $_SESSION['user_id']);
-
-if (!$details || !in_array($details['state'], ['REGISTERED', 'APPROVED', 'PENDING'])) {
+if (!$event || !in_array($event['my_registration'], ['REGISTERED', 'APPROVED', 'PENDING'], true)) {
     header("Location: ../eventView/index.php?id=" . $eventId);
     exit;
 }
 
-$event = $details['event'];
-$isPending = $details['state'] === 'PENDING';
+$isPending = $event['my_registration'] === 'PENDING';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?php echo $isPending ? "Request Sent" : "You're Registered"; ?> — EventDNA</title>
+<title><?= $isPending ? "Request Sent" : "You're Registered" ?> — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-  <nav class="top-nav">
-    <div class="nav-container">
-      <div class="nav-left">
-        <a href="../../attendee/dashboard/index.php" class="nav-logo">
-          <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
-        </a>
-        <div class="nav-links">
-          <a href="../ExploreEvents/index.html" class="nav-link">Find Events</a>
-          <a href="../myEvents/index.php" class="nav-link">My Events</a>
-          <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
-          <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
-        </div>
-      </div>
-      <div class="nav-right">
-        <div class="nav-profile-menu">
-          <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name"><?php echo htmlspecialchars($_SESSION['full_name'] ?? ''); ?></span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="nav-dropdown">
-            <a href="../../attendee/onboarding/index.php" class="dropdown-item">Profile</a>
-            <a href="#" class="dropdown-item text-danger">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+<?php include __DIR__ . "/../includes/nav.php"; ?>
 
 <div class="dashboard-shell success-shell">
   <div class="card">
@@ -117,7 +84,7 @@ $isPending = $details['state'] === 'PENDING';
 
       <div class="left-actions">
         <a href="../myEvents/index.php" class="btn-primary">Go to My Events &rarr;</a>
-        <a href="../ExploreEvents/index.html" class="btn-tint">Continue Exploring</a>
+        <a href="../ExploreEvents/index.php" class="btn-tint">Continue Exploring</a>
       </div>
     </div>
 
@@ -127,19 +94,19 @@ $isPending = $details['state'] === 'PENDING';
           <span class="ticket-badge"><?php echo $isPending ? "Pending" : "Registered"; ?></span>
         </div>
         <div class="ticket-body">
-          <h3><?php echo htmlspecialchars($event['name']); ?></h3>
+          <h3><?= h($event['name']) ?></h3>
           <div class="ticket-meta">
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <?php echo date('M j, Y', strtotime($event['event_date'])); ?> &middot; <?php echo date('g:i A', strtotime($event['start_time'])); ?>
+              <?= h(format_event_date($event['event_date'])) ?> &middot; <?= h(format_time($event['start_time'])) ?>
             </span>
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-              <?php echo htmlspecialchars($event['location']); ?>
+              <?= h($event['location']) ?>
             </span>
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c0-3.4 3-6 7-6s7 2.6 7 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <?php echo htmlspecialchars($_SESSION['full_name'] ?? ''); ?>
+              <?= h($attendeeName) ?>
             </span>
           </div>
         </div>
@@ -147,7 +114,7 @@ $isPending = $details['state'] === 'PENDING';
         <div class="ticket-divider"></div>
 
         <div style="padding: 1.25rem; text-align: center;">
-          <a href="../eventView/index.php?id=<?php echo $eventId; ?>" class="btn-primary" style="width: 100%; justify-content: center;">View Event &rarr;</a>
+          <a href="../eventView/index.php?id=<?= (int)$event['event_id'] ?>" class="btn-primary" style="width: 100%; justify-content: center;">View Event &rarr;</a>
         </div>
       </div>
     </div>
