@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <p style="color: var(--success); margin-bottom: 1rem; font-size: 0.9rem;"><?php echo htmlspecialchars($successMessage); ?></p>
         <?php endif; ?>
 
-        <form action="" method="post">
+        <form action="" method="post" onsubmit="this.querySelector('button[type=submit]').classList.add('btn-loading');">
             <div class="code-row" aria-label="Verification code input">
               <input class="code-box" name="code_1" maxlength="1" inputmode="numeric" autocomplete="one-time-code" autofocus required />
               <input class="code-box" name="code_2" maxlength="1" inputmode="numeric" required />
@@ -93,7 +93,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <button type="submit" class="btn-primary" id="verifyBtn" style="width: 100%;">
-                <?php echo ($pendingRole === 'organizer') ? 'Continue to Organizer Portal →' : 'Verify &amp; Continue →'; ?>
+                <span class="btn-text">
+                    <?php echo ($pendingRole === 'organizer') ? 'Continue to Organizer Portal →' : 'Verify &amp; Continue →'; ?>
+                </span>
+                <span class="spinner"></span>
             </button>
         </form>
 

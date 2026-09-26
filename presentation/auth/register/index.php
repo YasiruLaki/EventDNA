@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    <?php include '../includes/nav.php'; ?>
     <div class="split-layout">
         <div class="left-section">
             <h1 class="hero-title">Meet Better.<br><span class="highlight">Network Smarter.</span></h1>
@@ -45,11 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <h2>Create Account</h2>
                 <p class="subtitle">Start your networking journey today.</p>
                 
-                <?php if ($error): ?>
-                    <p style="color: var(--destructive); margin-bottom: 1rem; font-size: 0.9rem;"><?php echo htmlspecialchars($error); ?></p>
-                <?php endif; ?>
                 
-                <form action="" method="post">
+                <form action="" method="post" onsubmit="this.querySelector('button[type=submit]').classList.add('btn-loading');">
                     <input type="hidden" name="role" id="roleInput" value="attendee">
                     
                     <div class="form-group">
@@ -90,9 +88,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </div>
                     
                     <button type="submit" class="btn-primary">
-                        Create Account 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        <span class="btn-text" style="display: flex; align-items: center; gap: 0.5rem;">
+                            Create Account 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
+                        <span class="spinner"></span>
                     </button>
+
+                    <?php if ($error): ?>
+                        <p style="color: var(--error); margin-bottom: 1rem; font-size: 0.9rem;"><?php echo htmlspecialchars($error); ?></p>
+                    <?php endif; ?>
                 </form>
                 
                 <p class="login-link">Already have an account? <a href="../login/index.php">Login Here</a></p>
