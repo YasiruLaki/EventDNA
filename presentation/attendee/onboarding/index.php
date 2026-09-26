@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $result = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio);
     
     if ($result['success']) {
+        $_SESSION['full_name'] = $fullName;
         header("Location: ../onboarding2/index.php");
         exit;
     } else {
