@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($result["role_id"] == 2) {
             header("Location: ../../organizer/dashboard.php");
         } else {
-            header("Location: ../../attendee/dashboard/index.html");
+            header("Location: ../../attendee/dashboard/index.php");
         }
         exit;
     } else {
