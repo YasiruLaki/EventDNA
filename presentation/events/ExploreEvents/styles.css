@@ -213,7 +213,7 @@ a {
 .hero-row {
   padding: 2.5rem 0 1.5rem;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 2rem;
   background: transparent;
@@ -329,8 +329,8 @@ a {
 /* BUTTONS */
 .btn-primary,
 .btn-secondary {
-  padding: 1rem 1rem;
-  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
@@ -339,24 +339,30 @@ a {
   gap: 0.5rem;
   font-family: inherit;
   border-radius: 8px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .btn-primary {
-  background: #4f19ff;
+  background: var(--primary);
   color: #fff;
-  border: 1px solid transparent;
+  border: 1px solid var(--primary);
 }
 
 .btn-secondary {
-  background: #d9e6ff;
-  color: #10233f;
-  border: 1px solid transparent;
+  background: var(--surface-color);
+  color: var(--secondary);
+  border: 1px solid var(--border-color);
 }
 
-.btn-primary:hover, .btn-secondary:hover {
-  opacity: 0.94;
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:hover {
+  background: var(--tertiary);
+  transform: translateY(-1px);
 }
 
 /* FEATURE CARD */
@@ -455,15 +461,10 @@ a {
 
 .recommendation-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
 }
 
-@media(max-width: 900px) {
-  .recommendation-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media(max-width: 600px) {
   .recommendation-row {
     grid-template-columns: 1fr;

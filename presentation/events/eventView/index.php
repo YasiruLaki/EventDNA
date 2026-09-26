@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../auth/login/index.php");
+    exit;
+}
+$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,29 +17,30 @@
 </head>
 <body>
 
-<!-- Nav -->
+  <!-- Nav -->
   <nav class="top-nav">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="../../attendee/dashboard/index.html" class="nav-logo">
+        <a href="../../attendee/dashboard/index.php" class="nav-logo">
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
-          <a href="../ExploreEvents/index.html" class="nav-link active">Find Events</a>
-          <a href="../myEvents/index.html" class="nav-link">My Events</a>
-          <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
-          <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
+        <div class="nav-links">
+          <a href="../ExploreEvents/index.php" class="nav-link active">Find Events</a>
+          <a href="../myEvents/index.php" class="nav-link">My Events</a>
+          <a href="../../attendee/community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../../attendee/myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Yasiru</span>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;"><?= htmlspecialchars(mb_substr($attendeeName, 0, 1)) ?></div>
+            <span class="nav-profile-name"><?= htmlspecialchars(explode(' ', trim($attendeeName))[0]) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="nav-dropdown">
-            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
-            <a href="#" class="dropdown-item text-danger">Logout</a>
+            <a href="../../attendee/settings/index.php" class="dropdown-item">Profile</a>
+            <a href="../../auth/logout/index.php" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
       </div>
@@ -192,24 +201,24 @@
     </div>
 
     <div class="modal-body">
-      <h1>AI Innovation Summit 2024</h1>
+      <h1>AI Innovation Summit 2026</h1>
       <div class="hosted-by">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.6"/></svg>
-        Hosted by Google Developer Group
+        Hosted by EventDNA Sri Lanka
       </div>
 
       <div class="meta-row">
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          Oct 24, 9:00 AM
+          Oct 24–26, 2026 · 9:00 AM
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-          Moscone Center, SF
+          BMICH, Colombo
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="7" x2="10" y2="17" stroke="currentColor" stroke-width="1.4" stroke-dasharray="1.8 2" stroke-linecap="round"/></svg>
-          Free Entry
+          In-person
         </span>
       </div>
 
@@ -267,7 +276,7 @@
 
       <div class="modal-actions">
         <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
-        <a href="../registrationSuccess/index.html" class="btn-primary" style="text-decoration: none;">
+        <a href="../registrationSuccess/index.php" class="btn-primary" style="text-decoration: none;">
           Register Now
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>

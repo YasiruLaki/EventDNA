@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../auth/login/index.php");
+    exit;
+}
+$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,26 +20,26 @@
   <nav class="top-nav">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="../../attendee/dashboard/index.html" class="nav-logo">
+        <a href="../../attendee/dashboard/index.php" class="nav-logo">
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
           <a href="#" class="nav-link active">Find Events</a>
-          <a href="../myEvents/index.html" class="nav-link">My Events</a>
-          <a href="../../attendee/community/community-hub/index.html" class="nav-link">Communities</a>
-          <a href="../../attendee/myConnections/index.html" class="nav-link">Connections</a>
+          <a href="../myEvents/index.php" class="nav-link">My Events</a>
+          <a href="../../attendee/community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../../attendee/myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Yasiru</span>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;"><?= htmlspecialchars(mb_substr($attendeeName, 0, 1)) ?></div>
+            <span class="nav-profile-name"><?= htmlspecialchars(explode(' ', trim($attendeeName))[0]) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="nav-dropdown">
-            <a href="../../attendee/onboarding/index.html" class="dropdown-item">Profile</a>
-            <a href="#" class="dropdown-item text-danger">Logout</a>
+            <a href="../../attendee/settings/index.php" class="dropdown-item">Profile</a>
+            <a href="../../auth/logout/index.php" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
       </div>
@@ -92,7 +100,7 @@
             </p>
             </div>
             <div class="feature-actions">
-            <a class="btn-primary" href="../eventView/index.html">View Event &rarr;</a>
+            <a class="btn-primary" href="../eventView/index.php">View Event &rarr;</a>
             </div>
         </div>
       </article>
@@ -114,7 +122,7 @@
               <p>Colombo &bull; 320 attending</p>
               <div class="event-card-footer">
                 <span class="event-price">120 spots left</span>
-                <a href="../eventView/index.html" class="btn-view">View Details</a>
+                <a href="../eventView/index.php" class="btn-view">View Details</a>
               </div>
             </div>
           </article>
@@ -129,7 +137,7 @@
               <p>Kandy &bull; 540 attending</p>
               <div class="event-card-footer">
                 <span class="event-price">Registration Open</span>
-                <a href="../eventView/index.html" class="btn-view">View Details</a>
+                <a href="../eventView/index.php" class="btn-view">View Details</a>
               </div>
             </div>
           </article>
@@ -144,7 +152,7 @@
               <p>Galle &bull; 410 attending</p>
               <div class="event-card-footer">
                 <span class="event-price">45 spots left</span>
-                <a href="../eventView/index.html" class="btn-view">View Details</a>
+                <a href="../eventView/index.php" class="btn-view">View Details</a>
               </div>
             </div>
           </article>
