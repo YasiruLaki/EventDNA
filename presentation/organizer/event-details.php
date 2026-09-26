@@ -3,9 +3,24 @@ require_once __DIR__ . "/includes/guard.php";
 require_once "../../data/database.php";
 require_once "../../application/controllers/EventController.php";
 require_once "../../application/controllers/QrController.php";
+require_once "../../application/controllers/RegistrationController.php";
 
 $eventController = new EventController($conn);
 $qrController = new QrController($conn);
+$registrationController = new RegistrationController($conn);
+
+// One approve/reject/remove button, posted with the current search and filter so the list stays the same afterwards
+function attendee_action_form($registrationId, $action, $label, $color, $search, $filter, $confirm = null) {
+    $onsubmit = $confirm ? ' onsubmit="return confirm(' . h(json_encode($confirm)) . ');"' : '';
+    return '<form method="post"' . $onsubmit . ' style="margin: 0;">'
+        . csrf_field()
+        . '<input type="hidden" name="action" value="' . h($action) . '">'
+        . '<input type="hidden" name="registration_id" value="' . (int)$registrationId . '">'
+        . '<input type="hidden" name="q" value="' . h($search) . '">'
+        . '<input type="hidden" name="filter" value="' . h($filter) . '">'
+        . '<button type="submit" class="btn-text" style="color: ' . $color . '; font-size: 0.85rem; font-weight: 600;">' . h($label) . '</button>'
+        . '</form>';
+}
 $eventId = (int)($_GET['id'] ?? 0);
 $error = "";
 
@@ -37,6 +52,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'gener
     }
 }
 
+$attendeeSearch = trim((string)($_REQUEST['q'] ?? ''));
+$attendeeFilter = (string)($_REQUEST['filter'] ?? 'all');
+$attendeeActions = ['approve' => 'approveRegistration', 'reject' => 'rejectRegistration', 'remove' => 'removeRegistration'];
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($attendeeActions[$_POST['action'] ?? ''])) {
+    if (!csrf_valid()) {
+        $error = "Your session expired. Please try again.";
+    } else {
+        $method = $attendeeActions[$_POST['action']];
+        $result = $registrationController->$method($organizerId, $eventId, (int)($_POST['registration_id'] ?? 0));
+        if ($result["success"]) {
+            $query = http_build_query(['id' => $eventId, 'q' => $attendeeSearch, 'filter' => $attendeeFilter, 'attendee' => $_POST['action']]);
+            header("Location: event-details.php?" . $query . "#attendees");
+            exit;
+        }
+        $error = $result["message"];
+    }
+}
+
 $event = $eventController->getOwnedEvent($organizerId, $eventId);
 if (!$event) {
     http_response_code(404);
@@ -44,8 +78,20 @@ if (!$event) {
 }
 
 $qr = $qrController->getEventQr($eventId, $_SESSION['event_qr_tokens'][$eventId] ?? null);
+$attendees = $registrationController->getEventAttendees($organizerId, $eventId, $attendeeSearch, $attendeeFilter);
+$attendeeFilter = $attendees['filter'];
 
-$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : (isset($_GET['qr']) ? "Check-in QR generated. Any previous QR no longer works." : ""));
+$attendeeNotices = ['approve' => "Request approved.", 'reject' => "Request rejected.", 'remove' => "Attendee removed."];
+$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : (isset($_GET['qr']) ? "Check-in QR generated. Any previous QR no longer works." : ($attendeeNotices[$_GET['attendee'] ?? ''] ?? "")));
+$registrationLabels = [
+    'PENDING' => ['Pending', '#D97706'],
+    'APPROVED' => ['Approved', 'var(--primary)'],
+    'REGISTERED' => ['Registered', 'var(--primary)'],
+    'REJECTED' => ['Rejected', 'var(--danger)'],
+    'REMOVED' => ['Removed', 'var(--danger)'],
+    'CANCELLED' => ['Cancelled', 'var(--text-secondary)'],
+];
+$exportQuery = http_build_query(['id' => $eventId, 'q' => $attendeeSearch, 'filter' => $attendeeFilter]);
 $registrationColors = ['Open' => 'var(--success)', 'Full' => 'var(--danger)'];
 $activeNav = 'events';
 ?>
@@ -263,47 +309,75 @@ $activeNav = 'events';
       <!-- Attendees Tab -->
       <section id="attendees" class="tab-content">
         <div class="manage-card" style="padding: 0; overflow: hidden;">
-          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
             <h3 style="margin: 0;">Attendees</h3>
-            <div style="position: relative; width: 250px;">
-              <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-tertiary);"></i>
-              <input type="text" placeholder="Search attendees..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
-            </div>
+            <form method="get" action="event-details.php#attendees" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <input type="hidden" name="id" value="<?= (int)$event['event_id'] ?>">
+              <div style="position: relative; width: 220px;">
+                <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-tertiary);"></i>
+                <input type="search" name="q" value="<?= h($attendeeSearch) ?>" placeholder="Search name or email..." style="width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
+              </div>
+              <select name="filter" onchange="this.form.submit()" aria-label="Filter attendees" style="padding: 0.5rem 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: #f8fafc; color: var(--secondary);">
+                <?php foreach (RegistrationController::ATTENDEE_FILTERS as $key => $label): ?>
+                  <option value="<?= h($key) ?>" <?= $attendeeFilter === $key ? 'selected' : '' ?>><?= h($label) ?> (<?= (int)$attendees['counts'][$key] ?>)</option>
+                <?php endforeach; ?>
+              </select>
+              <button type="submit" class="btn-secondary" style="padding: 0.5rem 1rem;">Search</button>
+              <a href="export-attendees.php?<?= h($exportQuery) ?>" class="btn-secondary" style="padding: 0.5rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;"><i data-lucide="download" style="width:14px;height:14px;"></i> CSV</a>
+            </form>
           </div>
-          
-          <table style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
-                <th style="padding: 1rem 1.5rem;">Name</th>
-                <th style="padding: 1rem 1.5rem;">Email</th>
-                <th style="padding: 1rem 1.5rem;">Status</th>
-                <th style="padding: 1rem 1.5rem;">Action</th>
-              </tr>
-            </thead>
-            <tbody style="font-size: 0.95rem; color: var(--secondary);">
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Kamal Perera</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">kamal@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--success); font-weight: 600; font-size: 0.85rem;">Checked-in</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">Sarah Fernando</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">sarah@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Registered</span></td>
-                <td style="padding: 1rem 1.5rem;"><button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Remove</button></td>
-              </tr>
-              <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <td style="padding: 1rem 1.5rem; font-weight: 600;">James Doe</td>
-                <td style="padding: 1rem 1.5rem; color: var(--text-secondary);">james@email.com</td>
-                <td style="padding: 1rem 1.5rem;"><span style="color: #D97706; font-weight: 600; font-size: 0.85rem;">Pending</span></td>
-                <td style="padding: 1rem 1.5rem; display: flex; gap: 0.5rem;">
-                  <button class="btn-text" style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Approve</button>
-                  <button class="btn-text" style="color: var(--danger); font-size: 0.85rem; font-weight: 600;">Reject</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <?php if (!$attendees['rows']): ?>
+            <p style="padding: 2rem 1.5rem; margin: 0; color: var(--text-secondary); font-size: 0.95rem; text-align: center;">
+              <?= $attendeeSearch !== '' || $attendeeFilter !== 'all' ? 'No attendees match your search.' : 'No one has registered for this event yet.' ?>
+            </p>
+          <?php else: ?>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                  <tr style="background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.9); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
+                    <th style="padding: 1rem 1.5rem;">Name</th>
+                    <th style="padding: 1rem 1.5rem;">Email</th>
+                    <th style="padding: 1rem 1.5rem;">Status</th>
+                    <th style="padding: 1rem 1.5rem;">Attendance</th>
+                    <th style="padding: 1rem 1.5rem;">Action</th>
+                  </tr>
+                </thead>
+                <tbody style="font-size: 0.95rem; color: var(--secondary);">
+                  <?php foreach ($attendees['rows'] as $row): ?>
+                    <?php [$statusLabel, $statusColor] = $registrationLabels[$row['status']]; ?>
+                    <tr style="border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
+                      <td style="padding: 1rem 1.5rem; font-weight: 600;"><?= h($row['full_name']) ?></td>
+                      <td style="padding: 1rem 1.5rem; color: var(--text-secondary);"><?= h($row['email']) ?></td>
+                      <td style="padding: 1rem 1.5rem;"><span style="color: <?= $statusColor ?>; font-weight: 600; font-size: 0.85rem;"><?= h($statusLabel) ?></span></td>
+                      <td style="padding: 1rem 1.5rem; font-size: 0.85rem; font-weight: 600;">
+                        <?php if ((int)$row['checked_in'] === 1): ?>
+                          <span style="color: var(--success);">Checked-in</span>
+                          <?php if ($row['checked_in_at']): ?><span style="display: block; font-weight: 400; color: var(--text-secondary);"><?= h(date('M j, g:i A', strtotime($row['checked_in_at']))) ?></span><?php endif; ?>
+                        <?php elseif (in_array($row['status'], RegistrationController::SEAT_STATUSES, true)): ?>
+                          <span style="color: var(--text-secondary);">Not checked in</span>
+                        <?php else: ?>
+                          <span style="color: var(--text-tertiary);">—</span>
+                        <?php endif; ?>
+                      </td>
+                      <td style="padding: 1rem 1.5rem;">
+                        <?php if ($event['editable'] && $row['status'] === 'PENDING'): ?>
+                          <div style="display: flex; gap: 0.5rem;">
+                            <?= attendee_action_form($row['registration_id'], 'approve', 'Approve', 'var(--primary)', $attendeeSearch, $attendeeFilter) ?>
+                            <?= attendee_action_form($row['registration_id'], 'reject', 'Reject', 'var(--danger)', $attendeeSearch, $attendeeFilter, 'Reject ' . $row['full_name'] . "'s request?") ?>
+                          </div>
+                        <?php elseif ($event['editable'] && in_array($row['status'], ['APPROVED', 'REGISTERED'], true) && (int)$row['checked_in'] !== 1): ?>
+                          <?= attendee_action_form($row['registration_id'], 'remove', 'Remove', 'var(--danger)', $attendeeSearch, $attendeeFilter, 'Remove ' . $row['full_name'] . ' from this event?') ?>
+                        <?php else: ?>
+                          <span style="color: var(--text-tertiary);">—</span>
+                        <?php endif; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -434,7 +508,7 @@ $activeNav = 'events';
           </div>
 
           <div style="display: flex; gap: 1rem;">
-            <button class="btn-primary" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="download" style="width:16px;height:16px;"></i> Export CSV</button>
+            <a href="export-attendees.php?id=<?= (int)$event['event_id'] ?>" class="btn-primary" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; text-decoration: none;"><i data-lucide="download" style="width:16px;height:16px;"></i> Export CSV</a>
             <button class="btn-secondary" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text" style="width:16px;height:16px;"></i> Export PDF</button>
           </div>
         </div>
@@ -476,8 +550,10 @@ $activeNav = 'events';
     });
     
     // Auto-select tab if hash is present
-    if (window.location.hash) {
-      const hash = window.location.hash.substring(1);
+    // A failed attendee action re-renders the page without a hash, so reopen the Attendees tab
+    const initialTab = window.location.hash.substring(1) || <?= json_encode($error && isset($attendeeActions[$_POST['action'] ?? '']) ? 'attendees' : '') ?>;
+    if (initialTab) {
+      const hash = initialTab;
       const targetTab = document.querySelector(`.manage-tab[data-target="${hash}"]`);
       if (targetTab) {
         targetTab.click();
