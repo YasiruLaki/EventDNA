@@ -1,3 +1,94 @@
+
+/* --- Global Standardized Utility Classes --- */
+
+.btn-primary {
+    background: var(--primary) !important;
+    color: #fff !important;
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    border: none !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 4px 12px rgba(79, 16, 255, 0.2) !important;
+}
+.btn-primary:hover {
+    background: var(--primary-hover) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(79, 16, 255, 0.3) !important;
+}
+
+.btn-secondary, .btn-outline {
+    background: #fff !important;
+    color: var(--secondary) !important;
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    border: 1px solid var(--border-color) !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.2s !important;
+}
+.btn-secondary:hover, .btn-outline:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: var(--primary) !important;
+}
+
+.btn-danger {
+    background: #fee2e2 !important;
+    color: var(--error) !important;
+    padding: 0.8rem 1.5rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.2s !important;
+}
+.btn-danger:hover {
+    background: var(--error) !important;
+    color: #fff !important;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+}
+
+.panel, .org-card-base, .org-info-card, .org-featured-card {
+    background: #fff !important;
+    border-radius: 16px !important;
+    padding: 2rem !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 24px -4px rgba(0,0,0,0.03), 0 2px 8px -2px rgba(0,0,0,0.02) !important;
+}
+
+.dashboard-shell {
+    width: 100% !important;
+    max-width: 1500px !important;
+    margin: 2rem auto !important;
+    padding: 0 2rem !important;
+    box-sizing: border-box !important;
+}
+
 .org-hero-header {
     margin-bottom: 2rem;
 }
@@ -165,25 +256,25 @@
 }
 
 .org-input-with-icon {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    background: #f8fafc;
-    color: var(--secondary);
+    width: 100% !important;
+    padding: 0.75rem 1rem 0.75rem 2.5rem !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    font-family: inherit !important;
+    font-size: 0.95rem !important;
+    background: #f8fafc !important;
+    color: var(--secondary) !important;
 }
 
 .org-input-default {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    background: #f8fafc;
-    color: var(--secondary);
-    outline: none;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    font-family: inherit !important;
+    font-size: 0.95rem !important;
+    background: #f8fafc !important;
+    color: var(--secondary) !important;
+    outline: none !important;
 }
 
 .org-overflow-x-auto {

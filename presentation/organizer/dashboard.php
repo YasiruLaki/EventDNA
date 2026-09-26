@@ -130,8 +130,24 @@ $activeNav = 'dashboard';
         </div>
       </div>
 
-      <div class="org-mt-4" id="events" >
-        <div class="org-flex-between-end" >
+      <!-- ===== COMMUNITY SECTION — new, per Organizer Create Group Implementation Plan section 4 ===== -->
+      <div id="community" style="margin-top: 4rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+          <div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin: 0 0 0.5rem 0;">Community
+            </h2>
+            <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">Create and manage groups for your
+              attendees.</p>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <a href="create-group.html" class="btn-primary">+ Create Group</a>
+            <a href="manage-groups.html" class="btn-secondary">Manage Groups</a>
+          </div>
+        </div>
+      </div>
+
+      <div id="events" style="margin-top: 4rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
           <div>
             <h2 class="org-event-title" >Your Events
             </h2>
