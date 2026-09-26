@@ -69,22 +69,22 @@ $allInterests = $controller->getInterests();
         <div class="skills-interests-section">
             <div class="section-label">Skills</div>
             <div class="chip-list" id="skillsList">
-              <?php foreach ($allSkills as $skill): ?>
-                  <button type="button" class="chip" data-id="<?php echo htmlspecialchars($skill['skill_id']); ?>" data-type="skill">
+              <?php $sCount = 0; foreach ($allSkills as $skill): ?>
+                  <button type="button" class="chip" data-id="<?php echo htmlspecialchars($skill['skill_id']); ?>" data-type="skill" style="<?php echo $sCount >= 12 ? 'display: none;' : ''; ?>">
                       <?php echo htmlspecialchars($skill['skill_name']); ?>
                   </button>
-              <?php endforeach; ?>
+              <?php $sCount++; endforeach; ?>
             </div>
         </div>
 
         <div class="skills-interests-section">
             <div class="section-label">Interests</div>
             <div class="chip-list" id="interestsList">
-              <?php foreach ($allInterests as $interest): ?>
-                  <button type="button" class="chip" data-id="<?php echo htmlspecialchars($interest['interest_id']); ?>" data-type="interest">
+              <?php $iCount = 0; foreach ($allInterests as $interest): ?>
+                  <button type="button" class="chip" data-id="<?php echo htmlspecialchars($interest['interest_id']); ?>" data-type="interest" style="<?php echo $iCount >= 12 ? 'display: none;' : ''; ?>">
                       <?php echo htmlspecialchars($interest['interest_name']); ?>
                   </button>
-              <?php endforeach; ?>
+              <?php $iCount++; endforeach; ?>
             </div>
         </div>
 
@@ -109,13 +109,33 @@ $allInterests = $controller->getInterests();
 
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
+      const term = e.target.value.toLowerCase().trim();
+      let sCount = 0;
+      let iCount = 0;
+
       document.querySelectorAll('.chip').forEach(chip => {
           const text = chip.textContent.toLowerCase();
-          if (text.includes(term)) {
-              chip.style.display = '';
+          const type = chip.dataset.type;
+
+          if (term === '') {
+              // When search is cleared, show selected ones and the first 12 of each category
+              if (chip.classList.contains('selected')) {
+                  chip.style.display = '';
+              } else if (type === 'skill' && sCount < 12) {
+                  chip.style.display = '';
+                  sCount++;
+              } else if (type === 'interest' && iCount < 12) {
+                  chip.style.display = '';
+                  iCount++;
+              } else {
+                  chip.style.display = 'none';
+              }
           } else {
-              chip.style.display = 'none';
+              if (text.includes(term)) {
+                  chip.style.display = '';
+              } else {
+                  chip.style.display = 'none';
+              }
           }
       });
   });

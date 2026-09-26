@@ -64,5 +64,31 @@ class UserRepository {
         $stmt2->bind_param("i", $userId);
         return $stmt2->execute();
     }
+
+    public function createPasswordResetToken($userId, $tokenHash) {
+        $stmt = $this->conn->prepare("INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR))");
+        $stmt->bind_param("is", $userId, $tokenHash);
+        return $stmt->execute();
+    }
+
+    public function getPasswordResetToken($tokenHash) {
+        $stmt = $this->conn->prepare("SELECT user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash = ?");
+        $stmt->bind_param("s", $tokenHash);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    public function markPasswordResetTokenAsUsed($userId, $tokenHash) {
+        $stmt = $this->conn->prepare("UPDATE password_reset_tokens SET used_at = NOW() WHERE token_hash = ?");
+        $stmt->bind_param("s", $tokenHash);
+        return $stmt->execute();
+    }
+
+    public function updateUserPassword($userId, $passwordHash) {
+        $stmt = $this->conn->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
+        $stmt->bind_param("si", $passwordHash, $userId);
+        return $stmt->execute();
+    }
 }
 ?>

@@ -16,20 +16,20 @@
         <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
       </div>
       <nav class="admin-nav">
-        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
-        <a href="users.html" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
-        <a href="events.html" class="admin-nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
-        <a href="moderation.html" class="admin-nav-item active"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
-        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+        <a href="dashboard.php" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.php" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.php" class="admin-nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.php" class="admin-nav-item active"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.php" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
       </nav>
       <div class="admin-footer">
         <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
-        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+        <a href="../auth/login/index.php" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
       </div>
     </aside>
 
     <main class="admin-content">
-      <a href="moderation.html" class="back-link"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to Moderation</a>
+      <a href="moderation.php" class="back-link"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to Moderation</a>
       
       <div class="detail-card">
         <div class="report-header">

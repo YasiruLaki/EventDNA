@@ -195,7 +195,7 @@ if (!function_exists('h')) {
           <i class="org-icon-sec" data-lucide="chevron-down" ></i>
         </button>
         <div class="nav-dropdown" id="orgProfileDropdown">
-          <a href="../auth/logout.php" class="dropdown-item text-danger">
+          <a href="../auth/logout/index.php" class="dropdown-item text-danger">
             <i class="org-icon-md" data-lucide="log-out" ></i> Logout
           </a>
         </div>

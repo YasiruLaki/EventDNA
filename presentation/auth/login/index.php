@@ -16,9 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($result["success"]) {
         if ($result["role_id"] == 2) {
-            header("Location: ../../organizer/dashboard.html");
+            header("Location: ../../organizer/dashboard.php");
         } else {
-            header("Location: ../../attendee/dashboard/index.html");
+            header("Location: ../../attendee/dashboard/index.php");
         }
         exit;
     } else {
@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 
 <body>
+    <?php include '../includes/nav.php'; ?>
     <div class="split-layout">
         <div class="left-section">
             <h1 class="hero-title">Meet Better.<br><span class="highlight">Network Smarter.</span></h1>
@@ -51,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <h2>Login</h2>
                 <p class="subtitle">Welcome back to your networking journey.</p>
 
-                <form action="" method="post">
+                <form action="" method="post" onsubmit="this.querySelector('button[type=submit]').classList.add('btn-loading');">
                     <input type="hidden" name="role" id="roleInput" value="attendee">
 
                     <div class="form-group">
@@ -72,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <label for="password" style="margin-bottom: 0;">Password</label>
-                            <a href="../forgot-password/index.html"
+                            <a href="../forgot-password/index.php"
                                 style="font-size: 0.8rem; color: var(--primary); text-decoration: none; font-weight: 600;">Forgot
                                 Password?</a>
                         </div>
@@ -92,12 +93,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <?php endif; ?>
 
                     <button type="submit" class="btn-primary">
-                        Login
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
+                        <span class="btn-text" style="display: flex; align-items: center; gap: 0.5rem;">
+                            Login
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                        <span class="spinner"></span>
                     </button>
                 </form>
 

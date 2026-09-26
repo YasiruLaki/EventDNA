@@ -142,5 +142,69 @@ class AuthController {
             return false;
         }
     }
+    public function forgotPassword($email) {
+        if (empty($email)) {
+            return ["success" => false, "message" => "Please enter your email address."];
+        }
+
+        $user = $this->userRepo->getUserByEmail($email);
+        if (!$user) {
+            return ["success" => true];
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $tokenHash = hash('sha256', $token);
+        
+        $this->userRepo->createPasswordResetToken($user['user_id'], $tokenHash);
+
+        $env = parse_ini_file(__DIR__ . '/../../.env');
+        $baseUrl = $env['APP_URL'] ?? 'http://localhost/eventDNA';
+        $resetLink = "$baseUrl/presentation/auth/reset-password/index.php?token=$token";
+
+        $subject = 'Reset Your Password - EventDNA';
+        $body = "Hi {$user['full_name']},<br><br>You requested to reset your password. Click the link below to set a new password:<br><br><a href='$resetLink'>$resetLink</a><br><br>If you did not request this, please ignore this email. The link will expire in 24 hours.";
+
+        if ($this->sendEmail($email, $user['full_name'], $subject, $body)) {
+            return ["success" => true];
+        } else {
+            return ["success" => false, "message" => "Could not send the password reset email. Please try again later."];
+        }
+    }
+
+    public function resetPassword($token, $password, $confirmPassword) {
+        if (empty($token)) {
+            return ["success" => false, "message" => "Invalid or missing token."];
+        }
+        if (empty($password) || empty($confirmPassword)) {
+            return ["success" => false, "message" => "Please enter and confirm your new password."];
+        }
+        if ($password !== $confirmPassword) {
+            return ["success" => false, "message" => "Passwords do not match."];
+        }
+
+        $tokenHash = hash('sha256', $token);
+        $tokenRow = $this->userRepo->getPasswordResetToken($tokenHash);
+
+        if (!$tokenRow) {
+            return ["success" => false, "message" => "Invalid or expired token."];
+        }
+        if ($tokenRow['used_at'] !== null) {
+            return ["success" => false, "message" => "This password reset link has already been used."];
+        }
+        if (strtotime($tokenRow['expires_at']) < time()) {
+            return ["success" => false, "message" => "This password reset link has expired."];
+        }
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        
+        $updateSuccess = $this->userRepo->updateUserPassword($tokenRow['user_id'], $passwordHash);
+        
+        if ($updateSuccess) {
+            $this->userRepo->markPasswordResetTokenAsUsed($tokenRow['user_id'], $tokenHash);
+            return ["success" => true];
+        } else {
+            return ["success" => false, "message" => "Failed to update password. Please try again."];
+        }
+    }
 }
 ?>

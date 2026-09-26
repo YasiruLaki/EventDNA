@@ -214,8 +214,7 @@ a {
 }
 
 .hero-row {
-  padding: 0.4rem 0 1rem;
-    padding-top: 50px;
+  padding: 1.5rem 0 2rem;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -240,10 +239,10 @@ a {
 
 .hero-row h1 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 5.9rem);
-  line-height: 0.96;
-  letter-spacing: -0.06em;
-  color: #081b33;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: var(--secondary);
 }
 
 .supporting-copy {
@@ -265,8 +264,8 @@ a {
 
 .btn-primary,
 .btn-secondary {
-  padding: 1rem 1rem;
-  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
@@ -274,23 +273,40 @@ a {
   justify-content: center;
   gap: 0.5rem;
   font-family: inherit;
-  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background: #4f19ff;
+  background: var(--primary);
   color: #fff;
-  border: 1px solid transparent;
+  border: 1px solid var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: #d9e6ff;
-  color: #10233f;
-  border: 1px solid transparent;
+  background: var(--surface-color);
+  color: var(--secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--tertiary);
+  transform: translateY(-1px);
 }
 
 .hero-btn-soft {
-  background: #d7e5ff;
+  background: var(--primary-tint);
+  color: var(--primary);
+  border: 1px solid transparent;
+}
+.hero-btn-soft:hover {
+  background: var(--primary);
+  color: white;
 }
 
 .stats-grid {

@@ -1,54 +1,61 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../auth/login/index.php");
+    exit;
+}
+$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Communities — EventDNA</title>
+<link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="../../dashboard/styles.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-<nav class="top-nav">
-  <div class="nav-container">
-    <div class="nav-left">
-      <a href="../../dashboard/index.html" class="nav-logo">
-        <img src="../../../images/logo.png" alt="EventDNA" class="nav-logo-img">
-      </a>
-      <div class="nav-links">
-        <a href="../../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-        <a href="../../../events/myEvents/index.html" class="nav-link">My Events</a>
-        <a href="./index.html" class="nav-link active">Communities</a>
-        <a href="../../myConnections/index.html" class="nav-link">Connections</a>
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="../../dashboard/index.php" class="nav-logo">
+          <img src="../../../images/logo.png" alt="EventDNA" class="nav-logo-img">
+        </a>
+        <div class="nav-links">
+          <a href="../../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
+          <a href="../../../events/myEvents/index.php" class="nav-link">My Events</a>
+          <a href="#" class="nav-link active">Communities</a>
+          <a href="../../NetworkHub/index.php" class="nav-link">Connections</a>
+        </div>
       </div>
-    </div>
-    <div class="nav-right">
-      <div class="nav-profile-menu">
-        <button class="nav-profile-btn">
-          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Amara Ruwan" class="nav-avatar">
-          <span class="nav-profile-name">Amara Ruwan</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <div class="nav-dropdown">
-          <a href="../../dashboard/index.html" class="dropdown-item">Dashboard</a>
-          <a href="#" class="dropdown-item">Settings</a>
-          <a href="../../../events/ExploreEvents/index.html" class="dropdown-item text-danger">Log Out</a>
+      <div class="nav-right">
+        <div class="nav-profile-menu">
+          <button class="nav-profile-btn" aria-label="Profile Menu">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;"><?= htmlspecialchars(mb_substr($attendeeName, 0, 1)) ?></div>
+            <span class="nav-profile-name"><?= htmlspecialchars(explode(' ', trim($attendeeName))[0]) ?></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown">
+            <a href="../../settings/index.php" class="dropdown-item">Profile</a>
+            <a href="../../../auth/logout/index.php" class="dropdown-item text-danger">Logout</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</nav>
-
+  </nav>
 <main class="dashboard-shell">
-  <div class="container">
-    <div class="hero-row">
+  <div class="dashboard-content">
+    <div class="hero-row" style="margin-bottom: 2rem;">
       <div class="hero-copy">
-        <h1 class="page-title">Communities</h1>
+        <h1 style="font-size: 2.2rem; font-weight: 700; color: #0f172a; margin: 0 0 0.5rem 0;">Communities</h1>
         <p class="supporting-copy">Discover groups, join communities that match your interests, and connect through discussions and shared resources.</p>
       </div>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 0.75rem; background: #fff; padding: 0.8rem 1.25rem; border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 999px; max-width: 480px; margin-bottom: 2rem; margin-top: 1rem; box-shadow: 0 4px 12px rgba(15,23,42,0.03);">
+    <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--surface-color); padding: 0.8rem 1.25rem; border: 1px solid var(--divider-color); border-radius: 999px; max-width: 480px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(15,23,42,0.02);">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: var(--text-tertiary);"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       <input type="text" placeholder="Search groups..." style="border: none; outline: none; background: transparent; font-size: 0.95rem; font-family: inherit; width: 100%; color: var(--text-primary);">
     </div>
@@ -64,53 +71,53 @@
     </div>
 
     <div class="community-grid">
-      <a class="community-card" href="../group/index.html">
+      <a class="community-card" href="../group/index.php">
         <div class="community-cover">
           <img src="https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="AI &amp; Robotics">
         </div>
         <div class="community-body">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">Technology</span>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em;">Technology</span>
           </div>
           <h4 style="margin-top: 0;">AI &amp; Robotics</h4>
           <p class="community-meta">312 members</p>
-          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">AI &middot; Robotics &middot; Innovation</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">AI &middot; Robotics &middot; Innovation</div>
           <div class="community-footer" style="justify-content: flex-end;">
-            <span class="btn-primary" style="display: flex; align-items: center; gap: 0.25rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">Enter &rarr;</span>
+            <span class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; border: none; font-weight: 600;">Enter &rarr;</span>
           </div>
         </div>
       </a>
 
-      <a class="community-card" href="../group/index.html">
+      <a class="community-card" href="../group/index.php">
         <div class="community-cover">
           <img src="https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Product Design">
         </div>
         <div class="community-body">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">Design</span>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em;">Design</span>
           </div>
           <h4 style="margin-top: 0;">Product Design</h4>
           <p class="community-meta">128 members</p>
-          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Design &middot; UX &middot; Research</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Design &middot; UX &middot; Research</div>
           <div class="community-footer" style="justify-content: flex-end;">
-            <span class="btn-primary" style="display: flex; align-items: center; gap: 0.25rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">Enter &rarr;</span>
+            <span class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; border: none; font-weight: 600;">Enter &rarr;</span>
           </div>
         </div>
       </a>
 
-      <a class="community-card" href="../group/index.html">
+      <a class="community-card" href="../group/index.php">
         <div class="community-cover">
           <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Startup Founders">
         </div>
         <div class="community-body">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">Business</span>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em;">Business</span>
           </div>
           <h4 style="margin-top: 0;">Startup Founders</h4>
           <p class="community-meta">241 members</p>
-          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Startups &middot; Business &middot; Growth</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Startups &middot; Business &middot; Growth</div>
           <div class="community-footer" style="justify-content: flex-end;">
-            <span class="btn-primary" style="display: flex; align-items: center; gap: 0.25rem; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">Enter &rarr;</span>
+            <span class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; border: none; font-weight: 600;">Enter &rarr;</span>
           </div>
         </div>
       </a>
@@ -121,27 +128,27 @@
       <a href="#" class="section-link">View All &rarr;</a>
     </div>
 
-    <div class="card trending-list">
-      <a href="../view-post/index.html" class="trending-item">
+    <div class="trending-list">
+      <a href="../view-post/index.php" class="trending-item">
         <div class="trending-item-body">
           <p class="trending-item-title">Looking for a co-founder with ML experience</p>
           <p class="trending-item-meta">AI &amp; Robotics &middot; 2h ago</p>
         </div>
       </a>
-      <a href="../view-post/index.html" class="trending-item">
+      <a href="../view-post/index.php" class="trending-item">
         <div class="trending-item-body">
           <p class="trending-item-title">Slides from the Designing for Trust talk</p>
           <p class="trending-item-meta">Product Design &middot; 4h ago</p>
         </div>
       </a>
-      <a href="../view-post/index.html" class="trending-item">
+      <a href="../view-post/index.php" class="trending-item">
         <div class="trending-item-body">
           <p class="trending-item-title">Anyone up for a founder discussion tonight?</p>
           <p class="trending-item-meta">Startup Founders &middot; 6h ago</p>
         </div>
       </a>
     </div>
-    </div>
+  </div>
 
     <div class="empty-state" style="display: none; text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 8px; margin-top: 1.5rem;">
       <h3 style="font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">You haven't joined any groups yet</h3>

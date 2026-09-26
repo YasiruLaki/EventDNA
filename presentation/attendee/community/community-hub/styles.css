@@ -17,9 +17,9 @@
 }
 
 .pill.active {
-  background: var(--secondary);
+  background: var(--primary);
   color: white;
-  border-color: var(--secondary);
+  border-color: var(--primary);
 }
 
 .section-title-row {
@@ -59,6 +59,7 @@
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: block;
+  text-decoration: none;
 }
 
 .community-card:hover {
@@ -82,7 +83,7 @@
 }
 
 .community-body h4 {
-  font-size: 1.05rem;
+  font-size:  1.25rem;
   font-weight: 700;
   margin: 0.7rem 0 0.4rem;
   line-height: 1.35;
@@ -90,7 +91,7 @@
 }
 
 .community-meta {
-  font-size: 0.8rem;
+  font-size:  0.85rem;
   color: var(--text-secondary);
   margin-bottom: 1rem;
 }
@@ -170,7 +171,7 @@
 }
 
 .trending-item-title {
-  font-size: 0.95rem;
+  font-size:  1.05rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 0.2rem;
@@ -180,7 +181,7 @@
 }
 
 .trending-item-meta {
-  font-size: 0.8rem;
+  font-size:  0.85rem;
   color: var(--text-tertiary);
   margin: 0;
 }
@@ -212,3 +213,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+.community-card a, .community-card span, .community-card p, .community-card h4 { text-decoration: none; }
+
+.trending-item { text-decoration: none !important; }
