@@ -185,18 +185,18 @@ if (!function_exists('h')) {
     </div>
     <div class="nav-right">
       <a href="create-event.php" class="nav-btn-primary">
-        <i data-lucide="plus" style="width:16px;height:16px;display:inline-block;vertical-align:-3px;margin-right:4px;"></i>
+        <i class="org-icon-inline" data-lucide="plus" ></i>
         Create Event
       </a>
       <div class="nav-profile-menu">
         <button class="nav-profile-btn" aria-label="Profile Menu" id="orgProfileBtn">
           <span class="nav-avatar"><?= h(mb_strtoupper(mb_substr($organizerName, 0, 1))) ?></span>
           <span class="nav-profile-name"><?= h($organizerName) ?></span>
-          <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--text-secondary);"></i>
+          <i class="org-icon-sec" data-lucide="chevron-down" ></i>
         </button>
         <div class="nav-dropdown" id="orgProfileDropdown">
           <a href="../auth/logout.php" class="dropdown-item text-danger">
-            <i data-lucide="log-out" style="width:16px;height:16px;"></i> Logout
+            <i class="org-icon-md" data-lucide="log-out" ></i> Logout
           </a>
         </div>
       </div>
