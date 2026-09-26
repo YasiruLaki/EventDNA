@@ -17,9 +17,9 @@
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
-          <a href="dashboard.html" class="nav-link active"
+          <a href="dashboard.php" class="nav-link active"
             style="box-shadow: inset 0 -2px 0 var(--primary); color: var(--primary); font-weight: 600;">Dashboard</a>
-          <a href="dashboard.html#events" class="nav-link">My Events</a>
+          <a href="dashboard.php#events" class="nav-link">My Events</a>
           <a href="create-event.html" class="nav-link">Create Event</a>
         </div>
       </div>
@@ -32,7 +32,7 @@
             <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
           </button>
           <div class="nav-dropdown">
-            <a href="../auth/login/index.html" class="dropdown-item text-danger">Logout</a>
+            <a href="../auth/login/index.php" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
       </div>

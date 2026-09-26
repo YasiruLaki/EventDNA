@@ -110,7 +110,7 @@
       </a>
 
 
-      <div style="display:flex; align-items:center; gap:1.25rem;">
+      <div style="display:flex; align-items:center; gap:1.25rem; flex-wrap: wrap;">
 
         <img
           src="https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?auto=format&fit=crop&w=480&q=80"
@@ -118,7 +118,7 @@
           style="width:72px;height:72px;border-radius:12px;object-fit:cover;"
         >
 
-        <div>
+        <div style="flex-grow: 1;">
 
           <h1
             id="group-name"
@@ -134,6 +134,10 @@
             Loading...
           </p>
 
+        </div>
+
+        <div id="join-group-container" style="display: none;">
+          <button id="join-group-btn" class="btn-primary" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem;">Join Group</button>
         </div>
 
       </div>
@@ -460,6 +464,47 @@ async function loadGroup() {
     document.getElementById("group-name").textContent =
       group.name;
 
+
+    /*
+     * 7.5 Handle Join Button logic.
+     */
+    const joinContainer = document.getElementById("join-group-container");
+    const joinBtn = document.getElementById("join-group-btn");
+    
+    if (data.is_member) {
+      joinContainer.style.display = "none";
+    } else {
+      joinContainer.style.display = "block";
+      
+      joinBtn.addEventListener("click", async () => {
+        joinBtn.disabled = true;
+        joinBtn.textContent = "Joining...";
+        
+        const formData = new FormData();
+        formData.append("group_id", groupId);
+        
+        try {
+          const res = await fetch("../../../groups/join.php", {
+            method: "POST",
+            body: formData
+          });
+          const joinResult = await res.json();
+          
+          if (joinResult.success) {
+            window.location.reload();
+          } else {
+            alert(joinResult.message || "Failed to join group.");
+            joinBtn.disabled = false;
+            joinBtn.textContent = "Join Group";
+          }
+        } catch (e) {
+          console.error(e);
+          alert("An error occurred.");
+          joinBtn.disabled = false;
+          joinBtn.textContent = "Join Group";
+        }
+      });
+    }
 
     /*
      * 8. Display member count in the header.

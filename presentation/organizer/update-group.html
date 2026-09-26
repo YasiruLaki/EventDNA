@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Group - EventDNA</title>
+  <title>Update Group - EventDNA</title>
   <link rel="stylesheet" href="../attendee/dashboard/styles.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -86,8 +86,8 @@
           Back to Dashboard
         </a>
 
-        <h1 class="page-title" style="margin-bottom:0.25rem;">Create Group</h1>
-        <p class="supporting-copy" style="margin-bottom:2rem;">Start a community around your event's audience.</p>
+        <h1 class="page-title" style="margin-bottom:0.25rem;">Update Group</h1>
+        <p class="supporting-copy" style="margin-bottom:2rem;">Modify your community group details.</p>
 
         <article class="stat-card form-card" style="padding: 2rem;">
           <form id="createGroupForm">
@@ -111,7 +111,7 @@
             </div>
 
             <div class="form-actions">
-              <button type="submit" class="btn-primary" id="submitBtn">Create Group</button>
+              <button type="submit" class="btn-primary" id="submitBtn">Save Changes</button>
               <span class="submit-error" id="submitError"></span>
             </div>
 
@@ -121,8 +121,8 @@
 
       <!-- ===== SUCCESS STATE (hidden until creation succeeds) ===== -->
       <article id="successView" class="stat-card success-card" style="padding: 2.5rem;">
-        <h2 style="color: var(--secondary);">Group Created Successfully</h2>
-        <p style="color: var(--text-secondary);">You are now the owner of this group.</p>
+        <h2 style="color: var(--secondary);">Group Updated Successfully</h2>
+        <p style="color: var(--text-secondary);">Your changes have been saved.</p>
         <a href="manage-groups.html" id="viewGroupBtn" class="btn-primary" style="display:inline-block; margin-top:1rem;">Manage Groups</a>
       </article>
 
@@ -144,8 +144,15 @@
 
     const selectedInterestIds = new Set();
 
-    // Load the interest vocabulary and render it as clickable pills
-    // NOTE: "../groups/..." — because groups/ sits next to organizer/, auth/ and attendee/
+    const urlParams = new URLSearchParams(window.location.search);
+    const groupId = urlParams.get('group_id');
+    
+    if (!groupId) {
+      alert("No group specified.");
+      window.location.href = "manage-groups.html";
+    }
+
+    // First load interests, then load group details
     fetch('../groups/interests-list.php')
       .then(res => res.json())
       .then(result => {
@@ -156,11 +163,13 @@
           return;
         }
 
+        // Render all interests
         result.data.forEach(interest => {
           const pill = document.createElement('button');
           pill.type = 'button';
           pill.className = 'tag-pill';
           pill.textContent = interest.interest_name;
+          pill.dataset.id = interest.interest_id;
 
           pill.addEventListener('click', () => {
             const id = interest.interest_id;
@@ -175,9 +184,36 @@
 
           tagPicker.appendChild(pill);
         });
+
+        // Now load group details
+        return fetch(`../groups/get.php?group_id=${groupId}`);
+      })
+      .then(res => res ? res.json() : null)
+      .then(groupResult => {
+        if (!groupResult) return;
+        if (!groupResult.success) {
+          alert(groupResult.message);
+          window.location.href = "manage-groups.html";
+          return;
+        }
+
+        const data = groupResult.data;
+        nameInput.value = data.group.name;
+        document.getElementById('groupDescription').value = data.group.description || '';
+
+        // Pre-select interests
+        if (data.interests && data.interests.length > 0) {
+          data.interests.forEach(interest => {
+            selectedInterestIds.add(interest.interest_id);
+            const pill = tagPicker.querySelector(`button[data-id="${interest.interest_id}"]`);
+            if (pill) {
+              pill.classList.add('selected');
+            }
+          });
+        }
       })
       .catch(() => {
-        tagPicker.innerHTML = '<span style="color:var(--text-secondary); font-size:0.85rem;">Could not load interests.</span>';
+        tagPicker.innerHTML = '<span style="color:var(--text-secondary); font-size:0.85rem;">Could not load data.</span>';
       });
 
     form.addEventListener('submit', function (e) {
@@ -192,21 +228,22 @@
       }
 
       const formData = new FormData();
+      formData.append('group_id', groupId);
       formData.append('name', nameInput.value.trim());
       formData.append('description', document.getElementById('groupDescription').value.trim());
       selectedInterestIds.forEach(id => formData.append('interests[]', id));
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Creating…';
+      submitBtn.textContent = 'Saving…';
 
-      fetch('../groups/create.php', {
+      fetch('../groups/update.php', {
         method: 'POST',
         body: formData
       })
       .then(res => res.json())
       .then(result => {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Create Group';
+        submitBtn.textContent = 'Save Changes';
 
         if (!result.success) {
           submitError.textContent = result.message;
@@ -219,8 +256,8 @@
       })
       .catch(() => {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Create Group';
-        submitError.textContent = 'The group could not be created. Please try again.';
+        submitBtn.textContent = 'Save Changes';
+        submitError.textContent = 'The group could not be updated. Please try again.';
         submitError.style.display = 'inline';
       });
     });
