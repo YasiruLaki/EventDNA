@@ -1,3 +1,27 @@
+<?php
+require_once __DIR__ . "/../../events/includes/guard.php";
+require_once __DIR__ . "/../../../data/database.php";
+require_once __DIR__ . "/../../../application/controllers/EventController.php";
+
+$eventController = new EventController($conn);
+$myEvents = $eventController->getAttendeeEvents($attendeeId);
+$featured = $myEvents['upcoming'][0] ?? null;
+
+function starts_in_label($event) {
+    if ($event['display_status'] === 'Live') {
+        return 'Happening Now';
+    }
+    $days = (new DateTime(date('Y-m-d')))->diff(new DateTime($event['event_date']))->days;
+    if ($days === 0) {
+        return 'Starts Today';
+    }
+    return $days === 1 ? 'Starts Tomorrow' : 'Starts in ' . $days . ' Days';
+}
+
+$hour = (int)date('G');
+$greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good Evening');
+$firstName = explode(' ', trim($attendeeName))[0] ?: 'there';
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,7 +34,7 @@
   <nav class="top-nav">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="#" class="nav-logo">
+        <a href="./index.php" class="nav-logo">
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
@@ -23,14 +47,14 @@
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
-            <span class="nav-profile-name">Yasiru</span>
+            <span class="nav-avatar" style="display: inline-flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; font-weight: 700; font-size: 0.85rem;"><?= h(mb_strtoupper(mb_substr($attendeeName, 0, 1))) ?></span>
+            <span class="nav-profile-name"><?= h($firstName) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="nav-dropdown">
             <a href="../onboarding/index.html" class="dropdown-item">Profile</a>
             <a href="../settings/index.html" class="dropdown-item">Settings</a>
-            <a href="#" class="dropdown-item text-danger">Logout</a>
+            <a href="../../auth/logout.php" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
       </div>
@@ -41,7 +65,7 @@
     <main class="dashboard-content">
       <section class="hero-row hero-header">
         <div class="hero-copy">
-          <h1>Good Evening, Yasiru!</h1>
+          <h1><?= $greeting ?>, <?= h($firstName) ?>!</h1>
           <p class="supporting-copy">
             Your profile is almost complete. Complete it to get better event and networking recommendations.
           </p>
@@ -58,7 +82,7 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M6 6h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <div>
-            <strong>2</strong>
+            <strong><?= (int)$myEvents['stats']['upcoming'] ?></strong>
             <p>Upcoming Events</p>
           </div>
         </article>
@@ -96,30 +120,50 @@
 
       <section class="main-grid">
         <div class="left-column">
+          <?php if ($featured): ?>
+          <?php $pending = $featured['registration_status'] === 'PENDING'; ?>
           <article class="feature-card">
-              <div class="feature-cover">
-                <img
-                  src="https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg"
-                  alt="Featured event cover showing a packed conference audience"
-                />
-                <span class="date-tag feature-date">Oct 24 - 26</span>
-              </div>
+            <div class="feature-cover">
+              <?php if ($featured['cover_photo']): ?>
+                <img src="<?= h(cover_url($featured['cover_photo'])) ?>" alt="<?= h($featured['name']) ?> cover" />
+              <?php else: ?>
+                <div style="height: 250px; background: linear-gradient(135deg, #6D3BFF 0%, #2A0BB0 100%);"></div>
+              <?php endif; ?>
+              <span class="date-tag feature-date"><?= h(date('M j', strtotime($featured['event_date']))) ?></span>
+            </div>
             <div class="feature-badges">
-              <span class="pill pill-primary">Starts in 16 Days</span>
-              <span class="pill">&check; Registered</span>
+              <span class="pill pill-primary"><?= h(starts_in_label($featured)) ?></span>
+              <?php if ($pending): ?>
+                <span class="pill" style="background: rgba(245, 158, 11, 0.12); color: #b45309;">Pending Approval</span>
+              <?php else: ?>
+                <span class="pill">&check; Registered</span>
+              <?php endif; ?>
             </div>
             <div class="feature-copy">
-              <h2>Global Tech Innovators Summit 2026</h2>
+              <h2><?= h($featured['name']) ?></h2>
               <div class="feature-meta">
-                <span>Oct 24 - 26, 2026</span>
-                <span>Moscone Center, San Francisco</span>
+                <span><?= h(format_event_date($featured['event_date'])) ?> &middot; <?= h(format_time_range($featured['start_time'], $featured['end_time'])) ?></span>
+                <span><?= h($featured['location']) ?></span>
               </div>
             </div>
             <div class="feature-actions">
-              <a class="btn-primary" href="../../events/eventView/index.php">View Event Details</a>
-              <a class="btn-secondary" href="../../events/registrationModel/index.html">View Event Pass</a>
+              <a class="btn-primary" href="../../events/eventView/index.php?id=<?= (int)$featured['event_id'] ?>">View Event Details</a>
+              <?php if (!$pending): ?>
+                <a class="btn-secondary" href="../../events/myEvents/index.php">View Event Pass</a>
+              <?php endif; ?>
             </div>
           </article>
+          <?php else: ?>
+          <article class="feature-card" style="text-align: center; padding: 3rem 2rem;">
+            <div class="feature-copy">
+              <h2 style="font-size: 1.5rem;">No upcoming events yet</h2>
+              <p class="supporting-copy">Register for an event and it will show up here.</p>
+            </div>
+            <div class="feature-actions" style="justify-content: center;">
+              <a class="btn-primary" href="../../events/ExploreEvents/index.php">Discover Events &rarr;</a>
+            </div>
+          </article>
+          <?php endif; ?>
 
           <article class="locked-card">
             <div class="locked-icon">

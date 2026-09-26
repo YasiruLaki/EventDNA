@@ -39,6 +39,7 @@ class AuthController {
             $_SESSION['pending_user_id'] = $createdUserId;
             $_SESSION['pending_user_email'] = $email;
             $_SESSION['pending_role'] = $roleName;
+            $_SESSION['pending_full_name'] = $fullName;
 
             $subject = 'Verify Your Email - EventDNA';
             $body = "Hi $fullName,<br><br>Welcome to EventDNA! Your 6-digit verification code is: <strong>$code</strong><br><br>Enter this code on the verification page.";

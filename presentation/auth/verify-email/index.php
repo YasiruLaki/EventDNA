@@ -36,10 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result["success"]) {
         $_SESSION['user_id'] = $pendingUserId;
         $_SESSION['role_id'] = ($pendingRole === 'organizer') ? 2 : 1;
+        $_SESSION['full_name'] = $_SESSION['pending_full_name'] ?? '';
         
         unset($_SESSION['pending_user_id']);
         unset($_SESSION['pending_user_email']);
         unset($_SESSION['pending_role']);
+        unset($_SESSION['pending_full_name']);
         
         if ($pendingRole === 'organizer') {
             header("Location: ../../organizer/dashboard.php");
