@@ -16,15 +16,15 @@
         <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
       </div>
       <nav class="admin-nav">
-        <a href="dashboard.html" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
-        <a href="users.html" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
-        <a href="events.html" class="admin-nav-item active"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
-        <a href="moderation.html" class="admin-nav-item"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
-        <a href="analytics.html" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
+        <a href="dashboard.php" class="admin-nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</a>
+        <a href="users.php" class="admin-nav-item"><i data-lucide="users" style="width: 18px;"></i> Users</a>
+        <a href="events.php" class="admin-nav-item active"><i data-lucide="calendar" style="width: 18px;"></i> Events</a>
+        <a href="moderation.php" class="admin-nav-item"><i data-lucide="shield-alert" style="width: 18px;"></i> Moderation</a>
+        <a href="analytics.php" class="admin-nav-item"><i data-lucide="bar-chart-2" style="width: 18px;"></i> Analytics</a>
       </nav>
       <div class="admin-footer">
         <a href="#" class="admin-nav-item"><i data-lucide="settings" style="width: 18px;"></i> Settings</a>
-        <a href="../auth/login/index.html" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
+        <a href="../auth/login/index.php" class="admin-nav-item" style="color: var(--danger);"><i data-lucide="log-out" style="width: 18px;"></i> Log Out</a>
       </div>
     </aside>
 
@@ -62,21 +62,21 @@
             <td>Hanan Perera</td>
             <td>Oct 24</td>
             <td><span class="status-badge status-live">Live</span></td>
-            <td><a href="event-details.html" class="btn-view">View</a></td>
+            <td><a href="event-details.php" class="btn-view">View</a></td>
           </tr>
           <tr>
             <td style="font-weight: 600;">Career Fair</td>
             <td>Kamal Silva</td>
             <td>Dec 03</td>
             <td><span class="status-badge status-upcoming">Upcoming</span></td>
-            <td><a href="event-details.html" class="btn-view">View</a></td>
+            <td><a href="event-details.php" class="btn-view">View</a></td>
           </tr>
           <tr>
             <td style="font-weight: 600;">Design Masterclass</td>
             <td>Sarah Fernando</td>
             <td>Jan 18</td>
             <td><span class="status-badge status-draft">Draft</span></td>
-            <td><a href="event-details.html" class="btn-view">View</a></td>
+            <td><a href="event-details.php" class="btn-view">View</a></td>
           </tr>
         </tbody>
       </table>
