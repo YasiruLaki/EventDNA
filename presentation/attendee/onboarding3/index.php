@@ -58,21 +58,27 @@ $allGoals = $controller->getNetworkingGoals();
             <p style="color: var(--error); margin-bottom: 1rem; font-size: 0.9rem;"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
 
-        <div class="search-box" style="margin-bottom: 1rem;">
-          <input type="text" id="searchInput" placeholder="Search Goals..." style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-primary); outline: none;">
-        </div>
+
 
         <form action="" method="post" id="onboarding3Form">
         <div class="skills-interests-section">
             <div class="section-label">I'm looking for... (Select all that apply)</div>
-            <div class="chip-list" id="goalsList">
-              <?php foreach ($allGoals as $goal): ?>
-                  <button type="button" class="chip" data-id="<?php echo htmlspecialchars($goal['goal_id']); ?>">
-                    <?php echo htmlspecialchars($goal['goal_name']); ?>
-                    <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </button>
-              <?php endforeach; ?>
+            
+            <div class="dropdown-container" id="goalsDropdownContainer">
+              <div class="dropdown-header" id="goalsDropdownHeader">
+                <span class="dropdown-header-placeholder">Select networking goals...</span>
+              </div>
+              <div class="dropdown-list" id="goalsDropdownList">
+                <?php foreach ($allGoals as $goal): ?>
+                    <label class="dropdown-item">
+                        <input type="checkbox" name="goals[]" value="<?php echo htmlspecialchars($goal['goal_id']); ?>" data-name="<?php echo htmlspecialchars($goal['goal_name']); ?>">
+                        <span><?php echo htmlspecialchars($goal['goal_name']); ?></span>
+                    </label>
+                <?php endforeach; ?>
+              </div>
             </div>
+            
+            <div class="selected-tags" id="selectedGoalsTags"></div>
         </div>
 
         <button type="submit" class="btn-primary onboarding-submit" style="width: 100%; border: none; cursor: pointer; font-size: 1rem; padding: 0.875rem;">
@@ -88,35 +94,59 @@ $allGoals = $controller->getNetworkingGoals();
   </div>
 
 <script>
-  document.querySelectorAll('.chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      chip.classList.toggle('selected');
-    });
-  });
-
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-          const term = e.target.value.toLowerCase();
-          document.querySelectorAll('.chip').forEach(chip => {
-              const text = chip.textContent.toLowerCase();
-              if (text.includes(term)) {
-                  chip.style.display = '';
-              } else {
-                  chip.style.display = 'none';
+  document.addEventListener('DOMContentLoaded', () => {
+      const header = document.getElementById('goalsDropdownHeader');
+      const list = document.getElementById('goalsDropdownList');
+      const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+      const tagsContainer = document.getElementById('selectedGoalsTags');
+      
+      // Toggle dropdown
+      header.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return; // Ignore clicks on remove buttons
+          list.classList.toggle('open');
+      });
+      
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+          if (!header.contains(e.target) && !list.contains(e.target)) {
+              list.classList.remove('open');
+          }
+      });
+      
+      // Handle checkbox change
+      checkboxes.forEach(cb => {
+          cb.addEventListener('change', updateTags);
+      });
+      
+      function updateTags() {
+          tagsContainer.innerHTML = '';
+          let count = 0;
+          
+          checkboxes.forEach(cb => {
+              if (cb.checked) {
+                  count++;
+                  const name = cb.dataset.name;
+                  const tag = document.createElement('div');
+                  tag.className = 'tag-pill';
+                  tag.innerHTML = `
+                      ${name}
+                      <button type="button" data-val="${cb.value}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                  `;
+                  tagsContainer.appendChild(tag);
+                  
+                  tag.querySelector('button').addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      cb.checked = false;
+                      updateTags();
+                  });
               }
           });
-      });
-  }
-
-  document.getElementById('onboarding3Form').addEventListener('submit', function(e) {
-      document.querySelectorAll('.chip.selected').forEach(chip => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = 'goals[]';
-          input.value = chip.dataset.id;
-          this.appendChild(input);
-      });
+          
+          const placeholder = header.querySelector('.dropdown-header-placeholder');
+          if (placeholder) {
+              placeholder.style.display = count > 0 ? 'none' : 'block';
+          }
+      }
   });
 </script>
 </body>

@@ -12,14 +12,14 @@
   <nav class="top-nav">
     <div class="nav-container">
       <div class="nav-left">
-        <a href="../dashboard/index.html" class="nav-logo">
+        <a href="../dashboard/index.php" class="nav-logo">
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
-          <a href="../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-          <a href="../../events/myEvents/index.html" class="nav-link">My Events</a>
-          <a href="../community/community-hub/index.html" class="nav-link">Communities</a>
-          <a href="../myConnections/index.html" class="nav-link">Connections</a>
+          <a href="../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
+          <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
+          <a href="../community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
       <div class="nav-right">
@@ -30,7 +30,7 @@
             <i data-lucide="chevron-down" style="width: 16px; height: 16px;"></i>
           </button>
           <div class="nav-dropdown">
-            <a href="../onboarding/index.html" class="dropdown-item">Profile</a>
+            <a href="../settings/index.php" class="dropdown-item">Profile</a>
             <a href="#" class="dropdown-item text-danger">Logout</a>
           </div>
         </div>
@@ -56,7 +56,7 @@
             </div>
             <div class="progress-track"><div class="progress-fill" style="width: 82%"></div></div>
             <p style="margin-bottom: 1rem;">Complete your profile for better networking recommendations.</p>
-            <a href="../onboarding/index.html" class="btn-primary w-full" style="text-align: center; font-size: 0.85rem; padding: 0.6rem; text-decoration: none; display: block;">Complete Profile &rarr;</a>
+            <a href="../onboarding/index.php" class="btn-primary w-full" style="text-align: center; font-size: 0.85rem; padding: 0.6rem; text-decoration: none; display: block;">Complete Profile &rarr;</a>
           </div>
 
           <nav class="settings-nav">
@@ -78,7 +78,7 @@
             
             <div style="border-top: 1px solid rgba(226, 232, 240, 0.9); margin: 1rem 0;"></div>
             
-            <a href="../../auth/login/index.html" class="nav-item text-danger" style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+            <a href="../../auth/login/index.php" class="nav-item text-danger" style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
               <i data-lucide="log-out"></i> Log Out
             </a>
           </nav>
