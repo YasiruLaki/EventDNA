@@ -36,9 +36,7 @@
 
 .role-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(79, 16, 255, 0.08);
   background: var(--primary-tint);
-  transform: translateY(-2px);
 }
 
 .role-icon {
@@ -83,5 +81,4 @@
 
 .role-card:hover .chevron {
   color: var(--primary);
-  transform: translateX(4px);
 }
