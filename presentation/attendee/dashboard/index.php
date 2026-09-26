@@ -14,8 +14,8 @@
           <img src="../../images/logo.png" alt="EventDNA" class="nav-logo-img">
         </a>
         <div class="nav-links">
-          <a href="../../events/ExploreEvents/index.html" class="nav-link">Find Events</a>
-          <a href="../../events/myEvents/index.html" class="nav-link">My Events</a>
+          <a href="../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
+          <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
           <a href="../community/community-hub/index.html" class="nav-link">Communities</a>
           <a href="../myConnections/index.html" class="nav-link">Connections</a>
         </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="hero-actions">
           <a class="btn-secondary hero-btn hero-btn-soft" href="../onboarding/index.html">Complete Profile</a>
-          <a class="btn-primary hero-btn" href="../../events/ExploreEvents/index.html">Explore Events</a>
+          <a class="btn-primary hero-btn" href="../../events/ExploreEvents/index.php">Explore Events</a>
         </div>
       </section>
 
@@ -116,7 +116,7 @@
               </div>
             </div>
             <div class="feature-actions">
-              <a class="btn-primary" href="../../events/eventView/index.html">View Event Details</a>
+              <a class="btn-primary" href="../../events/eventView/index.php">View Event Details</a>
               <a class="btn-secondary" href="../../events/registrationModel/index.html">View Event Pass</a>
             </div>
           </article>
@@ -135,7 +135,7 @@
           <section class="section-row">
             <div class="section-head">
               <h3>Recommended for You</h3>
-              <a href="../../events/ExploreEvents/index.html">View All &rarr;</a>
+              <a href="../../events/ExploreEvents/index.php">View All &rarr;</a>
             </div>
 
             <div class="recommendation-row">
@@ -183,13 +183,13 @@
             </div>
 
             <div class="quick-actions-grid">
-              <a class="quick-action" href="../../events/ExploreEvents/index.html">
+              <a class="quick-action" href="../../events/ExploreEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 </span>
                 <span>Find Events</span>
               </a>
-              <a class="quick-action" href="../../events/myEvents/index.html">
+              <a class="quick-action" href="../../events/myEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M6 6h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
@@ -201,7 +201,7 @@
                 </span>
                 <span>Check In</span>
               </a>
-              <a class="quick-action" href="../../events/myEvents/index.html">
+              <a class="quick-action" href="../../events/myEvents/index.php">
                 <span class="quick-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M4.5 8.5h15M4.5 15.5h15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 </span>

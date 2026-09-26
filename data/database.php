@@ -9,6 +9,8 @@ if (!$env) {
     die("Error parsing .env file");
 }
 
+date_default_timezone_set($env["APP_TIMEZONE"] ?? "Asia/Colombo");
+
 $host = $env["DB_HOST"];
 $db   = $env["DB_NAME"];
 $user = $env["DB_USER"];
