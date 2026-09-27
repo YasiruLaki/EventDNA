@@ -488,6 +488,34 @@ a {
   background: var(--primary);
 }
 
+/* Events the organizer cancelled */
+.registered-badge.cancelled-badge {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.registered-badge.cancelled-badge::before {
+  background: #dc2626;
+}
+
+.cancelled-event .event-thumb {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.cancelled-event h3 {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+
+.cancelled-note {
+  margin: 0 0 1rem 0;
+  font-size: 0.85rem;
+  color: #dc2626;
+}
+
 .event-card-horizontal h3 {
   font-size: 1.25rem;
   font-weight: 700;
