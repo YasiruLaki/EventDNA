@@ -77,13 +77,13 @@ function formatTime($timeStr) {
   </nav>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero" style="background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('<?= htmlspecialchars($event['cover_photo']) ?>');">
   <div class="container hero-inner">
-    <span class="hero-badge">Technology &amp; Innovation</span>
-    <h1>AI Innovation Summit 2026</h1>
-    <p>
-      Connect with professionals, researchers, and innovators in artificial intelligence. Discover new ideas, exchange knowledge, and build meaningful connections.
-    </p>
+    <?php if(!empty($interests)): ?>
+    <span class="hero-badge"><?= htmlspecialchars($interests[0]) ?></span>
+    <?php endif; ?>
+    <h1><?= htmlspecialchars($event['name']) ?></h1>
+    <p><?= nl2br(htmlspecialchars($event['description'])) ?></p>
   </div>
 </section>
 
