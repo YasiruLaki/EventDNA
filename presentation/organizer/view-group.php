@@ -77,9 +77,9 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                     <?php if ($isOwner): ?>
                         <a href="edit-group.php?id=<?= $groupId ?>" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="settings" style="width: 18px;"></i> Manage Group</a>
                     <?php elseif ($membership): ?>
-                        <a href="leave.php?id=<?= $groupId ?>" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="log-out" style="width: 18px;"></i> Leave Group</a>
+                        <a href="#" onclick="alert('Join/Leave functionality is handled in Attendee portal.'); return false;" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="log-out" style="width: 18px;"></i> Leave Group</a>
                     <?php else: ?>
-                        <a href="join.php?id=<?= $groupId ?>" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 2rem; font-size: 1.05rem; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">Join Group</a>
+                        <a href="#" onclick="alert('Join/Leave functionality is handled in Attendee portal.'); return false;" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 2rem; font-size: 1.05rem; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">Join Group</a>
                     <?php endif; ?>
                 </div>
             </div>
