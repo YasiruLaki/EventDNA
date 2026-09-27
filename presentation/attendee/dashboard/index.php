@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../includes/guard.php";
 require_once __DIR__ . '/../../attendee/includes/avatar.php';
 require_once __DIR__ . '/../../../data/EventRepository.php';
+require_once __DIR__ . '/../../../data/NotificationRepository.php';
 
 $firstName = explode(' ', trim($attendeeName))[0];
 $now = time();
@@ -110,6 +111,14 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
 }
 
 [$welcomeTitle, $welcomeText, $welcomeCta] = dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileIncomplete, $now, $today, $tomorrow);
+
+// An unread cancellation outranks everything else, so attendees don't turn up to an event that isn't happening
+$notificationRepo = new NotificationRepository($conn);
+$recentNotifications = $notificationRepo->getForUser($attendeeId, 3);
+$cancellation = $notificationRepo->getLatestUnread($attendeeId, NotificationRepository::EVENT_CANCELLED);
+if ($cancellation) {
+    [$welcomeTitle, $welcomeText, $welcomeCta] = ["Heads up, $firstName!", $cancellation['message'], ['label' => 'View Notifications', 'href' => '../community/notifications/index.php']];
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -134,6 +143,7 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
         </div>
       </div>
       <div class="nav-right">
+        <?= nav_notifications_html() ?>
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <?= nav_avatar_html($attendeeName) ?>
@@ -396,25 +406,22 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
           <article class="side-card alerts-card">
             <h3>Recent Notifications</h3>
             <div class="alert-list">
+              <?php if (empty($recentNotifications)): ?>
+              <p class="supporting-copy">No notifications yet.</p>
+              <?php endif; ?>
+              <?php foreach ($recentNotifications as $n): ?>
               <div class="alert-item">
-                <span class="alert-icon">
+                <span class="alert-icon"<?= $n['type'] === NotificationRepository::EVENT_CANCELLED ? ' style="color: #dc2626;"' : '' ?>>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 </span>
                 <div>
-                  <strong>Venue update</strong>
-                  <p>Room changed for "Design Ops" track.</p>
+                  <strong><?= h($n['title']) ?></strong>
+                  <p><?= h($n['message']) ?></p>
                 </div>
               </div>
-              <div class="alert-item">
-                <span class="alert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                </span>
-                <div>
-                  <strong>Community update</strong>
-                  <p>New discussion in "AI Founders".</p>
-                </div>
-              </div>
+              <?php endforeach; ?>
             </div>
+            <a class="inline-link" href="../community/notifications/index.php">View all notifications</a>
           </article>
         </aside>
       </section>
