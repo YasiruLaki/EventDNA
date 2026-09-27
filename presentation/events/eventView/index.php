@@ -23,11 +23,13 @@ if (!$event) {
 $interests = $eventRepo->getEventInterestNames($eventId);
 
 // Check if already registered
-$checkStmt = $conn->prepare("SELECT status FROM event_registrations WHERE event_id = ? AND user_id = ?");
+$checkStmt = $conn->prepare("SELECT status, receive_updates FROM event_registrations WHERE event_id = ? AND user_id = ? AND status IN ('PENDING','APPROVED','REGISTERED')");
 $checkStmt->bind_param("ii", $eventId, $userId);
 $checkStmt->execute();
-$regResult = $checkStmt->get_result();
-$isRegistered = $regResult->num_rows > 0;
+$registration = $checkStmt->get_result()->fetch_assoc();
+$isRegistered = $registration !== null;
+$errorMessage = $_GET['error'] ?? '';
+$successMessage = $_GET['success'] ?? '';
 
 // For cancelled events, show registrants the message they were notified with (it carries the organizer's reason)
 $isCancelled = $event['status'] === 'CANCELLED';
@@ -47,7 +49,10 @@ function formatTime($timeStr) {
 }
 // Cover photos are stored relative to the project root (e.g. uploads/events/x.jpg)
 function coverUrl($path) {
-    return $path ? '../../../' . $path : '';
+    if (!$path) {
+        return '';
+    }
+    return preg_match('#^https?://#i', $path) ? $path : '../../../' . $path;
 }
 ?>
 <!DOCTYPE html>
@@ -235,10 +240,38 @@ function coverUrl($path) {
           Registration closes <?= formatDate($event['registration_close']) ?>
         </div>
 
+        <?php if ($errorMessage !== ''): ?>
+          <div class="reg-alert reg-alert-error"><?= htmlspecialchars($errorMessage) ?></div>
+        <?php elseif ($successMessage !== ''): ?>
+          <div class="reg-alert reg-alert-success"><?= htmlspecialchars($successMessage) ?></div>
+        <?php endif; ?>
+
+        <?php $isPast = strtotime($event['event_date'] . ' ' . $event['end_time']) < time(); ?>
         <?php if ($isCancelled): ?>
           <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: not-allowed;">Event Cancelled</button>
         <?php elseif ($isRegistered): ?>
           <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Already Registered</button>
+          <?php if (!$isPast): ?>
+            <form method="POST" action="updates_action.php" class="reg-updates-form">
+              <input type="hidden" name="event_id" value="<?= $eventId ?>">
+              <label class="toggle-row">
+                <div>
+                  <div class="check-label">Event updates</div>
+                  <div class="check-sub">Get notified about schedule changes and announcements.</div>
+                </div>
+                <span class="toggle-switch">
+                  <input type="checkbox" name="updates" value="1" id="updatesToggle" <?= (int)$registration['receive_updates'] === 1 ? 'checked' : '' ?>>
+                  <span class="toggle-slider"></span>
+                </span>
+              </label>
+            </form>
+            <form method="POST" action="cancel_action.php" id="cancelRegForm">
+              <input type="hidden" name="event_id" value="<?= $eventId ?>">
+              <button type="submit" class="btn-cancel-reg">Cancel Registration</button>
+            </form>
+          <?php endif; ?>
+        <?php elseif ($isPast): ?>
+          <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Event Ended</button>
         <?php elseif ($spotsLeft > 0): ?>
           <button class="btn-primary reg-cta">Register Now &rarr;</button>
         <?php else: ?>
@@ -331,11 +364,64 @@ function coverUrl($path) {
   </div>
 </div>
 
+<?php if ($isRegistered && !$isPast && !$isCancelled): ?>
+<div class="modal-overlay" id="cancelRegModal">
+  <div class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="cancelRegTitle">
+    <div class="modal-body">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="7.5" x2="12" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.3" r="1" fill="currentColor"/></svg>
+      </div>
+      <h1 id="cancelRegTitle">Cancel your registration?</h1>
+      <p class="confirm-text">You will lose your spot at <strong><?= htmlspecialchars($event['name']) ?></strong>. You can register again while registration is still open.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="keepRegBtn">Keep Registration</button>
+        <button type="button" class="btn-danger" id="confirmCancelRegBtn">Cancel Registration</button>
+      </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("registrationModal");
     const openBtn = document.querySelector(".reg-cta");
     const closeBtns = [document.getElementById("modalCloseBtn"), document.getElementById("modalCancelBtn")];
+    const updatesToggle = document.getElementById("updatesToggle");
+    const cancelRegForm = document.getElementById("cancelRegForm");
+
+    if (updatesToggle) {
+      updatesToggle.addEventListener("change", () => updatesToggle.form.submit());
+    }
+
+    if (cancelRegForm) {
+      const cancelRegModal = document.getElementById("cancelRegModal");
+      const closeCancelRegModal = () => {
+        cancelRegModal.classList.remove("active");
+        document.body.style.overflow = "";
+      };
+
+      cancelRegForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        cancelRegModal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      });
+
+      document.getElementById("keepRegBtn").addEventListener("click", closeCancelRegModal);
+
+      document.getElementById("confirmCancelRegBtn").addEventListener("click", (e) => {
+        e.currentTarget.disabled = true;
+        cancelRegForm.submit();
+      });
+
+      cancelRegModal.addEventListener("click", (e) => {
+        if (e.target === cancelRegModal) closeCancelRegModal();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && cancelRegModal.classList.contains("active")) closeCancelRegModal();
+      });
+    }
     
     openBtn.addEventListener("click", () => {
       modal.classList.add("active");

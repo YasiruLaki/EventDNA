@@ -141,6 +141,81 @@ class EventController {
         return ["success" => false, "message" => "Failed to cancel event. Please try again."];
     }
 
+    public function registerForEvent($userId, $eventId, $receiveUpdates) {
+        $event = $this->eventRepo->getEventById((int)$eventId);
+        if (!$event) {
+            return ["success" => false, "message" => "Event not found."];
+        }
+
+        $existing = $this->eventRepo->getRegistration($event['event_id'], $userId);
+        if ($existing && $this->holdsSeat($existing)) {
+            return ["success" => false, "message" => "You are already registered for this event."];
+        }
+        if ($existing && $existing['status'] !== 'CANCELLED') {
+            return ["success" => false, "message" => "You can no longer register for this event."];
+        }
+
+        $displayStatus = $this->getDisplayStatus($event);
+        if ($displayStatus === 'Cancelled') {
+            return ["success" => false, "message" => "This event has been cancelled."];
+        }
+        if ($displayStatus === 'Completed') {
+            return ["success" => false, "message" => "You cannot register for a past event."];
+        }
+
+        $state = $this->getRegistrationState($event);
+        if ($state === 'Not yet open') {
+            return ["success" => false, "message" => "Registration for this event has not opened yet."];
+        }
+        if ($state === 'Closed') {
+            return ["success" => false, "message" => "Registration for this event is closed."];
+        }
+        if ($state === 'Full') {
+            return ["success" => false, "message" => "This event is sold out."];
+        }
+
+        if ($this->eventRepo->registerAttendee($event['event_id'], $userId, $receiveUpdates ? 1 : 0)) {
+            return ["success" => true];
+        }
+        return ["success" => false, "message" => "Failed to register. Please try again."];
+    }
+
+    public function cancelRegistration($userId, $eventId) {
+        $event = $this->eventRepo->getEventById((int)$eventId);
+        if (!$event) {
+            return ["success" => false, "message" => "Event not found."];
+        }
+
+        $registration = $this->eventRepo->getRegistration($event['event_id'], $userId);
+        if (!$registration || !$this->holdsSeat($registration)) {
+            return ["success" => false, "message" => "You are not registered for this event."];
+        }
+        if ($this->getDisplayStatus($event) === 'Completed') {
+            return ["success" => false, "message" => "Registrations for past events cannot be cancelled."];
+        }
+
+        if ($this->eventRepo->cancelRegistration($event['event_id'], $userId)) {
+            return ["success" => true];
+        }
+        return ["success" => false, "message" => "Failed to cancel registration. Please try again."];
+    }
+
+    public function updateRegistrationUpdates($userId, $eventId, $receiveUpdates) {
+        $registration = $this->eventRepo->getRegistration((int)$eventId, $userId);
+        if (!$registration || !$this->holdsSeat($registration)) {
+            return ["success" => false, "message" => "You are not registered for this event."];
+        }
+
+        if ($this->eventRepo->setReceiveUpdates((int)$eventId, $userId, $receiveUpdates ? 1 : 0)) {
+            return ["success" => true];
+        }
+        return ["success" => false, "message" => "Failed to update your preferences. Please try again."];
+    }
+
+    private function holdsSeat($registration) {
+        return in_array($registration['status'], ['PENDING', 'APPROVED', 'REGISTERED'], true);
+    }
+
     // Returns the event with its interest tags, or null if it does not belong to this organizer
     public function getOwnedEvent($organizerId, $eventId) {
         $event = $this->eventRepo->getEventById((int)$eventId);
