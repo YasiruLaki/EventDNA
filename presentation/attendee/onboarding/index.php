@@ -1,12 +1,8 @@
 <?php
-session_start();
 require_once "../../../data/database.php";
 require_once "../../../application/controllers/OnboardingController.php";
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../auth/login/index.php");
-    exit;
-}
+require_once __DIR__ . '/../includes/guard.php';
 
 $error = "";
 $controller = new OnboardingController($conn);
@@ -19,10 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $organization = trim($_POST['organization'] ?? '');
     $industry = trim($_POST['industry'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
+    $linkedinUrl = trim($_POST['linkedinUrl'] ?? '');
+    $otherSocialUrl = trim($_POST['otherSocialUrl'] ?? '');
     
     $photoFile = $_FILES['profile_photo'] ?? null;
 
-    $result = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio, $photoFile);
+    $result = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio, $linkedinUrl, $otherSocialUrl, $photoFile);
     
     if ($result['success']) {
         header("Location: ../onboarding2/index.php");
@@ -112,6 +110,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 <option value="other">Other</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkedinUrl">LinkedIn URL (Optional)</label>
+                        <input type="url" id="linkedinUrl" name="linkedinUrl" placeholder="https://linkedin.com/in/username" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="otherSocialUrl">Other Social Link (Optional)</label>
+                        <input type="url" id="otherSocialUrl" name="otherSocialUrl" placeholder="e.g. GitHub, Twitter, Portfolio" class="form-input">
                     </div>
 
                     <div class="form-group bio-group">

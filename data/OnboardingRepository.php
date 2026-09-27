@@ -26,7 +26,7 @@ class OnboardingRepository {
     public function getUserProfile($userId) {
         $stmt = $this->conn->prepare("
             SELECT u.full_name, u.email, r.role_name,
-                   p.job_title, p.organization, p.field, p.bio, p.profile_photo
+                   p.job_title, p.organization, p.field, p.bio, p.linkedin_url, p.other_social_url, p.profile_photo
             FROM users u
             LEFT JOIN user_roles ur ON ur.user_id = u.user_id
             LEFT JOIN roles r ON r.role_id = ur.role_id
@@ -69,7 +69,7 @@ class OnboardingRepository {
         return $stmt->execute();
     }
 
-    public function saveUserProfile($userId, $fullName, $jobTitle, $organization, $industry, $bio, $photoPath = null) {
+    public function saveUserProfile($userId, $fullName, $jobTitle, $organization, $industry, $bio, $linkedinUrl, $otherSocialUrl, $photoPath = null) {
         $this->conn->begin_transaction();
         try {
             // Update full name in users table
@@ -78,9 +78,9 @@ class OnboardingRepository {
             $stmt1->execute();
 
             // Insert or update profiles table
-            $stmt2 = $this->conn->prepare("INSERT INTO profiles (user_id, job_title, organization, field, bio, profile_photo, profile_completed) VALUES (?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE job_title = VALUES(job_title), organization = VALUES(organization), field = VALUES(field), bio = VALUES(bio), profile_photo = COALESCE(VALUES(profile_photo), profile_photo), profile_completed = 1");
+            $stmt2 = $this->conn->prepare("INSERT INTO profiles (user_id, job_title, organization, field, bio, linkedin_url, other_social_url, profile_photo, profile_completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE job_title = VALUES(job_title), organization = VALUES(organization), field = VALUES(field), bio = VALUES(bio), linkedin_url = VALUES(linkedin_url), other_social_url = VALUES(other_social_url), profile_photo = COALESCE(VALUES(profile_photo), profile_photo), profile_completed = 1");
             
-            $stmt2->bind_param("isssss", $userId, $jobTitle, $organization, $industry, $bio, $photoPath);
+            $stmt2->bind_param("isssssss", $userId, $jobTitle, $organization, $industry, $bio, $linkedinUrl, $otherSocialUrl, $photoPath);
             $stmt2->execute();
 
             $this->conn->commit();

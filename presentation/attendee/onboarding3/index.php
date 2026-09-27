@@ -1,12 +1,8 @@
 <?php
-session_start();
 require_once "../../../data/database.php";
 require_once "../../../application/controllers/OnboardingController.php";
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../auth/login/index.php");
-    exit;
-}
+require_once __DIR__ . '/../includes/guard.php';
 
 $error = "";
 $controller = new OnboardingController($conn);
