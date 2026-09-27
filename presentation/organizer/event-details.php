@@ -251,6 +251,41 @@ $activeNav = 'events';
         grid-template-columns: 1fr;
       }
     }
+    .attendee-filter-bar {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .attendee-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .attendee-select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: #fff;
+      color: var(--text-primary);
+    }
+    .attendee-count {
+      display: inline-block;
+      margin-left: 0.4rem;
+      padding: 0.1rem 0.55rem;
+      border-radius: 999px;
+      background: var(--primary-tint, #eef2ff);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+    @media (max-width: 640px) {
+      .attendee-filters, .attendee-filters .org-relative-w-250, .attendee-select {
+        width: 100%;
+      }
+    }
   </style>
 
   <link rel="stylesheet" href="organizer.css" />
@@ -380,38 +415,67 @@ $activeNav = 'events';
       <!-- Attendees Tab -->
       <section id="attendees" class="tab-content">
         <div class="manage-card org-p-0-overflow-hidden" >
-          <div class="org-card-header" >
-            <h3 class="org-m-0" >Attendees</h3>
-            <div class="org-relative-w-250" >
-              <i class="org-icon-left-sm" data-lucide="search" ></i>
-              <input class="org-input-sm-icon" type="text" placeholder="Search attendees..." >
+          <div class="org-card-header attendee-filter-bar" >
+            <h3 class="org-m-0" >Attendees <span class="attendee-count" id="attendeeCount"><?= count($attendees) ?></span></h3>
+            <div class="attendee-filters">
+              <div class="org-relative-w-250" >
+                <i class="org-icon-left-sm" data-lucide="search" ></i>
+                <input class="org-input-sm-icon" type="text" id="attendeeSearch" placeholder="Search name or email..." aria-label="Search attendees" >
+              </div>
+              <select class="attendee-select" id="attendeeStatus" aria-label="Filter by status">
+                <option value="">All statuses</option>
+                <option value="registered">Registered</option>
+                <option value="pending">Pending</option>
+                <option value="removed">Removed / Rejected</option>
+              </select>
+              <select class="attendee-select" id="attendeeCheckin" aria-label="Filter by check-in">
+                <option value="">Any check-in</option>
+                <option value="yes">Checked in</option>
+                <option value="no">Not checked in</option>
+              </select>
+              <select class="attendee-select" id="attendeeSort" aria-label="Sort attendees">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="name">Name A–Z</option>
+              </select>
             </div>
           </div>
-          
+
+          <div class="org-overflow-x-auto">
           <table class="org-table-base" >
             <thead>
               <tr class="org-table-header-sm" >
                 <th class="org-table-cell-pad" >Name</th>
                 <th class="org-table-cell-pad" >Email</th>
+                <th class="org-table-cell-pad" >Registered</th>
                 <th class="org-table-cell-pad" >Status</th>
                 <th class="org-table-cell-pad" >Action</th>
               </tr>
             </thead>
-            <tbody class="org-text-secondary-md" >
+            <tbody class="org-text-secondary-md" id="attendeeRows" >
               <?php if (empty($attendees)): ?>
-                <tr><td colspan="4" class="org-table-cell-pad org-text-center" style="text-align: center; padding: 2rem;">No attendees yet.</td></tr>
+                <tr><td colspan="5" class="org-table-cell-pad org-text-center" style="text-align: center; padding: 2rem;">No attendees yet.</td></tr>
               <?php else: ?>
-                <?php foreach ($attendees as $att): ?>
-                  <tr class="org-border-b" >
+                <?php foreach ($attendees as $att):
+                    $statusGroup = $att['status'] === 'PENDING' ? 'pending'
+                        : (in_array($att['status'], ['REGISTERED', 'APPROVED'], true) ? 'registered' : 'removed');
+                ?>
+                  <tr class="org-border-b"
+                      data-search="<?= h(mb_strtolower($att['full_name'] . ' ' . $att['email'])) ?>"
+                      data-name="<?= h(mb_strtolower($att['full_name'])) ?>"
+                      data-status="<?= $statusGroup ?>"
+                      data-checkin="<?= $att['checked_in'] ? 'yes' : 'no' ?>"
+                      data-registered="<?= (int)strtotime($att['registered_at']) ?>" >
                     <td class="org-font-semibold-pad" ><?= h($att['full_name']) ?></td>
                     <td class="org-text-sec-pad" ><?= h($att['email']) ?></td>
+                    <td class="org-text-sec-pad" style="white-space: nowrap;" ><?= h(date('M j, Y', strtotime($att['registered_at']))) ?></td>
                     <td class="org-table-cell-pad" >
-                        <?php if ($att['status'] === 'PENDING'): ?>
+                        <?php if ($att['checked_in']): ?>
+                            <span class="org-text-success-sm">Checked-in</span>
+                        <?php elseif ($att['status'] === 'PENDING'): ?>
                             <span class="org-text-warning-sm">Pending</span>
                         <?php elseif ($att['status'] === 'REGISTERED' || $att['status'] === 'APPROVED'): ?>
                             <span class="org-text-sec-sm">Registered</span>
-                        <?php elseif ($att['status'] === 'CHECKED_IN'): ?>
-                            <span class="org-text-success-sm">Checked-in</span>
                         <?php else: ?>
                             <span class="org-text-sec-sm"><?= h(ucfirst(strtolower($att['status']))) ?></span>
                         <?php endif; ?>
@@ -444,9 +508,13 @@ $activeNav = 'events';
                     </td>
                   </tr>
                 <?php endforeach; ?>
+                <tr id="attendeeNoMatches" style="display: none;">
+                  <td colspan="5" style="text-align: center; padding: 2rem;">No attendees match these filters.</td>
+                </tr>
               <?php endif; ?>
             </tbody>
           </table>
+          </div>
         </div>
       </section>
 
@@ -607,6 +675,40 @@ $activeNav = 'events';
       }
     }
     
+    // Attendee table: search, status and check-in filters, plus sorting
+    const attendeeBody = document.getElementById('attendeeRows');
+    const attendeeControls = ['attendeeSearch', 'attendeeStatus', 'attendeeCheckin', 'attendeeSort'].map(id => document.getElementById(id));
+    const [attendeeSearch, attendeeStatus, attendeeCheckin, attendeeSort] = attendeeControls;
+
+    function filterAttendees() {
+      const rows = [...attendeeBody.querySelectorAll('tr[data-search]')];
+      const q = attendeeSearch.value.trim().toLowerCase();
+      const sort = attendeeSort.value;
+
+      rows.sort((a, b) => sort === 'name'
+        ? a.dataset.name.localeCompare(b.dataset.name)
+        : (sort === 'oldest' ? 1 : -1) * (a.dataset.registered - b.dataset.registered));
+
+      let visible = 0;
+      rows.forEach(row => {
+        const show = row.dataset.search.includes(q)
+          && (!attendeeStatus.value || row.dataset.status === attendeeStatus.value)
+          && (!attendeeCheckin.value || row.dataset.checkin === attendeeCheckin.value);
+        row.style.display = show ? '' : 'none';
+        if (show) visible++;
+        attendeeBody.appendChild(row);
+      });
+
+      const noMatches = document.getElementById('attendeeNoMatches');
+      if (noMatches) {
+        noMatches.style.display = visible ? 'none' : '';
+        attendeeBody.appendChild(noMatches);
+      }
+      document.getElementById('attendeeCount').textContent = visible === rows.length ? rows.length : `${visible} of ${rows.length}`;
+    }
+
+    attendeeControls.forEach(el => el && el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', filterAttendees));
+
     // Modal Logic
     const cancelBtn = document.getElementById('cancelEventBtn');
     const cancelModal = document.getElementById('cancelModal');

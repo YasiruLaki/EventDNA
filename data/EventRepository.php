@@ -270,9 +270,11 @@ class EventRepository {
 
     public function getEventAttendees($eventId) {
         $stmt = $this->conn->prepare("
-            SELECT u.user_id, u.full_name, u.email, r.status, r.registered_at, r.registration_id
+            SELECT u.user_id, u.full_name, u.email, r.status, r.registered_at, r.registration_id,
+                   COALESCE(a.checked_in, 0) AS checked_in, a.checked_in_at
             FROM event_registrations r
             JOIN users u ON r.user_id = u.user_id
+            LEFT JOIN attendance a ON a.event_id = r.event_id AND a.user_id = r.user_id
             WHERE r.event_id = ?
             ORDER BY r.registered_at DESC
         ");
