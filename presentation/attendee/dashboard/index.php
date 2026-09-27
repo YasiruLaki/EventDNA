@@ -26,6 +26,33 @@ $stmt->execute();
 $profile = $stmt->get_result()->fetch_assoc();
 $profileIncomplete = !$profile || !$profile['profile_completed'] || !$profile['profile_photo'];
 
+// Profile strength: which parts of the profile the attendee has filled in
+$stmt = $conn->prepare("
+    SELECT u.full_name, p.job_title, p.organization, p.bio, p.profile_photo,
+           (SELECT COUNT(*) FROM user_skills WHERE user_id = u.user_id) AS skills,
+           (SELECT COUNT(*) FROM user_interests WHERE user_id = u.user_id) AS interests,
+           (SELECT COUNT(*) FROM user_networking_goals WHERE user_id = u.user_id) AS goals
+    FROM users u
+    LEFT JOIN profiles p ON p.user_id = u.user_id
+    WHERE u.user_id = ?
+");
+$stmt->bind_param("i", $attendeeId);
+$stmt->execute();
+$s = $stmt->get_result()->fetch_assoc();
+$strengthItems = [
+    'Basic Information'    => trim($s['full_name'] ?? '') !== '',
+    'Professional Details' => trim($s['job_title'] ?? '') !== '' && trim($s['organization'] ?? '') !== '',
+    'Skills'               => $s['skills'] > 0,
+    'Interests'            => $s['interests'] > 0,
+    'Profile Photo'        => !empty($s['profile_photo']),
+    'Professional Bio'     => trim($s['bio'] ?? '') !== '',
+    'Networking Goals'     => $s['goals'] > 0,
+];
+$strengthPercent = (int)round(count(array_filter($strengthItems)) / count($strengthItems) * 100);
+$strengthLabel = $strengthPercent === 100 ? 'Ready for networking'
+    : ($strengthPercent >= 70 ? 'Almost ready for networking'
+    : ($strengthPercent >= 40 ? 'Getting there, keep going' : "Let's build your profile"));
+
 // Pick the most relevant welcome message: live/soon events first, then things waiting on the user, then a time-of-day greeting
 function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileIncomplete, $now, $today, $tomorrow) {
     $explore = ['label' => 'Explore Events', 'href' => '../../events/ExploreEvents/index.php'];
@@ -313,44 +340,26 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
         <aside class="right-column">
           <article class="side-card profile-strength-card">
             <div class="card-header-row">
-              <div class="progress-ring" aria-hidden="true">
-                <span>82%</span>
+              <div class="progress-ring" aria-hidden="true" style="--progress: <?= $strengthPercent ?>%;">
+                <span><?= $strengthPercent ?>%</span>
               </div>
               <div>
                 <h3>Profile Strength</h3>
-                <p>Almost ready for networking</p>
+                <p><?= h($strengthLabel) ?></p>
               </div>
             </div>
 
             <ul class="checklist">
-              <li class="done">
+              <?php foreach ($strengthItems as $label => $done): ?>
+              <li<?= $done ? ' class="done"' : '' ?>>
+                <?php if ($done): ?>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Basic Information
-              </li>
-              <li class="done">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Professional Details
-              </li>
-              <li class="done">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Skills
-              </li>
-              <li class="done">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Interests
-              </li>
-              <li>
+                <?php else: ?>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="circle-icon"><circle cx="12" cy="12" r="10"></circle></svg>
-                Profile Photo
+                <?php endif; ?>
+                <?= h($label) ?>
               </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="circle-icon"><circle cx="12" cy="12" r="10"></circle></svg>
-                Professional Bio
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="circle-icon"><circle cx="12" cy="12" r="10"></circle></svg>
-                Networking Goals
-              </li>
+              <?php endforeach; ?>
             </ul>
           </article>
 
