@@ -25,6 +25,8 @@ body {
 }
 .admin-logo img {
   height: 28px;
+  width: auto;
+  object-fit: contain;
 }
 .admin-nav {
   padding: 1.5rem 1rem;
@@ -173,6 +175,7 @@ body {
   border-radius: 8px;
   font-size: 0.95rem;
   outline: none;
+  box-sizing: border-box;
 }
 .search-box i {
   position: absolute;
@@ -427,26 +430,8 @@ table .btn-view:hover {
   font-weight: 800;
   color: var(--secondary);
 }
-.placeholder-chart {
-  height: 200px;
-  display: flex;
-  align-items: flex-end;
-  gap: 10%;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.5rem;
-  margin-top: 1rem;
-}
-.bar {
-  flex: 1;
-  background: var(--primary-tint);
-  border-radius: 4px 4px 0 0;
+.chart-container {
   position: relative;
-}
-.bar::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--primary);
-  border-radius: 4px 4px 0 0;
-  opacity: 0.8;
+  height: 300px;
+  width: 100%;
 }
