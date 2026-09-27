@@ -455,6 +455,7 @@ $activeNav = $isEdit ? 'events' : 'create';
             <button type="button" class="btn-primary org-btn-pad" onclick="nextStep(1)">Next Step <i data-lucide="arrow-right" style="width: 16px; margin-left: 0.4rem;"></i></button>
           </div>
         </div>
+        </div>
 
         <div class="form-step" id="step-2">
           <div class="form-card">
@@ -500,6 +501,7 @@ $activeNav = $isEdit ? 'events' : 'create';
             <button type="button" class="btn-primary org-btn-pad" onclick="nextStep(2)">Next Step <i data-lucide="arrow-right" style="width: 16px; margin-left: 0.4rem;"></i></button>
           </div>
         </div>
+        </div>
 
         <div class="form-step" id="step-3">
           <div class="form-card">
@@ -535,13 +537,12 @@ $activeNav = $isEdit ? 'events' : 'create';
               </label>
             </div>
           </div>
-            </div>
-          </div>
 
           <div class="step-actions">
             <button type="button" class="btn-secondary org-btn-pad" onclick="prevStep(3)"><i data-lucide="arrow-left" style="width: 16px; margin-right: 0.4rem;"></i> Back</button>
             <button type="button" class="btn-primary org-btn-pad" onclick="submitForm()"><i data-lucide="check-circle" style="width: 16px; margin-right: 0.4rem;"></i> <?= $isEdit ? 'Save Changes' : 'Create Event' ?></button>
           </div>
+        </div>
         </div>
       </form>
 
