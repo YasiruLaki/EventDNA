@@ -8,6 +8,13 @@ class OnboardingController {
     const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
     const PHOTO_TYPES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
 
+    // Field / Industry keys stored in profiles.field, with display labels
+    const INDUSTRIES = [
+        'medicine' => 'Medicine & Healthcare', 'technology' => 'Technology', 'business' => 'Business',
+        'engineering' => 'Engineering', 'education' => 'Education', 'research' => 'Research',
+        'design' => 'Design', 'finance' => 'Finance', 'other' => 'Other',
+    ];
+
     public function __construct($conn) {
         $this->onboardingRepo = new OnboardingRepository($conn);
     }
@@ -22,6 +29,89 @@ class OnboardingController {
 
     public function getNetworkingGoals() {
         return $this->onboardingRepo->getNetworkingGoals();
+    }
+
+    public function getProfile($userId) {
+        return $this->onboardingRepo->getUserProfile($userId);
+    }
+
+    public function updateAccount($userId, $fullName) {
+        if ($fullName === '') {
+            return ["success" => false, "message" => "Full Name is required."];
+        }
+        if (mb_strlen($fullName) > 150) {
+            return ["success" => false, "message" => "Full Name must be 150 characters or fewer."];
+        }
+        if (!$this->onboardingRepo->updateFullName($userId, $fullName)) {
+            return ["success" => false, "message" => "Failed to save changes. Please try again."];
+        }
+        return ["success" => true, "message" => "Account details saved."];
+    }
+
+    public function updateProfile($userId, $data, $photoFile = null) {
+        $profile = $this->onboardingRepo->getUserProfile($userId);
+        if (!$profile) {
+            return ["success" => false, "message" => "Profile not found."];
+        }
+        if (!isset(self::INDUSTRIES[$data['field']]) && $data['field'] !== '') {
+            return ["success" => false, "message" => "Please choose a valid field."];
+        }
+        if (mb_strlen($data['bio']) > 300) {
+            return ["success" => false, "message" => "Bio must be 300 characters or fewer."];
+        }
+
+        $skills = $this->filterIds($data['skills'], array_column($this->getSkills(), 'skill_id'));
+        $interests = $this->filterIds($data['interests'], array_column($this->getInterests(), 'interest_id'));
+        $goals = $this->filterIds($data['goals'], array_column($this->getNetworkingGoals(), 'goal_id'));
+
+        $photo = $this->storePhoto($photoFile);
+        if (!$photo['success']) {
+            return $photo;
+        }
+
+        $saved = $this->onboardingRepo->saveUserProfile($userId, $profile['full_name'], $data['job_title'], $data['organization'], $data['field'], $data['bio'], $photo['path'])
+            && $this->onboardingRepo->saveUserSkills($userId, $skills)
+            && $this->onboardingRepo->saveUserInterests($userId, $interests)
+            && $this->onboardingRepo->saveUserNetworkingGoals($userId, $goals);
+
+        if (!$saved) {
+            $this->deletePhoto($photo['path']);
+            return ["success" => false, "message" => "Failed to save profile. Please try again."];
+        }
+        if ($photo['path']) {
+            $this->deletePhoto($profile['profile_photo']);
+        }
+        return ["success" => true, "message" => "Profile saved."];
+    }
+
+    public function removePhoto($userId) {
+        $profile = $this->onboardingRepo->getUserProfile($userId);
+        if (!$profile || !$profile['profile_photo']) {
+            return ["success" => true, "message" => "Profile photo removed."];
+        }
+        if (!$this->onboardingRepo->clearProfilePhoto($userId)) {
+            return ["success" => false, "message" => "Failed to remove photo. Please try again."];
+        }
+        $this->deletePhoto($profile['profile_photo']);
+        return ["success" => true, "message" => "Profile photo removed."];
+    }
+
+    // Keeps only submitted IDs that exist in the given catalog.
+    private function filterIds($submitted, $knownIds) {
+        $known = array_map('intval', $knownIds);
+        $ids = array_unique(array_map('intval', (array)$submitted));
+        return array_values(array_filter($ids, fn($id) => in_array($id, $known, true)));
+    }
+
+    // Percentage of profile fields the user has filled in.
+    public function getProfileCompletion($profile) {
+        $checks = [
+            $profile['full_name'], $profile['profile_photo'], $profile['job_title'],
+            $profile['organization'], $profile['field'], $profile['bio'],
+            $profile['skills'], $profile['interests'], $profile['goals'],
+        ];
+        $filled = count(array_filter($checks, fn($value) => !empty($value)));
+        return (int)round($filled / count($checks) * 100);
     }
 
     public function processStep1($userId, $fullName, $jobTitle, $organization, $industry, $bio, $photoFile = null) {

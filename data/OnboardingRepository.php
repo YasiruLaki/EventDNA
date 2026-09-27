@@ -22,6 +22,53 @@ class OnboardingRepository {
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
+    // Account + profile details for the settings page. Returns null if the user doesn't exist.
+    public function getUserProfile($userId) {
+        $stmt = $this->conn->prepare("
+            SELECT u.full_name, u.email, r.role_name,
+                   p.job_title, p.organization, p.field, p.bio, p.profile_photo
+            FROM users u
+            LEFT JOIN user_roles ur ON ur.user_id = u.user_id
+            LEFT JOIN roles r ON r.role_id = ur.role_id
+            LEFT JOIN profiles p ON p.user_id = u.user_id
+            WHERE u.user_id = ?
+            LIMIT 1
+        ");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $profile = $stmt->get_result()->fetch_assoc();
+        if (!$profile) {
+            return null;
+        }
+
+        // Each list is keyed by ID: [id => name]
+        $profile['skills'] = $this->getSelections("SELECT s.skill_id, s.skill_name FROM user_skills us JOIN skills s ON s.skill_id = us.skill_id WHERE us.user_id = ? ORDER BY s.skill_name", $userId);
+        $profile['interests'] = $this->getSelections("SELECT i.interest_id, i.interest_name FROM user_interests ui JOIN interests i ON i.interest_id = ui.interest_id WHERE ui.user_id = ? ORDER BY i.interest_name", $userId);
+        $profile['goals'] = $this->getSelections("SELECT g.goal_id, g.goal_name FROM user_networking_goals ug JOIN networking_goals g ON g.goal_id = ug.goal_id WHERE ug.user_id = ? ORDER BY g.goal_name", $userId);
+
+        return $profile;
+    }
+
+    private function getSelections($sql, $userId) {
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_NUM);
+        return array_column($rows, 1, 0);
+    }
+
+    public function updateFullName($userId, $fullName) {
+        $stmt = $this->conn->prepare("UPDATE users SET full_name = ? WHERE user_id = ?");
+        $stmt->bind_param("si", $fullName, $userId);
+        return $stmt->execute();
+    }
+
+    public function clearProfilePhoto($userId) {
+        $stmt = $this->conn->prepare("UPDATE profiles SET profile_photo = NULL WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        return $stmt->execute();
+    }
+
     public function saveUserProfile($userId, $fullName, $jobTitle, $organization, $industry, $bio, $photoPath = null) {
         $this->conn->begin_transaction();
         try {
