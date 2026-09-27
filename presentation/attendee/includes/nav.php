@@ -11,8 +11,8 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         <div class="nav-links">
           <a href="../../events/ExploreEvents/index.php" class="nav-link <?= $activeNav === 'find' ? 'active' : '' ?>">Find Events</a>
           <a href="../../events/myEvents/index.php" class="nav-link <?= $activeNav === 'myevents' ? 'active' : '' ?>">My Events</a>
-          <a href="../groups/" class="nav-link <?= $activeNav === 'communities' ? 'active' : '' ?>">Communities</a>
-          <a href="../attendee/myConnections/index.php" class="nav-link <?= $activeNav === 'connections' ? 'active' : '' ?>">Connections</a>
+          <a href="../community/index.php" class="nav-link <?= $activeNav === 'communities' ? 'active' : '' ?>">Communities</a>
+          <a href="../myConnections/index.php" class="nav-link <?= $activeNav === 'connections' ? 'active' : '' ?>">Connections</a>
         </div>
       </div>
       <div class="nav-right">
@@ -24,7 +24,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
           </button>
           <div class="nav-dropdown">
             <hr class="dropdown-divider">
-            <a href="../../auth/logout.php" class="dropdown-item text-danger">Log out</a>
+            <a href="../../auth/logout/index.php" class="dropdown-item text-danger">Log out</a>
           </div>
         </div>
       </div>
