@@ -138,52 +138,30 @@ function formatTime($timeStr) {
         </div>
 
         <div class="recommendation-row">
-          
+          <?php foreach ($regularEvents as $idx => $ev): 
+              $interests = $eventRepo->getEventInterestNames($ev['event_id']);
+              $mainInterest = !empty($interests) ? $interests[0] : 'Event';
+              $spotsLeft = max(0, $ev['capacity'] - $ev['registered_count']);
+              $gradClass = 'grad-' . (($idx % 3) + 1);
+          ?>
           <article class="event-card">
-            <div class="event-image grad-1">
-              <span class="date-tag">Sep 4 &middot; 9:00 AM</span>
+            <div class="event-image <?= $gradClass ?>" style="background-image: url('<?= htmlspecialchars($ev['cover_photo']) ?>'); background-size: cover; background-position: center;">
+              <span class="date-tag"><?= formatShortDate($ev['event_date']) ?> &middot; <?= formatTime($ev['start_time']) ?></span>
             </div>
             <div class="event-body">
-              <span class="event-chip">Design</span>
-              <h4>UX/UI Masterclass: Designing for Humans</h4>
-              <p>Colombo &bull; 320 attending</p>
+              <span class="event-chip"><?= htmlspecialchars($mainInterest) ?></span>
+              <h4><?= htmlspecialchars($ev['name']) ?></h4>
+              <p><?= htmlspecialchars($ev['location']) ?> &bull; <?= number_format($ev['registered_count']) ?> attending</p>
               <div class="event-card-footer">
-                <span class="event-price">120 spots left</span>
-                <a href="../eventView/index.php" class="btn-view">View Details</a>
+                <span class="event-price"><?= $spotsLeft > 0 ? $spotsLeft . ' spots left' : 'Sold Out' ?></span>
+                <a href="../eventView/index.php?id=<?= $ev['event_id'] ?>" class="btn-view">View Details</a>
               </div>
             </div>
           </article>
-
-          <article class="event-card">
-            <div class="event-image grad-2">
-              <span class="date-tag">Sep 10 &middot; 2:00 PM</span>
-            </div>
-            <div class="event-body">
-              <span class="event-chip">Business</span>
-              <h4>Seed to Series A: Founders Mixer</h4>
-              <p>Kandy &bull; 540 attending</p>
-              <div class="event-card-footer">
-                <span class="event-price">Registration Open</span>
-                <a href="../eventView/index.php" class="btn-view">View Details</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="event-card">
-            <div class="event-image grad-3">
-              <span class="date-tag">Sep 18 &middot; 10:00 AM</span>
-            </div>
-            <div class="event-body">
-              <span class="event-chip">Healthcare</span>
-              <h4>HealthTech Innovators Gala</h4>
-              <p>Galle &bull; 410 attending</p>
-              <div class="event-card-footer">
-                <span class="event-price">45 spots left</span>
-                <a href="../eventView/index.php" class="btn-view">View Details</a>
-              </div>
-            </div>
-          </article>
-
+          <?php endforeach; ?>
+          <?php if (empty($regularEvents) && empty($featuredEvent)): ?>
+            <p style="color: var(--text-secondary); grid-column: 1 / -1; text-align: center; padding: 2rem 0;">No upcoming events found.</p>
+          <?php endif; ?>
         </div>
         
         <div class="load-more-wrap">
