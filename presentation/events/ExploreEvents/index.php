@@ -5,6 +5,29 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
+
+$eventRepo = new EventRepository($conn);
+$events = $eventRepo->getUpcomingEvents();
+
+// Pick a featured event (e.g. the first one or one with most capacity)
+$featuredEvent = !empty($events) ? $events[0] : null;
+
+// The rest of the events
+$regularEvents = count($events) > 1 ? array_slice($events, 1) : [];
+
+// Helper to format date
+function formatDate($dateStr) {
+    return date('M j, Y', strtotime($dateStr));
+}
+function formatShortDate($dateStr) {
+    return date('M j', strtotime($dateStr));
+}
+function formatTime($timeStr) {
+    return date('g:i A', strtotime($timeStr));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,34 +99,38 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       </section>
 
       <!-- Featured event -->
+      <?php if ($featuredEvent): 
+        // Need to get interest names for the chip (just get the first one)
+        $interests = $eventRepo->getEventInterestNames($featuredEvent['event_id']);
+        $mainInterest = !empty($interests) ? $interests[0] : 'Event';
+      ?>
       <article class="feature-card">
         <div class="feature-cover">
-          <img src="https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg" alt="Featured event cover">
-          <span class="date-tag feature-date">Oct 12–14</span>
+          <img src="<?= htmlspecialchars($featuredEvent['cover_photo']) ?>" alt="<?= htmlspecialchars($featuredEvent['name']) ?>">
+          <span class="date-tag feature-date"><?= formatShortDate($featuredEvent['event_date']) ?></span>
         </div>
         <div class="feature-info">
             <div class="feature-badges">
             <span class="pill pill-primary">Featured</span>
-            <span class="pill">In-person</span>
+            <span class="pill"><?= htmlspecialchars($mainInterest) ?></span>
             </div>
             <div class="feature-copy">
-            <h2>Global Tech Innovators Summit 2026</h2>
+            <h2><?= htmlspecialchars($featuredEvent['name']) ?></h2>
             <div class="feature-meta">
-                <span>Oct 12–14, 2026</span>
-                <span>San Francisco, CA</span>
-                <span>1,200+ attendees</span>
+                <span><?= formatDate($featuredEvent['event_date']) ?></span>
+                <span><?= htmlspecialchars($featuredEvent['location']) ?></span>
+                <span><?= number_format($featuredEvent['capacity']) ?> spots total</span>
             </div>
             <p class="desc">
-                Join industry leaders, founders, and investors for three days of keynotes,
-                panels, and curated networking sessions built around this year's biggest
-                shifts in technology.
+                <?= nl2br(htmlspecialchars($featuredEvent['description'])) ?>
             </p>
             </div>
             <div class="feature-actions">
-            <a class="btn-primary" href="../eventView/index.php">View Event &rarr;</a>
+            <a class="btn-primary" href="../eventView/index.php?id=<?= $featuredEvent['event_id'] ?>">View Event &rarr;</a>
             </div>
         </div>
       </article>
+      <?php endif; ?>
 
       <section class="section-row events-section">
         <div class="section-head">
@@ -111,52 +138,30 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         </div>
 
         <div class="recommendation-row">
-          
+          <?php foreach ($regularEvents as $idx => $ev): 
+              $interests = $eventRepo->getEventInterestNames($ev['event_id']);
+              $mainInterest = !empty($interests) ? $interests[0] : 'Event';
+              $spotsLeft = max(0, $ev['capacity'] - $ev['registered_count']);
+              $gradClass = 'grad-' . (($idx % 3) + 1);
+          ?>
           <article class="event-card">
-            <div class="event-image grad-1">
-              <span class="date-tag">Sep 4 &middot; 9:00 AM</span>
+            <div class="event-image <?= $gradClass ?>" style="background-image: url('<?= htmlspecialchars($ev['cover_photo']) ?>'); background-size: cover; background-position: center;">
+              <span class="date-tag"><?= formatShortDate($ev['event_date']) ?> &middot; <?= formatTime($ev['start_time']) ?></span>
             </div>
             <div class="event-body">
-              <span class="event-chip">Design</span>
-              <h4>UX/UI Masterclass: Designing for Humans</h4>
-              <p>Colombo &bull; 320 attending</p>
+              <span class="event-chip"><?= htmlspecialchars($mainInterest) ?></span>
+              <h4><?= htmlspecialchars($ev['name']) ?></h4>
+              <p><?= htmlspecialchars($ev['location']) ?> &bull; <?= number_format($ev['registered_count']) ?> attending</p>
               <div class="event-card-footer">
-                <span class="event-price">120 spots left</span>
-                <a href="../eventView/index.php" class="btn-view">View Details</a>
+                <span class="event-price"><?= $spotsLeft > 0 ? $spotsLeft . ' spots left' : 'Sold Out' ?></span>
+                <a href="../eventView/index.php?id=<?= $ev['event_id'] ?>" class="btn-view">View Details</a>
               </div>
             </div>
           </article>
-
-          <article class="event-card">
-            <div class="event-image grad-2">
-              <span class="date-tag">Sep 10 &middot; 2:00 PM</span>
-            </div>
-            <div class="event-body">
-              <span class="event-chip">Business</span>
-              <h4>Seed to Series A: Founders Mixer</h4>
-              <p>Kandy &bull; 540 attending</p>
-              <div class="event-card-footer">
-                <span class="event-price">Registration Open</span>
-                <a href="../eventView/index.php" class="btn-view">View Details</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="event-card">
-            <div class="event-image grad-3">
-              <span class="date-tag">Sep 18 &middot; 10:00 AM</span>
-            </div>
-            <div class="event-body">
-              <span class="event-chip">Healthcare</span>
-              <h4>HealthTech Innovators Gala</h4>
-              <p>Galle &bull; 410 attending</p>
-              <div class="event-card-footer">
-                <span class="event-price">45 spots left</span>
-                <a href="../eventView/index.php" class="btn-view">View Details</a>
-              </div>
-            </div>
-          </article>
-
+          <?php endforeach; ?>
+          <?php if (empty($regularEvents) && empty($featuredEvent)): ?>
+            <p style="color: var(--text-secondary); grid-column: 1 / -1; text-align: center; padding: 2rem 0;">No upcoming events found.</p>
+          <?php endif; ?>
         </div>
         
         <div class="load-more-wrap">

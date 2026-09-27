@@ -5,13 +5,42 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+$userId = $_SESSION['user_id'];
+
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
+
+$eventId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$eventRepo = new EventRepository($conn);
+$event = $eventRepo->getEventById($eventId);
+
+if (!$event) {
+    header("Location: ../ExploreEvents/index.php");
+    exit;
+}
+
+$interests = $eventRepo->getEventInterestNames($eventId);
+
+// Check if already registered
+$checkStmt = $conn->prepare("SELECT status FROM event_registrations WHERE event_id = ? AND user_id = ?");
+$checkStmt->bind_param("ii", $eventId, $userId);
+$checkStmt->execute();
+$regResult = $checkStmt->get_result();
+$isRegistered = $regResult->num_rows > 0;
+
+function formatDate($dateStr) {
+    return date('M j, Y', strtotime($dateStr));
+}
+function formatTime($timeStr) {
+    return date('g:i A', strtotime($timeStr));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Innovation Summit 2026 — EventDNA</title>
+<title><?= htmlspecialchars($event['name']) ?> — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
@@ -48,13 +77,13 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
   </nav>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero" style="background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('<?= htmlspecialchars($event['cover_photo']) ?>');">
   <div class="container hero-inner">
-    <span class="hero-badge">Technology &amp; Innovation</span>
-    <h1>AI Innovation Summit 2026</h1>
-    <p>
-      Connect with professionals, researchers, and innovators in artificial intelligence. Discover new ideas, exchange knowledge, and build meaningful connections.
-    </p>
+    <?php if(!empty($interests)): ?>
+    <span class="hero-badge"><?= htmlspecialchars($interests[0]) ?></span>
+    <?php endif; ?>
+    <h1><?= htmlspecialchars($event['name']) ?></h1>
+    <p><?= nl2br(htmlspecialchars($event['description'])) ?></p>
   </div>
 </section>
 
@@ -68,7 +97,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         </div>
         <div>
           <div class="info-label">Date</div>
-          <div class="info-value">Oct 24–26, 2026</div>
+          <div class="info-value"><?= formatDate($event['event_date']) ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -77,7 +106,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         </div>
         <div>
           <div class="info-label">Time</div>
-          <div class="info-value">9:00 AM – 5:00 PM</div>
+          <div class="info-value"><?= formatTime($event['start_time']) ?> – <?= formatTime($event['end_time']) ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -86,7 +115,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         </div>
         <div>
           <div class="info-label">Location</div>
-          <div class="info-value">BMICH, Colombo</div>
+          <div class="info-value"><?= htmlspecialchars($event['location']) ?></div>
         </div>
       </div>
       <div class="info-item">
@@ -95,7 +124,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         </div>
         <div>
           <div class="info-label">Event Type</div>
-          <div class="info-value">In-person</div>
+          <div class="info-value"><?= htmlspecialchars(ucfirst(strtolower($event['visibility']))) ?></div>
         </div>
       </div>
     </div>
@@ -122,18 +151,18 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
 
       <h2>About Event</h2>
       <div class="about-text">
-        <p>
-          AI Innovation Summit brings together professionals, researchers, founders, and technology enthusiasts to explore current developments in artificial intelligence, machine learning, and emerging technologies.
-        </p>
+        <p><?= nl2br(htmlspecialchars($event['description'])) ?></p>
       </div>
 
       <div class="event-interests-section">
         <h2>Interests</h2>
         <div class="event-interests-flex">
-          <span class="interest-pill">Artificial Intelligence</span>
-          <span class="interest-pill">Machine Learning</span>
-          <span class="interest-pill">Technology</span>
-          <span class="interest-pill">Innovation</span>
+          <?php foreach($interests as $interest): ?>
+          <span class="interest-pill"><?= htmlspecialchars($interest) ?></span>
+          <?php endforeach; ?>
+          <?php if(empty($interests)): ?>
+          <span style="color:var(--text-tertiary); font-size:0.9rem;">No specific interests listed.</span>
+          <?php endif; ?>
         </div>
       </div>
 
@@ -168,20 +197,25 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         <div class="reg-header">
           <h3>Registration</h3>
         </div>
+        <?php $spotsLeft = max(0, $event['capacity'] - $event['registered_count']); ?>
         <div class="reg-sub">
-          <span class="reg-status">Registration Open</span>
+          <span class="reg-status"><?= $spotsLeft > 0 ? 'Registration Open' : 'Sold Out' ?></span>
         </div>
         
         <div class="reg-count">
-          232 / 250 registered
+          <?= number_format($event['registered_count']) ?> / <?= number_format($event['capacity']) ?> registered
         </div>
         <div class="reg-deadline">
-          Registration closes Oct 20, 2026
+          Registration closes <?= formatDate($event['registration_close']) ?>
         </div>
 
-        <button class="btn-primary reg-cta">
-          Register Now &rarr;
-        </button>
+        <?php if ($isRegistered): ?>
+          <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Already Registered</button>
+        <?php elseif ($spotsLeft > 0): ?>
+          <button class="btn-primary reg-cta">Register Now &rarr;</button>
+        <?php else: ?>
+          <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Sold Out</button>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -201,30 +235,30 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
     </div>
 
     <div class="modal-body">
-      <h1>AI Innovation Summit 2026</h1>
+      <h1><?= htmlspecialchars($event['name']) ?></h1>
       <div class="hosted-by">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.6"/></svg>
-        Hosted by EventDNA Sri Lanka
+        EventDNA
       </div>
 
       <div class="meta-row">
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          Oct 24–26, 2026 · 9:00 AM
+          <?= formatDate($event['event_date']) ?> · <?= formatTime($event['start_time']) ?>
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-          BMICH, Colombo
+          <?= htmlspecialchars($event['location']) ?>
         </span>
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="7" x2="10" y2="17" stroke="currentColor" stroke-width="1.4" stroke-dasharray="1.8 2" stroke-linecap="round"/></svg>
-          In-person
+          <?= htmlspecialchars(ucfirst(strtolower($event['visibility']))) ?>
         </span>
       </div>
 
       <div class="attending-row">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.6 2.2-4.7 5-4.7s5 2.1 5 4.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.8 4.5 4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        250 Attending
+        <?= number_format($event['registered_count']) ?> Attending
       </div>
 
       <div class="info-box">
@@ -232,55 +266,39 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="11" x2="12" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="8" r="0.9" fill="currentColor"/></svg>
           What happens next?
         </div>
-
         <div class="info-list-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 6.5l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <div>
             <div class="info-list-title">Confirmation Email &amp; Ticket</div>
-            <div class="info-list-sub">Your digital pass with QR code will be sent immediately.</div>
-          </div>
-        </div>
-
-        <div class="info-list-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-          <div>
-            <div class="info-list-title">Event Reminders</div>
-            <div class="info-list-sub">We'll notify you 24 hours before the event starts.</div>
-          </div>
-        </div>
-
-        <div class="info-list-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s3.8-6.5 10-6.5S22 12 22 12s-3.8 6.5-10 6.5S2 12 2 12z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/></svg>
-          <div>
-            <div class="info-list-title">Compatibility Matching</div>
-            <div class="info-list-sub">Opt-in to share your profile for networking opportunities.</div>
+            <div class="info-list-sub">Your digital pass with QR code will be generated immediately.</div>
           </div>
         </div>
       </div>
 
-      <label class="check-row">
-        <input type="checkbox" checked>
-        <div>
-          <div class="check-label">Send me event updates and alerts</div>
-          <div class="check-sub">Receive notifications about schedule changes and important announcements.</div>
+      <form method="POST" action="register_action.php">
+        <input type="hidden" name="event_id" value="<?= $eventId ?>">
+        <label class="check-row">
+          <input type="checkbox" name="updates" value="1" checked>
+          <div>
+            <div class="check-label">Send me event updates and alerts</div>
+            <div class="check-sub">Receive notifications about schedule changes and announcements.</div>
+          </div>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" required>
+          <div>
+            <div class="check-label">I agree to the Community Guidelines <span class="req">*</span></div>
+            <div class="check-sub">Read our code of conduct for a safe and respectful event.</div>
+          </div>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="modalCancelBtn">Cancel</button>
+          <button type="submit" class="btn-primary" style="border:none; font-family:inherit;">
+            Register Now
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
-      </label>
-
-      <label class="check-row">
-        <input type="checkbox">
-        <div>
-          <div class="check-label">I agree to the Community Guidelines <span class="req">*</span></div>
-          <div class="check-sub">Read our code of conduct for a safe and respectful event.</div>
-        </div>
-      </label>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
-        <a href="../registrationSuccess/index.php" class="btn-primary" style="text-decoration: none;">
-          Register Now
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
+      </form>
     </div>
   </div>
 </div>

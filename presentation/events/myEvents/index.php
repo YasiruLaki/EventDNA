@@ -5,6 +5,36 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+$userId = $_SESSION['user_id'];
+
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
+
+$eventRepo = new EventRepository($conn);
+$allEvents = $eventRepo->getRegisteredEvents($userId);
+
+$upcomingEvents = [];
+$pastEvents = [];
+$now = time();
+
+foreach ($allEvents as $ev) {
+    $evTime = strtotime($ev['event_date'] . ' ' . $ev['start_time']);
+    if ($evTime > $now) {
+        $upcomingEvents[] = $ev;
+    } else {
+        $pastEvents[] = $ev;
+    }
+}
+
+function formatDate($dateStr) {
+    return date('M j, Y', strtotime($dateStr));
+}
+function formatShortDate($dateStr) {
+    return date('M j', strtotime($dateStr));
+}
+function formatTime($timeStr) {
+    return date('g:i A', strtotime($timeStr));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,213 +99,124 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       </div>
 
 
-      <div class="event-card-horizontal">
-        <div class="event-thumb" style="background: url('https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg') center/cover;">
-          <div class="event-thumb-brand">EventDNA</div>
-        </div>
-
-        <div class="event-body">
-          <div class="event-info-top">
-            <div class="tag-row">
-              <span class="tag">Technology</span>
-              <span class="tag">In-Person</span>
-            </div>
-            <span class="registered-badge">REGISTERED</span>
-          </div>
-
-          <h3>AI Innovation Summit 2026</h3>
-
-          <div class="event-meta">
-            <span class="meta-item">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Oct 24–26, 2026 &middot; 9:00 AM
-            </span>
-            <span class="meta-item">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-              BMICH, Colombo
-            </span>
-          </div>
-
-          <div class="event-actions">
-            <a href="../eventView/index.php" class="btn-primary">
-              View Details &rarr;
-            </a>
-            <a href="#" class="btn-secondary">View Pass</a>
-          </div>
-        </div>
+      <?php if (empty($upcomingEvents)): ?>
+      <div class="empty-state" style="text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 8px; margin-top: 1.5rem;">
+        <h3 style="font-size: 1.25rem; color: #0f172a; margin-bottom: 0.5rem;">No upcoming events</h3>
+        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem;">You haven't registered for any upcoming events yet.</p>
+        <a href="../ExploreEvents/index.php" class="btn-primary" style="display: inline-flex; padding: 0.75rem 1.5rem; border-radius: 8px;">Discover Events &rarr;</a>
       </div>
-
-      <div class="events-grid">
-
+      <?php else: ?>
+        <div class="events-grid" style="margin-top: 2rem;">
+        <?php foreach ($upcomingEvents as $ev): 
+            $interests = $eventRepo->getEventInterestNames($ev['event_id']);
+            $mainInterest = !empty($interests) ? $interests[0] : 'Event';
+        ?>
         <div class="event-card-vertical">
-          <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80') center/cover;">
+          <div class="event-thumb" style="background: url('<?= htmlspecialchars($ev['cover_photo']) ?>') center/cover;">
             <div class="event-thumb-brand">EventDNA</div>
           </div>
-
           <div class="event-body">
             <div class="event-info-top">
               <div class="tag-row">
-                <span class="tag">Design</span>
+                <span class="tag"><?= htmlspecialchars($mainInterest) ?></span>
               </div>
-              <span class="registered-badge">REGISTERED</span>
+              <span class="registered-badge"><?= htmlspecialchars($ev['reg_status']) ?></span>
             </div>
-
-            <h3>Global Design Conference</h3>
-
+            <h3><?= htmlspecialchars($ev['name']) ?></h3>
             <div class="event-meta">
               <span class="meta-item">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                Nov 12 – 14, 2026
+                <?= formatDate($ev['event_date']) ?>
               </span>
               <span class="meta-item">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-                Cinnamon Grand, Colombo
+                <?= htmlspecialchars($ev['location']) ?>
               </span>
             </div>
-
             <div class="event-actions">
-              <a href="#" class="btn-primary">View Details</a>
-              <a href="#" class="btn-secondary">View Pass</a>
+              <a href="../eventView/index.php?id=<?= $ev['event_id'] ?>" class="btn-primary">View Details</a>
             </div>
           </div>
         </div>
-
-
-        <div class="event-card-vertical">
-          <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80') center/cover;">
-            <div class="event-thumb-brand">EventDNA</div>
-          </div>
-
-          <div class="event-body">
-            <div class="event-info-top">
-              <div class="tag-row">
-                <span class="tag">Finance</span>
-              </div>
-              <span class="registered-badge">REGISTERED</span>
-            </div>
-
-            <h3>FinTech Disruptors 2026</h3>
-
-            <div class="event-meta">
-              <span class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                Nov 28, 2026
-              </span>
-              <span class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-                Trace Expert City, Colombo
-              </span>
-            </div>
-
-            <div class="event-actions">
-              <a href="#" class="btn-primary">View Details</a>
-              <a href="#" class="btn-secondary">View Pass</a>
-            </div>
-          </div>
+        <?php endforeach; ?>
         </div>
-
-
-        <div class="event-card-vertical">
-          <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80') center/cover;">
-            <div class="event-thumb-brand">EventDNA</div>
-          </div>
-
-          <div class="event-body">
-            <div class="event-info-top">
-              <div class="tag-row">
-                <span class="tag">Security</span>
-              </div>
-              <span class="registered-badge">REGISTERED</span>
-            </div>
-
-            <h3>CyberSecurity Summit</h3>
-
-            <div class="event-meta">
-              <span class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                Dec 05, 2026
-              </span>
-              <span class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-                Online
-              </span>
-            </div>
-
-            <div class="event-actions">
-              <a href="#" class="btn-primary">View Details</a>
-              <a href="#" class="btn-secondary">View Pass</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php endif; ?>
 
       <div class="section-title-row">
         <h2>Past Events</h2>
       </div>
       
-      <div class="event-card-horizontal past-event">
-        <div class="event-thumb" style="background: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80') center/cover; opacity: 0.85;">
-          <div class="event-thumb-brand">EventDNA</div>
-        </div>
+      <?php if (empty($pastEvents)): ?>
+      <div class="empty-state" style="text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 8px; margin-top: 1.5rem;">
+        <h3 style="font-size: 1.25rem; color: #0f172a; margin-bottom: 0.5rem;">No past events</h3>
+        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem;">You haven't attended any events yet.</p>
+      </div>
+      <?php else: ?>
+        <?php foreach ($pastEvents as $ev): ?>
+        <div class="event-card-horizontal past-event">
+          <div class="event-thumb" style="background: url('<?= htmlspecialchars($ev['cover_photo']) ?>') center/cover; opacity: 0.85;">
+            <div class="event-thumb-brand">EventDNA</div>
+          </div>
 
-        <div class="event-body">
-          <div class="event-info-top">
-            <div class="tag-row">
-              <span class="tag">Healthcare</span>
+          <div class="event-body">
+            <div class="event-info-top">
+              <div class="tag-row">
+              </div>
+              <span class="registered-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">&#10003; <?= htmlspecialchars($ev['reg_status']) ?></span>
             </div>
-            <span class="registered-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">&#10003; ATTENDED</span>
-          </div>
 
-          <h3 style="color: var(--text-secondary);">AI &amp; Healthcare Forum</h3>
+            <h3 style="color: var(--text-secondary);"><?= htmlspecialchars($ev['name']) ?></h3>
 
-          <div class="event-meta">
-            <span class="meta-item">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Sep 12, 2026
-            </span>
-            <span class="meta-item">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-              BMICH, Colombo
-            </span>
-          </div>
+            <div class="event-meta">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <?= formatDate($ev['event_date']) ?>
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+                <?= htmlspecialchars($ev['location']) ?>
+              </span>
+            </div>
 
-          <div class="event-actions">
-            <a href="#" class="btn-outline" style="border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.6rem 1.25rem; font-size: 0.82rem; border-radius: 8px; font-weight: 500;">View Details</a>
+            <div class="event-actions">
+              <a href="../eventView/index.php?id=<?= $ev['event_id'] ?>" class="btn-outline" style="border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.6rem 1.25rem; font-size: 0.82rem; border-radius: 8px; font-weight: 500;">View Details</a>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="empty-state" style="display: none; text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.92); border-radius: 8px; margin-top: 1.5rem;">
-        <h3 style="font-size: 1.25rem; color: #0f172a; margin-bottom: 0.5rem;">No upcoming events</h3>
-        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem;">You haven't registered for any upcoming events yet.</p>
-        <a href="../ExploreEvents/index.php" class="btn-primary" style="display: inline-flex; padding: 0.75rem 1.5rem; border-radius: 8px;">Discover Events &rarr;</a>
-      </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
 
     <div class="side-col">
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-num">3</div>
+          <div class="stat-num"><?= count($upcomingEvents) ?></div>
           <div class="stat-label">Upcoming</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">12</div>
-          <div class="stat-label">Attended</div>
+          <div class="stat-num"><?= count($pastEvents) ?></div>
+          <div class="stat-label">Past</div>
         </div>
       </div>
 
       <div class="month-card">
-        <h4>This Month</h4>
+        <h4>Recent Registration</h4>
+        <?php if (!empty($upcomingEvents)): 
+          $latest = $upcomingEvents[0];
+        ?>
         <div class="month-item">
           <div class="month-date">
-            <span class="m">Oct</span>
-            <span class="d">24</span>
+            <span class="m"><?= date('M', strtotime($latest['event_date'])) ?></span>
+            <span class="d"><?= date('d', strtotime($latest['event_date'])) ?></span>
           </div>
           <div>
-            <div class="month-item-title">AI Innovation Summit</div>
-            <div class="month-item-sub">Colombo</div>
+            <div class="month-item-title"><?= htmlspecialchars($latest['name']) ?></div>
+            <div class="month-item-sub"><?= htmlspecialchars($latest['location']) ?></div>
           </div>
         </div>
+        <?php else: ?>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">No recent registrations.</p>
+        <?php endif; ?>
       </div>
     </div>
   </div>
