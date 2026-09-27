@@ -3,8 +3,10 @@ require_once __DIR__ . "/../includes/guard.php";
 require_once __DIR__ . "/../../../data/database.php";
 require_once __DIR__ . "/../../../application/controllers/OnboardingController.php";
 require_once __DIR__ . "/../../../application/controllers/AuthController.php";
+require_once __DIR__ . "/../../../application/controllers/SettingsController.php";
 
 $controller = new OnboardingController($conn);
+$settingsController = new SettingsController($conn);
 $tabs = ['account', 'profile', 'notifications', 'privacy', 'security'];
 
 // Each form posts back here, then redirects (so refresh doesn't resubmit) with a flash message.
@@ -42,6 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['new_password'] ?? '',
             $_POST['confirm_password'] ?? ''
         );
+    } elseif ($action === 'notifications') {
+        $tab = 'notifications';
+        $result = $settingsController->updateNotifications($attendeeId, $_POST['notify'] ?? []);
+    } elseif ($action === 'privacy') {
+        $tab = 'privacy';
+        $result = $settingsController->updatePrivacy($attendeeId, $_POST['profile_visibility'] ?? '');
     } else {
         $result = ["success" => false, "message" => "Unknown action."];
     }
@@ -66,6 +74,8 @@ $completion = $controller->getProfileCompletion($profile);
 $firstName = explode(' ', trim($profile['full_name']))[0];
 $initial = strtoupper(substr($firstName, 0, 1));
 $photoUrl = $profile['profile_photo'] ? '../../../' . $profile['profile_photo'] : null;
+
+$settings = $settingsController->getSettings($attendeeId);
 
 $allSkills = $controller->getSkills();
 $allInterests = $controller->getInterests();
@@ -292,70 +302,39 @@ function flash_message($tab, $flash) {
             <h2>Notifications</h2>
             <p class="tab-desc">Notification Preferences</p>
 
-            <div class="settings-card">
-              <div class="toggle-row" style="margin-bottom: 1.5rem;">
-                <div class="toggle-info">
-                  <strong>In-app notifications</strong>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <div class="toggle-row" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(226, 232, 240, 0.9);">
-                <div class="toggle-info">
-                  <strong>Email notifications</strong>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
-                </label>
-              </div>
+            <?php
+            // column => [title, description, row style]
+            $notificationRows = [
+                'notify_in_app' => ['In-app notifications', '', 'margin-bottom: 1.5rem;'],
+                'notify_email' => ['Email notifications', '', 'margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(226, 232, 240, 0.9);'],
+                'notify_event_updates' => ['Event Updates', "Receive updates about events you've registered for.", 'margin-bottom: 1rem;'],
+                'notify_connection_requests' => ['Connection Requests', 'Receive notifications when someone sends you a connection request.', 'margin-bottom: 1rem;'],
+                'notify_connection_updates' => ['Connection Updates', 'Receive notifications when a request is accepted.', 'margin-bottom: 1rem;'],
+                'notify_community_activity' => ['Community Activity', 'Receive relevant updates from your groups.', ''],
+            ];
+            ?>
+            <form class="settings-card" id="notificationsForm" method="post" action="index.php">
+              <?= flash_message('notifications', $flash) ?>
+              <?= csrf_field() ?>
+              <input type="hidden" name="action" value="notifications">
 
-              <div class="toggle-row" style="margin-bottom: 1rem;">
+              <?php foreach ($notificationRows as $column => [$title, $desc, $style]): ?>
+              <div class="toggle-row"<?= $style ? ' style="' . $style . '"' : '' ?>>
                 <div class="toggle-info">
-                  <strong>Event Updates</strong>
-                  <span>Receive updates about events you've registered for.</span>
+                  <strong><?= h($title) ?></strong>
+                  <?php if ($desc): ?><span><?= h($desc) ?></span><?php endif; ?>
                 </div>
                 <label class="toggle-switch">
-                  <input type="checkbox" checked>
+                  <input type="checkbox" name="notify[]" value="<?= $column ?>" aria-label="<?= h($title) ?>"<?= $settings[$column] ? ' checked' : '' ?>>
                   <span class="slider"></span>
                 </label>
               </div>
+              <?php endforeach; ?>
 
-              <div class="toggle-row" style="margin-bottom: 1rem;">
-                <div class="toggle-info">
-                  <strong>Connection Requests</strong>
-                  <span>Receive notifications when someone sends you a connection request.</span>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
-                </label>
+              <div class="card-actions" style="margin-top: 2rem;">
+                <button type="submit" class="btn-primary" id="notificationsSaveBtn" style="display: none;">Save Changes</button>
               </div>
-
-              <div class="toggle-row" style="margin-bottom: 1rem;">
-                <div class="toggle-info">
-                  <strong>Connection Updates</strong>
-                  <span>Receive notifications when a request is accepted.</span>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
-                </label>
-              </div>
-
-              <div class="toggle-row">
-                <div class="toggle-info">
-                  <strong>Community Activity</strong>
-                  <span>Receive relevant updates from your groups.</span>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" checked>
-                  <span class="slider"></span>
-                </label>
-              </div>
-            </div>
+            </form>
           </section>
 
           <!-- 4. Privacy Settings -->
@@ -363,18 +342,22 @@ function flash_message($tab, $flash) {
             <h2>Privacy</h2>
             <p class="tab-desc">Control what others can see about you.</p>
 
-            <div class="settings-card">
+            <form class="settings-card" id="privacyForm" method="post" action="index.php">
+              <?= flash_message('privacy', $flash) ?>
+              <?= csrf_field() ?>
+              <input type="hidden" name="action" value="privacy">
+
               <h3>Profile Visibility</h3>
               <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Who can view your public profile information?</p>
               <div class="radio-group" style="margin-bottom: 2rem;">
                 <label class="radio-label">
-                  <input type="radio" name="visibility" value="event" checked>
+                  <input type="radio" name="profile_visibility" value="MEMBERS"<?= $settings['profile_visibility'] === 'MEMBERS' ? ' checked' : '' ?>>
                   <div class="radio-content">
                     <strong>EventDNA members</strong>
                   </div>
                 </label>
                 <label class="radio-label">
-                  <input type="radio" name="visibility" value="connections">
+                  <input type="radio" name="profile_visibility" value="CONNECTIONS"<?= $settings['profile_visibility'] === 'CONNECTIONS' ? ' checked' : '' ?>>
                   <div class="radio-content">
                     <strong>People you've connected with</strong>
                   </div>
@@ -383,7 +366,11 @@ function flash_message($tab, $flash) {
 
               <h3>Personal QR</h3>
               <p style="color: var(--text-secondary); font-size: 0.9rem;">Your Personal QR only shares your public profile information.</p>
-            </div>
+
+              <div class="card-actions" style="margin-top: 2rem;">
+                <button type="submit" class="btn-primary" id="privacySaveBtn" style="display: none;">Save Changes</button>
+              </div>
+            </form>
           </section>
 
           <!-- 5. Security Settings -->
@@ -442,6 +429,8 @@ function flash_message($tab, $flash) {
 
     showSaveOnChange('#account form', 'accountSaveBtn');
     showSaveOnChange('#profileForm', 'profileSaveBtn');
+    showSaveOnChange('#notificationsForm', 'notificationsSaveBtn');
+    showSaveOnChange('#privacyForm', 'privacySaveBtn');
 
     // Profile photo: pick, preview, and saved with the profile form
     const photoInput = document.getElementById('profilePhoto');
