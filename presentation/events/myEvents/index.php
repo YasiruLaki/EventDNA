@@ -16,9 +16,15 @@ $allEvents = $eventRepo->getRegisteredEvents($userId);
 
 $upcomingEvents = [];
 $pastEvents = [];
+$cancelledEvents = [];
 $now = time();
 
 foreach ($allEvents as $ev) {
+    // Organizer-cancelled events get their own section so they don't look like they're still on
+    if ($ev['status'] === 'CANCELLED') {
+        $cancelledEvents[] = $ev;
+        continue;
+    }
     $evTime = strtotime($ev['event_date'] . ' ' . $ev['start_time']);
     if ($evTime > $now) {
         $upcomingEvents[] = $ev;
@@ -69,6 +75,7 @@ function coverUrl($path) {
         </div>
       </div>
       <div class="nav-right">
+        <?= nav_notifications_html() ?>
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <?= nav_avatar_html($attendeeName) ?>
@@ -148,6 +155,46 @@ function coverUrl($path) {
         </div>
         <?php endforeach; ?>
         </div>
+      <?php endif; ?>
+
+      <?php if (!empty($cancelledEvents)): ?>
+      <div class="section-title-row">
+        <h2>Cancelled</h2>
+      </div>
+
+        <?php foreach ($cancelledEvents as $ev): ?>
+        <div class="event-card-horizontal cancelled-event">
+          <div class="event-thumb" style="background: url('<?= htmlspecialchars(coverUrl($ev['cover_photo'])) ?>') center/cover;">
+            <div class="event-thumb-brand">EventDNA</div>
+          </div>
+
+          <div class="event-body">
+            <div class="event-info-top">
+              <div class="tag-row">
+              </div>
+              <span class="registered-badge cancelled-badge">Cancelled</span>
+            </div>
+
+            <h3><?= htmlspecialchars($ev['name']) ?></h3>
+
+            <div class="event-meta">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <?= formatDate($ev['event_date']) ?>
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+                <?= htmlspecialchars($ev['location']) ?>
+              </span>
+            </div>
+            <p class="cancelled-note">The organizer cancelled this event.</p>
+
+            <div class="event-actions">
+              <a href="../eventView/index.php?id=<?= $ev['event_id'] ?>" class="btn-outline" style="border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.6rem 1.25rem; font-size: 0.82rem; border-radius: 8px; font-weight: 500;">View Details</a>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
       <?php endif; ?>
 
       <div class="section-title-row">

@@ -1,7 +1,40 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../includes/guard.php';
 require_once __DIR__ . '/../../../attendee/includes/avatar.php';
-$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+require_once __DIR__ . '/../../../../data/NotificationRepository.php';
+
+$notificationRepo = new NotificationRepository($conn);
+$notifications = $notificationRepo->getForUser($attendeeId);
+// Opening the page counts as reading them; items still show as unread on this visit so the user can spot what's new
+$notificationRepo->markAllRead($attendeeId);
+
+$today = date('Y-m-d');
+$groups = ['Today' => [], 'Earlier' => []];
+foreach ($notifications as $n) {
+    $groups[date('Y-m-d', strtotime($n['created_at'])) === $today ? 'Today' : 'Earlier'][] = $n;
+}
+
+function time_ago($datetime) {
+    $diff = time() - strtotime($datetime);
+    if ($diff < 60) return 'Just now';
+    if ($diff < 3600) { $m = (int)floor($diff / 60); return $m . ' minute' . ($m === 1 ? '' : 's') . ' ago'; }
+    if ($diff < 86400) { $h = (int)floor($diff / 3600); return $h . ' hour' . ($h === 1 ? '' : 's') . ' ago'; }
+    if ($diff < 172800) return 'Yesterday';
+    if ($diff < 604800) return (int)floor($diff / 86400) . ' days ago';
+    return date('M j, Y', strtotime($datetime));
+}
+
+function notif_link($n) {
+    if ($n['reference_type'] === 'event' && $n['reference_id']) {
+        return '../../../events/eventView/index.php?id=' . (int)$n['reference_id'];
+    }
+    return null;
+}
+
+$icons = [
+    'danger' => '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="8" x2="12" y2="12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    'info'   => '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,16 +61,17 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       </div>
     </div>
     <div class="nav-right">
+      <?= nav_notifications_html() ?>
       <div class="nav-profile-menu">
         <button class="nav-profile-btn">
           <?= nav_avatar_html($attendeeName) ?>
-          <span class="nav-profile-name"><?= htmlspecialchars(explode(' ', trim($attendeeName))[0]) ?></span>
+          <span class="nav-profile-name"><?= h(explode(' ', trim($attendeeName))[0]) ?></span>
           <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="nav-dropdown">
           <a href="../../dashboard/index.php" class="dropdown-item">Dashboard</a>
-          <a href="#" class="dropdown-item">Settings</a>
-          <a href="../../../events/ExploreEvents/index.php" class="dropdown-item text-danger">Log Out</a>
+          <a href="../../settings/index.php" class="dropdown-item">Settings</a>
+          <a href="../../../auth/logout/index.php" class="dropdown-item text-danger">Log Out</a>
         </div>
       </div>
     </div>
@@ -51,98 +85,47 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
         <h1>Notifications</h1>
         <p>Connection requests, event updates, and community activity land here.</p>
       </div>
-      <button type="button" class="btn-secondary btn-sm" id="mark-all-read">Mark all as read</button>
     </div>
 
     <div style="display:flex; flex-direction:column; gap:2rem;">
 
-    <div class="section-title-row">
-      <h2>Today</h2>
+    <?php if (empty($notifications)): ?>
+    <div class="card notif-empty">
+      <h3>You're all caught up</h3>
+      <p>Event updates and other activity will show up here.</p>
     </div>
+    <?php endif; ?>
 
-    <div class="card notif-list">
-      <div class="notif-item unread">
-        <div class="notif-icon info">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="2.3" stroke="currentColor" stroke-width="1.6"/><path d="M4 18c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="1.6"/><path d="M15 13.5c2 0 4.5 1.7 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        </div>
-        <div class="notif-body">
-          <p class="notif-text"><strong>Ravindu Lakshan</strong> sent you a connection request.</p>
-          <p class="notif-meta">10 minutes ago</p>
-        </div>
-        <span class="notif-unread-dot"></span>
+    <?php foreach ($groups as $label => $items): if (empty($items)) continue; ?>
+    <div>
+      <div class="section-title-row">
+        <h2><?= $label ?></h2>
       </div>
 
-      <div class="notif-item unread">
-        <div class="notif-icon success">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="card notif-list">
+        <?php foreach ($items as $n):
+            $tone = $n['type'] === NotificationRepository::EVENT_CANCELLED ? 'danger' : 'info';
+            $link = notif_link($n);
+        ?>
+        <div class="notif-item<?= $n['is_read'] ? '' : ' unread' ?>">
+          <div class="notif-icon <?= $tone ?>"><?= $icons[$tone] ?></div>
+          <div class="notif-body">
+            <p class="notif-text"><strong><?= h($n['title']) ?></strong> <?= h($n['message']) ?></p>
+            <p class="notif-meta">
+              <?= time_ago($n['created_at']) ?>
+              <?php if ($link): ?> · <a href="<?= h($link) ?>" class="notif-action">View event</a><?php endif; ?>
+            </p>
+          </div>
+          <?php if (!$n['is_read']): ?><span class="notif-unread-dot"></span><?php endif; ?>
         </div>
-        <div class="notif-body">
-          <p class="notif-text"><strong>Sanduni Dias</strong> accepted your connection request.</p>
-          <p class="notif-meta">45 minutes ago</p>
-        </div>
-        <span class="notif-unread-dot"></span>
-      </div>
-
-      <div class="notif-item">
-        <div class="notif-icon neutral">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="notif-body">
-          <p class="notif-text"><strong>Nadia Kumari</strong> replied to your post in AI &amp; Robotics Summit 2026.</p>
-          <p class="notif-meta">2 hours ago</p>
-        </div>
+        <?php endforeach; ?>
       </div>
     </div>
+    <?php endforeach; ?>
 
-    <div class="section-title-row">
-      <h2>Earlier</h2>
-    </div>
-
-    <div class="card notif-list">
-      <div class="notif-item">
-        <div class="notif-icon warning">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        </div>
-        <div class="notif-body">
-          <p class="notif-text">Registration for <strong>Product Design Meetup</strong> closes tomorrow at 5 PM.</p>
-          <p class="notif-meta">Yesterday</p>
-        </div>
-      </div>
-
-      <div class="notif-item">
-        <div class="notif-icon danger">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="8" x2="12" y2="12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <div class="notif-body">
-          <p class="notif-text"><strong>Cybersecurity Conclave</strong> has been rescheduled to Sep 2, 2026.</p>
-          <p class="notif-meta">2 days ago</p>
-        </div>
-      </div>
-
-      <div class="notif-item">
-        <div class="notif-icon neutral">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="notif-body">
-          <p class="notif-text">Organizer posted an announcement in <strong>Startup Founders Circle</strong>.</p>
-          <p class="notif-meta">3 days ago</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
     </div>
   </div>
 </main>
-
-<script>
-  document.getElementById('mark-all-read')?.addEventListener('click', () => {
-    document.querySelectorAll('.notif-item.unread').forEach((item) => {
-      item.classList.remove('unread');
-      item.querySelector('.notif-unread-dot')?.remove();
-    });
-  });
-</script>
 
 </body>
 </html>

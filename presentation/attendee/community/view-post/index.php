@@ -28,6 +28,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       </div>
     </div>
     <div class="nav-right">
+      <?= nav_notifications_html() ?>
       <div class="nav-profile-menu">
         <button class="nav-profile-btn">
           <?= nav_avatar_html($attendeeName) ?>

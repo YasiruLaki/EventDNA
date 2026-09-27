@@ -31,6 +31,16 @@ $isRegistered = $registration !== null;
 $errorMessage = $_GET['error'] ?? '';
 $successMessage = $_GET['success'] ?? '';
 
+// For cancelled events, show registrants the message they were notified with (it carries the organizer's reason)
+$isCancelled = $event['status'] === 'CANCELLED';
+$cancelMessage = '';
+if ($isCancelled) {
+    $noteStmt = $conn->prepare("SELECT message FROM notifications WHERE user_id = ? AND type = 'EVENT_CANCELLED' AND reference_type = 'event' AND reference_id = ? ORDER BY created_at DESC LIMIT 1");
+    $noteStmt->bind_param("ii", $userId, $eventId);
+    $noteStmt->execute();
+    $cancelMessage = $noteStmt->get_result()->fetch_assoc()['message'] ?? '';
+}
+
 function formatDate($dateStr) {
     return date('M j, Y', strtotime($dateStr));
 }
@@ -71,6 +81,7 @@ function coverUrl($path) {
         </div>
       </div>
       <div class="nav-right">
+        <?= nav_notifications_html() ?>
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <?= nav_avatar_html($attendeeName) ?>
@@ -89,6 +100,12 @@ function coverUrl($path) {
 <!-- Hero -->
 <section class="hero" style="background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('<?= htmlspecialchars(coverUrl($event['cover_photo'])) ?>');">
   <div class="container hero-inner">
+    <?php if ($isCancelled): ?>
+    <div class="cancelled-banner" role="alert">
+      <strong>This event has been cancelled.</strong>
+      <span><?= htmlspecialchars($cancelMessage ?: 'The organizer cancelled this event. Registration is closed.') ?></span>
+    </div>
+    <?php endif; ?>
     <?php if(!empty($interests)): ?>
     <span class="hero-badge"><?= htmlspecialchars($interests[0]) ?></span>
     <?php endif; ?>
@@ -209,7 +226,11 @@ function coverUrl($path) {
         </div>
         <?php $spotsLeft = max(0, $event['capacity'] - $event['registered_count']); ?>
         <div class="reg-sub">
+          <?php if ($isCancelled): ?>
+          <span class="reg-status reg-status-cancelled">Cancelled</span>
+          <?php else: ?>
           <span class="reg-status"><?= $spotsLeft > 0 ? 'Registration Open' : 'Sold Out' ?></span>
+          <?php endif; ?>
         </div>
         
         <div class="reg-count">
@@ -226,7 +247,9 @@ function coverUrl($path) {
         <?php endif; ?>
 
         <?php $isPast = strtotime($event['event_date'] . ' ' . $event['end_time']) < time(); ?>
-        <?php if ($isRegistered): ?>
+        <?php if ($isCancelled): ?>
+          <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: not-allowed;">Event Cancelled</button>
+        <?php elseif ($isRegistered): ?>
           <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Already Registered</button>
           <?php if (!$isPast): ?>
             <form method="POST" action="updates_action.php" class="reg-updates-form">
@@ -341,7 +364,7 @@ function coverUrl($path) {
   </div>
 </div>
 
-<?php if ($isRegistered && !$isPast): ?>
+<?php if ($isRegistered && !$isPast && !$isCancelled): ?>
 <div class="modal-overlay" id="cancelRegModal">
   <div class="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="cancelRegTitle">
     <div class="modal-body">

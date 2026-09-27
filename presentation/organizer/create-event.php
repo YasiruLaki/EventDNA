@@ -552,21 +552,6 @@ $activeNav = $isEdit ? 'events' : 'create';
   <script>
     lucide.createIcons();
 
-    // Simple profile menu toggle
-    const profileBtn = document.querySelector('.nav-profile-btn');
-    const profileDropdown = document.querySelector('.nav-dropdown');
-
-    if (profileBtn && profileDropdown) {
-      profileBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('show');
-      });
-
-      document.addEventListener('click', () => {
-        profileDropdown.classList.remove('show');
-      });
-    }
-
     // Filter interest tags by name
     document.getElementById('tagFilter').addEventListener('input', (e) => {
       const q = e.target.value.trim().toLowerCase();

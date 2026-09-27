@@ -1,16 +1,20 @@
 <?php
 require_once __DIR__ . '/../../data/EventRepository.php';
+require_once __DIR__ . '/../../data/NotificationRepository.php';
 
 class EventController {
     private $eventRepo;
+    private $notificationRepo;
 
     const UPLOAD_DIR = 'uploads/events/';         
     const MAX_COVER_BYTES = 5 * 1024 * 1024;     
     const COVER_TYPES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
     const MAX_INTERESTS = 10;
+    const MAX_CANCEL_REASON = 500;
 
     public function __construct($conn) {
         $this->eventRepo = new EventRepository($conn);
+        $this->notificationRepo = new NotificationRepository($conn);
     }
 
     public function getInterests() {
@@ -100,7 +104,7 @@ class EventController {
         return ["success" => true, "event_id" => $eventId];
     }
 
-    public function cancelEvent($organizerId, $eventId) {
+    public function cancelEvent($organizerId, $eventId, $reason = '') {
         $event = $this->getOwnedEvent($organizerId, $eventId);
         if (!$event) {
             return ["success" => false, "message" => "Event not found."];
@@ -112,8 +116,27 @@ class EventController {
             return ["success" => false, "message" => "Completed events cannot be cancelled."];
         }
 
-        if ($this->eventRepo->cancelEvent($eventId)) {
-            return ["success" => true];
+        $reason = trim($reason);
+        if (mb_strlen($reason) > self::MAX_CANCEL_REASON) {
+            return ["success" => false, "message" => "Reason must be " . self::MAX_CANCEL_REASON . " characters or fewer."];
+        }
+
+        // Cancel and notify together so attendees are never left out of the loop
+        $message = $event['name'] . " on " . date('M j, Y', strtotime($event['event_date'])) . " has been cancelled by the organizer.";
+        if ($reason !== '') {
+            $message .= " Reason: " . $reason;
+        }
+
+        $this->eventRepo->beginTransaction();
+        try {
+            if ($this->eventRepo->cancelEvent($eventId)
+                && $this->notificationRepo->notifyEventRegistrants($eventId, NotificationRepository::EVENT_CANCELLED, "Event cancelled", $message)) {
+                $this->eventRepo->commit();
+                return ["success" => true];
+            }
+            $this->eventRepo->rollback();
+        } catch (Exception $e) {
+            $this->eventRepo->rollback();
         }
         return ["success" => false, "message" => "Failed to cancel event. Please try again."];
     }
