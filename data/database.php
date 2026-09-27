@@ -3,6 +3,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// XAMPP defaults to Europe/Berlin; use local time for greetings and event dates
+date_default_timezone_set('Asia/Colombo');
+
 $env = parse_ini_file(__DIR__ . "/../.env");
 
 if (!$env) {

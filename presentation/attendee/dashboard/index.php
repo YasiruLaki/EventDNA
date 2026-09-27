@@ -1,8 +1,88 @@
 <?php
 require_once __DIR__ . "/../includes/guard.php";
+require_once __DIR__ . '/../../attendee/includes/avatar.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
 
-$hour = (int)date('G');
-$greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good Evening');
+$firstName = explode(' ', trim($attendeeName))[0];
+$now = time();
+$today = date('Y-m-d', $now);
+$tomorrow = date('Y-m-d', strtotime('+1 day', $now));
+
+// Registered events that haven't finished yet, soonest first
+$upcoming = array_values(array_filter(
+    (new EventRepository($conn))->getRegisteredEvents($attendeeId),
+    fn($e) => $e['status'] !== 'CANCELLED' && strtotime($e['event_date'] . ' ' . $e['end_time']) > $now
+));
+$nextEvent = $upcoming[0] ?? null;
+
+$stmt = $conn->prepare("SELECT COUNT(*) AS n FROM connections WHERE recipient_id = ? AND status = 'PENDING'");
+$stmt->bind_param("i", $attendeeId);
+$stmt->execute();
+$pendingRequests = (int)$stmt->get_result()->fetch_assoc()['n'];
+
+$stmt = $conn->prepare("SELECT profile_completed, profile_photo FROM profiles WHERE user_id = ?");
+$stmt->bind_param("i", $attendeeId);
+$stmt->execute();
+$profile = $stmt->get_result()->fetch_assoc();
+$profileIncomplete = !$profile || !$profile['profile_completed'] || !$profile['profile_photo'];
+
+// Pick the most relevant welcome message: live/soon events first, then things waiting on the user, then a time-of-day greeting
+function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileIncomplete, $now, $today, $tomorrow) {
+    $explore = ['label' => 'Explore Events', 'href' => '../../events/ExploreEvents/index.php'];
+
+    if ($nextEvent) {
+        $name = $nextEvent['name'];
+        $view = ['label' => 'View Event', 'href' => '../../events/eventView/index.php?id=' . (int)$nextEvent['event_id']];
+        $start = strtotime($nextEvent['event_date'] . ' ' . $nextEvent['start_time']);
+        $time = date('g:i A', $start);
+
+        if ($start <= $now) {
+            return ["Enjoy the event, $firstName!", "$name is happening right now at {$nextEvent['location']}. Check in to unlock your networking matches.", $view];
+        }
+        if ($nextEvent['event_date'] === $today) {
+            $mins = (int)round(($start - $now) / 60);
+            $when = $mins < 60 ? "in $mins minute" . ($mins === 1 ? '' : 's') : "at $time";
+            return ["It's event day, $firstName!", "$name starts $when at {$nextEvent['location']}. Don't forget your QR code.", $view];
+        }
+        if ($nextEvent['event_date'] === $tomorrow) {
+            return ["Tomorrow's the day, $firstName!", "$name starts at $time tomorrow. A good time to plan who you'd like to meet.", $view];
+        }
+    }
+
+    if ($pendingRequests > 0) {
+        $people = $pendingRequests === 1 ? '1 person wants' : "$pendingRequests people want";
+        return ["You're in demand, $firstName!", "$people to connect with you. Don't keep them waiting.", ['label' => 'View Requests', 'href' => '../myConnections/index.php']];
+    }
+
+    if ($profileIncomplete) {
+        return ["Welcome back, $firstName!", 'Your profile is almost complete. Complete it to get better event and networking recommendations.', ['label' => 'Complete Profile', 'href' => '../onboarding/index.php']];
+    }
+
+    $hour = (int)date('G', $now);
+    $day = (int)date('N', $now); // 1 = Monday, 7 = Sunday
+    $eventHint = $nextEvent
+        ? "Your next event, {$nextEvent['name']}, is on " . date('M j', strtotime($nextEvent['event_date'])) . '.'
+        : 'Find an event that matches your interests and meet people worth knowing.';
+
+    if ($hour < 5) {
+        $options = ["Burning the midnight oil, $firstName?", "Still up, $firstName?"];
+    } elseif ($day >= 6 || ($day === 5 && $hour >= 17)) {
+        $options = ["Happy weekend, $firstName!", "Weekend plans, $firstName?"];
+    } elseif ($hour < 12) {
+        $options = ["Good morning, $firstName!", "Rise and shine, $firstName!", "Fresh start today, $firstName?"];
+    } elseif ($hour < 17) {
+        $options = ["Good afternoon, $firstName!", "Hope your day's going well, $firstName!"];
+    } else {
+        $options = ["Good evening, $firstName!", "Winding down, $firstName?"];
+    }
+    if ($day === 1 && $hour >= 5 && $hour < 12) {
+        $options[] = "New week, new connections, $firstName!";
+    }
+
+    return [$options[array_rand($options)], $eventHint, $nextEvent ? ['label' => 'View Event', 'href' => '../../events/eventView/index.php?id=' . (int)$nextEvent['event_id']] : $explore];
+}
+
+[$welcomeTitle, $welcomeText, $welcomeCta] = dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileIncomplete, $now, $today, $tomorrow);
 ?>
 <!doctype html>
 <html lang="en">
@@ -29,7 +109,7 @@ $greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <?= nav_avatar_html($attendeeName) ?>
             <span class="nav-profile-name"><?= h(explode(' ', trim($attendeeName))[0]) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
@@ -46,14 +126,16 @@ $greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good
     <main class="dashboard-content">
       <section class="hero-row hero-header">
         <div class="hero-copy">
-          <h1><?= $greeting ?>, <?= h(explode(' ', trim($attendeeName))[0]) ?>!</h1>
-          <p class="supporting-copy">
-            Your profile is almost complete. Complete it to get better event and networking recommendations.
-          </p>
+          <h1 class="welcome-pop"><?= h($welcomeTitle) ?></h1>
+          <p class="supporting-copy welcome-pop welcome-pop-delay"><?= h($welcomeText) ?></p>
         </div>
         <div class="hero-actions">
+          <?php if ($profileIncomplete && $welcomeCta['label'] !== 'Complete Profile'): ?>
           <a class="btn-secondary hero-btn hero-btn-soft" href="../onboarding/index.php">Complete Profile</a>
-          <a class="btn-primary hero-btn" href="../../events/ExploreEvents/index.php">Explore Events</a>
+          <?php elseif ($welcomeCta['label'] !== 'Explore Events'): ?>
+          <a class="btn-secondary hero-btn hero-btn-soft" href="../../events/ExploreEvents/index.php">Explore Events</a>
+          <?php endif; ?>
+          <a class="btn-primary hero-btn" href="<?= h($welcomeCta['href']) ?>"><?= h($welcomeCta['label']) ?></a>
         </div>
       </section>
 

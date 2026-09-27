@@ -1,3 +1,8 @@
+<?php
+session_start();
+require_once __DIR__ . '/../../../attendee/includes/avatar.php';
+$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,8 +30,8 @@
     <div class="nav-right">
       <div class="nav-profile-menu">
         <button class="nav-profile-btn">
-          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Amara Ruwan" class="nav-avatar">
-          <span class="nav-profile-name">Amara Ruwan</span>
+          <?= nav_avatar_html($attendeeName) ?>
+          <span class="nav-profile-name"><?= htmlspecialchars(explode(' ', trim($attendeeName))[0]) ?></span>
           <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="nav-dropdown">
