@@ -7,16 +7,28 @@ $eventController = new EventController($conn);
 $eventId = (int)($_GET['id'] ?? 0);
 $error = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'cancel') {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!csrf_valid()) {
         $error = "Your session expired. Please try again.";
     } else {
-        $result = $eventController->cancelEvent($organizerId, $eventId, $_POST['reason'] ?? '');
-        if ($result["success"]) {
-            header("Location: event-details.php?id=" . $eventId . "&cancelled=1");
-            exit;
+        $action = $_POST['action'] ?? '';
+        if ($action === 'cancel') {
+            $result = $eventController->cancelEvent($organizerId, $eventId, $_POST['reason'] ?? '');
+            if ($result["success"]) {
+                header("Location: event-details.php?id=" . $eventId . "&cancelled=1");
+                exit;
+            }
+            $error = $result["message"];
+        } elseif ($action === 'update_registration') {
+            $regId = (int)($_POST['registration_id'] ?? 0);
+            $status = $_POST['status'] ?? '';
+            $result = $eventController->updateRegistrationStatus($organizerId, $eventId, $regId, $status);
+            if ($result["success"]) {
+                header("Location: event-details.php?id=" . $eventId . "&status_updated=1#attendees");
+                exit;
+            }
+            $error = $result["message"];
         }
-        $error = $result["message"];
     }
 }
 
@@ -26,7 +38,9 @@ if (!$event) {
     die("Event not found.");
 }
 
-$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled. Registered attendees have been notified." : "");
+$attendees = $eventController->getEventAttendees($organizerId, $eventId);
+
+$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled. Registered attendees have been notified." : (isset($_GET['status_updated']) ? "Registration status updated." : ""));
 $registrationColors = ['Open' => 'var(--success)', 'Full' => 'var(--danger)'];
 $activeNav = 'events';
 ?>
@@ -384,27 +398,53 @@ $activeNav = 'events';
               </tr>
             </thead>
             <tbody class="org-text-secondary-md" >
-              <tr class="org-border-b" >
-                <td class="org-font-semibold-pad" >Kamal Perera</td>
-                <td class="org-text-sec-pad" >kamal@email.com</td>
-                <td class="org-table-cell-pad" ><span class="org-text-success-sm" >Checked-in</span></td>
-                <td class="org-table-cell-pad" ><button class="btn-text org-text-danger-sm"  onclick="return initCustomConfirm(this, 'Are you sure you want to remove this item?', event);">Remove</button></td>
-              </tr>
-              <tr class="org-border-b" >
-                <td class="org-font-semibold-pad" >Sarah Fernando</td>
-                <td class="org-text-sec-pad" >sarah@email.com</td>
-                <td class="org-table-cell-pad" ><span class="org-text-sec-sm" >Registered</span></td>
-                <td class="org-table-cell-pad" ><button class="btn-text org-text-danger-sm"  onclick="return initCustomConfirm(this, 'Are you sure you want to remove this item?', event);">Remove</button></td>
-              </tr>
-              <tr class="org-border-b" >
-                <td class="org-font-semibold-pad" >James Doe</td>
-                <td class="org-text-sec-pad" >james@email.com</td>
-                <td class="org-table-cell-pad" ><span class="org-text-warning-sm" >Pending</span></td>
-                <td class="org-flex-gap-0-5-pad" >
-                  <button class="btn-text org-text-primary-sm" >Approve</button>
-                  <button class="btn-text org-text-danger-sm" >Reject</button>
-                </td>
-              </tr>
+              <?php if (empty($attendees)): ?>
+                <tr><td colspan="4" class="org-table-cell-pad org-text-center" style="text-align: center; padding: 2rem;">No attendees yet.</td></tr>
+              <?php else: ?>
+                <?php foreach ($attendees as $att): ?>
+                  <tr class="org-border-b" >
+                    <td class="org-font-semibold-pad" ><?= h($att['full_name']) ?></td>
+                    <td class="org-text-sec-pad" ><?= h($att['email']) ?></td>
+                    <td class="org-table-cell-pad" >
+                        <?php if ($att['status'] === 'PENDING'): ?>
+                            <span class="org-text-warning-sm">Pending</span>
+                        <?php elseif ($att['status'] === 'REGISTERED' || $att['status'] === 'APPROVED'): ?>
+                            <span class="org-text-sec-sm">Registered</span>
+                        <?php elseif ($att['status'] === 'CHECKED_IN'): ?>
+                            <span class="org-text-success-sm">Checked-in</span>
+                        <?php else: ?>
+                            <span class="org-text-sec-sm"><?= h(ucfirst(strtolower($att['status']))) ?></span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="org-table-cell-pad" style="display: flex; gap: 0.5rem;" >
+                        <?php if ($att['status'] === 'PENDING'): ?>
+                            <form method="POST" style="display:inline;">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="update_registration">
+                                <input type="hidden" name="registration_id" value="<?= $att['registration_id'] ?>">
+                                <input type="hidden" name="status" value="APPROVED">
+                                <button type="submit" class="btn-text org-text-primary-sm">Approve</button>
+                            </form>
+                            <form method="POST" style="display:inline;">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="update_registration">
+                                <input type="hidden" name="registration_id" value="<?= $att['registration_id'] ?>">
+                                <input type="hidden" name="status" value="CANCELLED">
+                                <button type="submit" class="btn-text org-text-danger-sm" onclick="return initCustomConfirm(this, 'Are you sure you want to reject this request?', event);">Reject</button>
+                            </form>
+                        <?php elseif (in_array($att['status'], ['REGISTERED', 'APPROVED', 'CHECKED_IN'], true)): ?>
+                            <form method="POST" style="display:inline;">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="update_registration">
+                                <input type="hidden" name="registration_id" value="<?= $att['registration_id'] ?>">
+                                <input type="hidden" name="status" value="CANCELLED">
+                                <button type="submit" class="btn-text org-text-danger-sm" onclick="return initCustomConfirm(this, 'Are you sure you want to remove this attendee?', event);">Remove</button>
+                            </form>
+                        <?php endif; ?>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>

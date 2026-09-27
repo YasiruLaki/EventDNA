@@ -143,7 +143,7 @@ class EventRepository {
                    (SELECT COUNT(*) FROM event_registrations r
                      WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count
             FROM events e
-            WHERE e.visibility = 'PUBLIC' AND e.status != 'CANCELLED'
+            WHERE e.status != 'CANCELLED'
             ORDER BY e.event_date ASC, e.start_time ASC
         ");
         if (!$stmt) {
@@ -158,7 +158,7 @@ class EventRepository {
             SELECT e.*, r.registration_id, r.status AS reg_status, r.registered_at AS reg_date
             FROM events e
             JOIN event_registrations r ON e.event_id = r.event_id
-            WHERE r.user_id = ? AND r.status IN ('REGISTERED', 'APPROVED', 'CHECKED_IN')
+            WHERE r.user_id = ? AND r.status IN ('REGISTERED', 'APPROVED', 'CHECKED_IN', 'PENDING')
             ORDER BY e.event_date ASC, e.start_time ASC
         ");
         if (!$stmt) {
@@ -171,7 +171,7 @@ class EventRepository {
 
     public function getRegistration($eventId, $userId) {
         $stmt = $this->conn->prepare("
-            SELECT registration_id, status, receive_updates, registered_at
+            SELECT registration_id, status, receive_updates, registered_at, user_id
             FROM event_registrations
             WHERE event_id = ? AND user_id = ?
         ");
@@ -180,15 +180,34 @@ class EventRepository {
         return $stmt->get_result()->fetch_assoc();
     }
 
+    public function getRegistrationById($registrationId) {
+        $stmt = $this->conn->prepare("
+            SELECT registration_id, event_id, user_id, status, receive_updates, registered_at
+            FROM event_registrations
+            WHERE registration_id = ?
+        ");
+        $stmt->bind_param("i", $registrationId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     public function registerAttendee($eventId, $userId, $receiveUpdates) {
+        $event = $this->getEventById($eventId);
+        if (!$event) return false;
+
+        $status = ($event['visibility'] === 'INVITE_ONLY') ? 'PENDING' : 'REGISTERED';
+
         $stmt = $this->conn->prepare("
             INSERT INTO event_registrations (event_id, user_id, status, receive_updates)
-            VALUES (?, ?, 'REGISTERED', ?)
-            ON DUPLICATE KEY UPDATE status = 'REGISTERED', receive_updates = ?,
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE status = ?, receive_updates = ?,
                                     registered_at = CURRENT_TIMESTAMP, approved_at = NULL
         ");
-        $stmt->bind_param("iiii", $eventId, $userId, $receiveUpdates, $receiveUpdates);
-        return $stmt->execute();
+        $stmt->bind_param("iissis", $eventId, $userId, $status, $receiveUpdates, $status, $receiveUpdates);
+        if ($stmt->execute()) {
+            return $status;
+        }
+        return false;
     }
 
     public function cancelRegistration($eventId, $userId) {
@@ -207,6 +226,29 @@ class EventRepository {
         ");
         $stmt->bind_param("iii", $receiveUpdates, $eventId, $userId);
         return $stmt->execute();
+    }
+
+    public function getEventAttendees($eventId) {
+        $stmt = $this->conn->prepare("
+            SELECT u.user_id, u.full_name, u.email, r.status, r.registered_at, r.registration_id
+            FROM event_registrations r
+            JOIN users u ON r.user_id = u.user_id
+            WHERE r.event_id = ?
+            ORDER BY r.registered_at DESC
+        ");
+        $stmt->bind_param("i", $eventId);
+        if (!$stmt->execute()) return [];
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function updateRegistrationStatus($registrationId, $eventId, $status) {
+        $stmt = $this->conn->prepare("
+            UPDATE event_registrations 
+            SET status = ?, approved_at = CASE WHEN ? IN ('APPROVED', 'REGISTERED') THEN CURRENT_TIMESTAMP ELSE approved_at END
+            WHERE registration_id = ? AND event_id = ?
+        ");
+        $stmt->bind_param("ssii", $status, $status, $registrationId, $eventId);
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 }
 ?>

@@ -10,6 +10,16 @@ class NotificationRepository {
         $this->conn = $dbConnection;
     }
 
+    // Sends a notification to a specific user
+    public function notifyUser($userId, $type, $title, $message, $referenceType = null, $referenceId = null) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO notifications (user_id, type, title, message, reference_type, reference_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param("issssi", $userId, $type, $title, $message, $referenceType, $referenceId);
+        return $stmt->execute();
+    }
+
     // Sends the same notification to everyone holding a seat at the event
     public function notifyEventRegistrants($eventId, $type, $title, $message) {
         $stmt = $this->conn->prepare("

@@ -8,7 +8,7 @@ class GroupRepository {
 
     public function createGroup($creatorId, $name, $description, $interests) {
         try {
-            $this->conn->beginTransaction();
+            $this->conn->begin_transaction();
 
             $stmt = $this->conn->prepare("INSERT INTO groups (creator_id, name, description, status) VALUES (?, ?, ?, 'ACTIVE')");
             $stmt->bind_param("iss", $creatorId, $name, $description);
@@ -73,7 +73,7 @@ class GroupRepository {
 
     public function updateGroup($groupId, $name, $description, $interests) {
         try {
-            $this->conn->beginTransaction();
+            $this->conn->begin_transaction();
 
             $stmt = $this->conn->prepare("UPDATE groups SET name = ?, description = ? WHERE group_id = ?");
             $stmt->bind_param("ssi", $name, $description, $groupId);

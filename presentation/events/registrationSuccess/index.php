@@ -13,6 +13,9 @@ require_once __DIR__ . '/../../../data/EventRepository.php';
 $eventId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $eventRepo = new EventRepository($conn);
 $event = $eventRepo->getEventById($eventId);
+$userId = $_SESSION['user_id'];
+$reg = $eventRepo->getRegistration($eventId, $userId);
+$isPending = ($reg && $reg['status'] === 'PENDING');
 
 if (!$event) {
     header("Location: ../ExploreEvents/index.php");
@@ -31,7 +34,7 @@ function formatTime($timeStr) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>You're Registered — EventDNA</title>
+<title><?= $isPending ? "Request Sent" : "You're Registered" ?> — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
@@ -73,22 +76,22 @@ function formatTime($timeStr) {
     <div class="left-col">
       <div class="status-row">
         <div class="status-text">
-          <h1>You're Registered!</h1>
-          <p>Your registration is confirmed. Your event pass is ready.</p>
+          <h1><?= $isPending ? "Request Sent!" : "You're Registered!" ?></h1>
+          <p><?= $isPending ? "Your request to join has been sent to the organizer for approval." : "Your registration is confirmed. Your event pass is ready." ?></p>
         </div>
       </div>
 
       <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 600; font-size: 1rem; margin-bottom: 1.5rem;">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Registration confirmed
+        <?= $isPending ? "Request sent for approval" : "Registration confirmed" ?>
       </div>
 
       <div class="journey-label" style="text-transform: none; font-size: 1.25rem; color: var(--text-primary); letter-spacing: -0.02em;">What's next?</div>
 
       <ul class="timeline">
         <li class="timeline-item active">
-          <div class="timeline-title">Registered</div>
-          <div class="timeline-sub">Your place is confirmed.</div>
+          <div class="timeline-title"><?= $isPending ? "Requested" : "Registered" ?></div>
+          <div class="timeline-sub"><?= $isPending ? "Waiting for organizer approval." : "Your place is confirmed." ?></div>
         </li>
         <li class="timeline-item">
           <div class="timeline-title">Attend Event</div>

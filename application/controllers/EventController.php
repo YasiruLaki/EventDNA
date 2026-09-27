@@ -174,8 +174,9 @@ class EventController {
             return ["success" => false, "message" => "This event is sold out."];
         }
 
-        if ($this->eventRepo->registerAttendee($event['event_id'], $userId, $receiveUpdates ? 1 : 0)) {
-            return ["success" => true];
+        $status = $this->eventRepo->registerAttendee($event['event_id'], $userId, $receiveUpdates ? 1 : 0);
+        if ($status !== false) {
+            return ["success" => true, "status" => $status];
         }
         return ["success" => false, "message" => "Failed to register. Please try again."];
     }
@@ -448,6 +449,40 @@ class EventController {
             }
         }
         return null;
+    }
+
+    public function getEventAttendees($organizerId, $eventId) {
+        $event = $this->getOwnedEvent($organizerId, $eventId);
+        if (!$event) return [];
+        return $this->eventRepo->getEventAttendees($eventId);
+    }
+
+    public function updateRegistrationStatus($organizerId, $eventId, $registrationId, $status) {
+        if (!in_array($status, ['PENDING', 'APPROVED', 'REGISTERED', 'CHECKED_IN', 'CANCELLED'], true)) {
+            return ["success" => false, "message" => "Invalid status."];
+        }
+        $event = $this->getOwnedEvent($organizerId, $eventId);
+        if (!$event) {
+            return ["success" => false, "message" => "Event not found."];
+        }
+        $reg = $this->eventRepo->getRegistrationById($registrationId);
+        if (!$reg || $reg['event_id'] != $eventId) {
+            return ["success" => false, "message" => "Registration not found."];
+        }
+        if ($this->eventRepo->updateRegistrationStatus($registrationId, $eventId, $status)) {
+            if ($status === 'APPROVED' && $reg['status'] !== 'APPROVED') {
+                $this->notificationRepo->notifyUser(
+                    $reg['user_id'], 
+                    'REGISTRATION_APPROVED', 
+                    'Registration Approved', 
+                    "Your request to join {$event['name']} has been approved!",
+                    'event',
+                    $eventId
+                );
+            }
+            return ["success" => true, "message" => "Status updated successfully."];
+        }
+        return ["success" => false, "message" => "Failed to update status."];
     }
 }
 ?>
