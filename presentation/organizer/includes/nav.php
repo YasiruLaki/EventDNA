@@ -210,7 +210,11 @@ if (!function_exists('h')) {
       </a>
       <div class="nav-profile-menu">
         <button class="nav-profile-btn" aria-label="Profile Menu" id="orgProfileBtn">
-          <span class="nav-avatar"><?= h(mb_strtoupper(mb_substr($organizerName, 0, 1))) ?></span>
+          <?php if (!empty($organizerPhoto)): ?>
+            <img src="<?= h('/eventDNA/' . ltrim($organizerPhoto, '/')) ?>" alt="Profile" class="nav-avatar" style="object-fit: cover;">
+          <?php else: ?>
+            <span class="nav-avatar"><?= h(mb_strtoupper(mb_substr($organizerName, 0, 1))) ?></span>
+          <?php endif; ?>
           <span class="nav-profile-name"><?= h($organizerName) ?></span>
           <i class="org-icon-sec" data-lucide="chevron-down" ></i>
         </button>
@@ -219,11 +223,8 @@ if (!function_exists('h')) {
             <span class="dropdown-header-name"><?= h($organizerName) ?></span>
             <span class="dropdown-header-role">Organizer account</span>
           </div>
-          <a href="my-events.php" class="dropdown-item">
-            <i class="org-icon-md" data-lucide="calendar" ></i> My Events
-          </a>
-          <a href="manage-groups.php" class="dropdown-item">
-            <i class="org-icon-md" data-lucide="users" ></i> Communities
+          <a href="profile.php" class="dropdown-item">
+            <i class="org-icon-md" data-lucide="user" ></i> Edit Profile
           </a>
           <hr class="dropdown-divider">
           <a href="../auth/logout/index.php" class="dropdown-item text-danger">
