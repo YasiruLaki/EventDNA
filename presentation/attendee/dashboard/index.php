@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../includes/guard.php";
+require_once __DIR__ . '/../../attendee/includes/avatar.php';
 
 $hour = (int)date('G');
 $greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good Evening');
@@ -29,7 +30,7 @@ $greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Profile" class="nav-avatar" />
+            <?= nav_avatar_html($attendeeName) ?>
             <span class="nav-profile-name"><?= h(explode(' ', trim($attendeeName))[0]) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>

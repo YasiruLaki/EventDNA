@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../../attendee/includes/avatar.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../auth/login/index.php");
     exit;
@@ -34,7 +35,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       <div class="nav-right">
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;"><?= htmlspecialchars(mb_substr($attendeeName, 0, 1)) ?></div>
+            <?= nav_avatar_html($attendeeName) ?>
             <span class="nav-profile-name"><?= htmlspecialchars(explode(' ', trim($attendeeName))[0]) ?></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
           </button>
