@@ -19,7 +19,11 @@ $eventController = new EventController($conn);
 $result = $eventController->registerForEvent($_SESSION['user_id'], $eventId, isset($_POST['updates']));
 
 if ($result['success']) {
-    header("Location: ../registrationSuccess/index.php?id=" . $eventId);
+    if (isset($result['status']) && $result['status'] === 'PENDING') {
+        header("Location: index.php?id=" . $eventId . "&request_sent=1");
+    } else {
+        header("Location: ../registrationSuccess/index.php?id=" . $eventId);
+    }
 } else {
     header("Location: index.php?id=" . $eventId . "&error=" . urlencode($result['message']));
 }

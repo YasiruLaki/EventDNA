@@ -30,6 +30,9 @@ $registration = $checkStmt->get_result()->fetch_assoc();
 $isRegistered = $registration !== null;
 $errorMessage = $_GET['error'] ?? '';
 $successMessage = $_GET['success'] ?? '';
+if (isset($_GET['request_sent'])) {
+    $successMessage = "Your request to join has been sent to the organizer for approval.";
+}
 
 // For cancelled events, show registrants the message they were notified with (it carries the organizer's reason)
 $isCancelled = $event['status'] === 'CANCELLED';
@@ -223,7 +226,11 @@ function coverUrl($path) {
         <?php if ($isCancelled): ?>
           <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: not-allowed;">Event Cancelled</button>
         <?php elseif ($isRegistered): ?>
-          <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Already Registered</button>
+          <?php if ($registration['status'] === 'PENDING'): ?>
+            <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default; background-color: rgba(245, 158, 11, 0.1); color: #d97706;">Under Review</button>
+          <?php else: ?>
+            <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Already Registered</button>
+          <?php endif; ?>
           <?php if (!$isPast): ?>
             <form method="POST" action="updates_action.php" class="reg-updates-form">
               <input type="hidden" name="event_id" value="<?= $eventId ?>">
@@ -240,13 +247,13 @@ function coverUrl($path) {
             </form>
             <form method="POST" action="cancel_action.php" id="cancelRegForm">
               <input type="hidden" name="event_id" value="<?= $eventId ?>">
-              <button type="submit" class="btn-cancel-reg">Cancel Registration</button>
+              <button type="submit" class="btn-cancel-reg"><?= $registration['status'] === 'PENDING' ? 'Cancel Request' : 'Cancel Registration' ?></button>
             </form>
           <?php endif; ?>
         <?php elseif ($isPast): ?>
           <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Event Ended</button>
         <?php elseif ($spotsLeft > 0): ?>
-          <button class="btn-primary reg-cta">Register Now &rarr;</button>
+          <button class="btn-primary reg-cta"><?= $event['visibility'] === 'INVITE_ONLY' ? 'Request to Join' : 'Register Now' ?> &rarr;</button>
         <?php else: ?>
           <button class="btn-secondary reg-cta" disabled style="opacity: 0.8; cursor: default;">Sold Out</button>
         <?php endif; ?>
@@ -303,8 +310,13 @@ function coverUrl($path) {
         <div class="info-list-item">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 6.5l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <div>
-            <div class="info-list-title">Confirmation Email &amp; Ticket</div>
-            <div class="info-list-sub">Your digital pass with QR code will be generated immediately.</div>
+            <?php if ($event['visibility'] === 'INVITE_ONLY'): ?>
+              <div class="info-list-title">Approval Process</div>
+              <div class="info-list-sub">Your request will be sent to the organizer for approval. You will receive an email once approved.</div>
+            <?php else: ?>
+              <div class="info-list-title">Confirmation Email &amp; Ticket</div>
+              <div class="info-list-sub">Your digital pass with QR code will be generated immediately.</div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -328,7 +340,7 @@ function coverUrl($path) {
         <div class="modal-actions">
           <button type="button" class="btn-cancel" id="modalCancelBtn">Cancel</button>
           <button type="submit" class="btn-primary" style="border:none; font-family:inherit;">
-            Register Now
+            <?= $event['visibility'] === 'INVITE_ONLY' ? 'Submit Request' : 'Register Now' ?>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
@@ -344,11 +356,11 @@ function coverUrl($path) {
       <div class="confirm-icon">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="7.5" x2="12" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.3" r="1" fill="currentColor"/></svg>
       </div>
-      <h1 id="cancelRegTitle">Cancel your registration?</h1>
-      <p class="confirm-text">You will lose your spot at <strong><?= htmlspecialchars($event['name']) ?></strong>. You can register again while registration is still open.</p>
+      <h1 id="cancelRegTitle"><?= $registration['status'] === 'PENDING' ? 'Cancel your request?' : 'Cancel your registration?' ?></h1>
+      <p class="confirm-text"><?= $registration['status'] === 'PENDING' ? 'Your request to join <strong>' . htmlspecialchars($event['name']) . '</strong> will be withdrawn.' : 'You will lose your spot at <strong>' . htmlspecialchars($event['name']) . '</strong>. You can register again while registration is still open.' ?></p>
       <div class="modal-actions">
-        <button type="button" class="btn-cancel" id="keepRegBtn">Keep Registration</button>
-        <button type="button" class="btn-danger" id="confirmCancelRegBtn">Cancel Registration</button>
+        <button type="button" class="btn-cancel" id="keepRegBtn"><?= $registration['status'] === 'PENDING' ? 'Keep Request' : 'Keep Registration' ?></button>
+        <button type="button" class="btn-danger" id="confirmCancelRegBtn"><?= $registration['status'] === 'PENDING' ? 'Cancel Request' : 'Cancel Registration' ?></button>
       </div>
     </div>
   </div>
