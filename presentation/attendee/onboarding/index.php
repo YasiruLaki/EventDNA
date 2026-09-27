@@ -20,7 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $industry = trim($_POST['industry'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
     
-    $result = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio);
+    $photoFile = $_FILES['profile_photo'] ?? null;
+
+    $result = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio, $photoFile);
     
     if ($result['success']) {
         header("Location: ../onboarding2/index.php");
@@ -56,27 +58,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 						Build your professional EventDNA profile so people can understand who you are and what you're looking to connect around.
 					</p>
 
-                    <div class="photo-uploader" aria-label="Profile photo upload">
-                        <div class="avatar-ring">
-                            <div class="avatar-placeholder">
-                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="photo-desc-container">
-                            <button type="button" class="upload-link">Upload photo</button>
-                            <p class="photo-desc">
-                                A clear professional photo helps others recognize you at events.
-                            </p>
-                        </div>
-                    </div>
-
                     <?php if ($error): ?>
                         <p style="color: var(--error); margin-bottom: 1rem; font-size: 0.9rem;"><?php echo htmlspecialchars($error); ?></p>
                     <?php endif; ?>
 
-                    <form action="" method="post">
+                    <form action="" method="post" enctype="multipart/form-data">
+                    <div class="photo-uploader" aria-label="Profile photo upload">
+                        <button type="button" class="avatar-ring" id="avatarRing" aria-label="Choose profile photo">
+                            <div class="avatar-placeholder" id="avatarPlaceholder">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <img class="avatar-preview" id="avatarPreview" alt="Selected profile photo" hidden>
+                        </button>
+                        <div class="photo-desc-container">
+                            <button type="button" class="upload-link" id="uploadLink">Upload photo</button>
+                            <p class="photo-desc" id="photoDesc">
+                                A clear professional photo helps others recognize you at events.
+                            </p>
+                        </div>
+                        <input type="file" id="profilePhoto" name="profile_photo" accept="image/jpeg,image/png,image/webp" hidden>
+                    </div>
+
                         <div class="form-grid">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
@@ -142,6 +146,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 			bio.addEventListener('input', updateCounter);
 			updateCounter();
 		}
+
+		const photoInput = document.getElementById('profilePhoto');
+		const avatarPreview = document.getElementById('avatarPreview');
+		const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+		const uploadLink = document.getElementById('uploadLink');
+		const photoDesc = document.getElementById('photoDesc');
+		const maxPhotoBytes = 5 * 1024 * 1024;
+		const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+		const openPicker = () => photoInput.click();
+		document.getElementById('avatarRing').addEventListener('click', openPicker);
+		uploadLink.addEventListener('click', openPicker);
+
+		photoInput.addEventListener('change', () => {
+			const file = photoInput.files[0];
+			if (!file) return;
+
+			if (!allowedTypes.includes(file.type) || file.size > maxPhotoBytes) {
+				photoInput.value = '';
+				avatarPreview.hidden = true;
+				avatarPlaceholder.hidden = false;
+				uploadLink.textContent = 'Upload photo';
+				photoDesc.textContent = 'Please choose a JPG, PNG or WebP image of 5 MB or smaller.';
+				photoDesc.style.color = 'var(--error)';
+				return;
+			}
+
+			if (avatarPreview.src) URL.revokeObjectURL(avatarPreview.src);
+			avatarPreview.src = URL.createObjectURL(file);
+			avatarPreview.hidden = false;
+			avatarPlaceholder.hidden = true;
+			uploadLink.textContent = 'Change photo';
+			photoDesc.textContent = file.name;
+			photoDesc.style.color = '';
+		});
 	</script>
 </body>
 </html>
