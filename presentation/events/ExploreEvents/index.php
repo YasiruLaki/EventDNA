@@ -99,34 +99,38 @@ function formatTime($timeStr) {
       </section>
 
       <!-- Featured event -->
+      <?php if ($featuredEvent): 
+        // Need to get interest names for the chip (just get the first one)
+        $interests = $eventRepo->getEventInterestNames($featuredEvent['event_id']);
+        $mainInterest = !empty($interests) ? $interests[0] : 'Event';
+      ?>
       <article class="feature-card">
         <div class="feature-cover">
-          <img src="https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg" alt="Featured event cover">
-          <span class="date-tag feature-date">Oct 12–14</span>
+          <img src="<?= htmlspecialchars($featuredEvent['cover_photo']) ?>" alt="<?= htmlspecialchars($featuredEvent['name']) ?>">
+          <span class="date-tag feature-date"><?= formatShortDate($featuredEvent['event_date']) ?></span>
         </div>
         <div class="feature-info">
             <div class="feature-badges">
             <span class="pill pill-primary">Featured</span>
-            <span class="pill">In-person</span>
+            <span class="pill"><?= htmlspecialchars($mainInterest) ?></span>
             </div>
             <div class="feature-copy">
-            <h2>Global Tech Innovators Summit 2026</h2>
+            <h2><?= htmlspecialchars($featuredEvent['name']) ?></h2>
             <div class="feature-meta">
-                <span>Oct 12–14, 2026</span>
-                <span>San Francisco, CA</span>
-                <span>1,200+ attendees</span>
+                <span><?= formatDate($featuredEvent['event_date']) ?></span>
+                <span><?= htmlspecialchars($featuredEvent['location']) ?></span>
+                <span><?= number_format($featuredEvent['capacity']) ?> spots total</span>
             </div>
             <p class="desc">
-                Join industry leaders, founders, and investors for three days of keynotes,
-                panels, and curated networking sessions built around this year's biggest
-                shifts in technology.
+                <?= nl2br(htmlspecialchars($featuredEvent['description'])) ?>
             </p>
             </div>
             <div class="feature-actions">
-            <a class="btn-primary" href="../eventView/index.php">View Event &rarr;</a>
+            <a class="btn-primary" href="../eventView/index.php?id=<?= $featuredEvent['event_id'] ?>">View Event &rarr;</a>
             </div>
         </div>
       </article>
+      <?php endif; ?>
 
       <section class="section-row events-section">
         <div class="section-head">
