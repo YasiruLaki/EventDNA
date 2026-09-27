@@ -168,6 +168,26 @@ if (!function_exists('h')) {
   .organizer-nav .dropdown-item.text-danger:hover {
     background-color: var(--error-tint, #fef2f2);
   }
+  .organizer-nav .dropdown-header {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  }
+  .organizer-nav .dropdown-header-name {
+    color: var(--text-primary, #0f172a);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .organizer-nav .dropdown-header-role {
+    color: var(--text-secondary, #64748b);
+    font-size: 0.8rem;
+  }
+  .organizer-nav .dropdown-divider {
+    border: none;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    margin: 0;
+  }
 </style>
 
 <nav class="organizer-nav">
@@ -195,6 +215,17 @@ if (!function_exists('h')) {
           <i class="org-icon-sec" data-lucide="chevron-down" ></i>
         </button>
         <div class="nav-dropdown" id="orgProfileDropdown">
+          <div class="dropdown-header">
+            <span class="dropdown-header-name"><?= h($organizerName) ?></span>
+            <span class="dropdown-header-role">Organizer account</span>
+          </div>
+          <a href="my-events.php" class="dropdown-item">
+            <i class="org-icon-md" data-lucide="calendar" ></i> My Events
+          </a>
+          <a href="manage-groups.php" class="dropdown-item">
+            <i class="org-icon-md" data-lucide="users" ></i> Communities
+          </a>
+          <hr class="dropdown-divider">
           <a href="../auth/logout/index.php" class="dropdown-item text-danger">
             <i class="org-icon-md" data-lucide="log-out" ></i> Logout
           </a>

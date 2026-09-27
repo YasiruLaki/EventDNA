@@ -567,21 +567,6 @@ $activeNav = 'events';
       }
     }
     
-    // Simple profile menu toggle
-    const profileBtn = document.querySelector('.nav-profile-btn');
-    const profileDropdown = document.querySelector('.nav-dropdown');
-    
-    if (profileBtn && profileDropdown) {
-      profileBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('show');
-      });
-      
-      document.addEventListener('click', () => {
-        profileDropdown.classList.remove('show');
-      });
-    }
-
     // Modal Logic
     const cancelBtn = document.getElementById('cancelEventBtn');
     const cancelModal = document.getElementById('cancelModal');
