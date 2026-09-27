@@ -136,5 +136,37 @@ class EventRepository {
     public function rollback() {
         $this->conn->rollback();
     }
+
+    public function getUpcomingEvents() {
+        $stmt = $this->conn->prepare("
+            SELECT e.*,
+                   (SELECT COUNT(*) FROM event_registrations r
+                     WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count
+            FROM events e
+            WHERE e.visibility = 'PUBLIC' AND e.status != 'CANCELLED'
+            ORDER BY e.event_date ASC, e.start_time ASC
+        ");
+        if (!$stmt) {
+            die('Error preparing getUpcomingEvents: ' . $this->conn->error);
+        }
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getRegisteredEvents($userId) {
+        $stmt = $this->conn->prepare("
+            SELECT e.*, r.registration_id, r.status AS reg_status, r.registered_at AS reg_date
+            FROM events e
+            JOIN event_registrations r ON e.event_id = r.event_id
+            WHERE r.user_id = ? AND r.status IN ('REGISTERED', 'APPROVED', 'CHECKED_IN')
+            ORDER BY e.event_date ASC, e.start_time ASC
+        ");
+        if (!$stmt) {
+            die('Error preparing getRegisteredEvents: ' . $this->conn->error);
+        }
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }
 ?>
