@@ -21,6 +21,9 @@ if (!$event) {
 }
 
 $interests = $eventRepo->getEventInterestNames($eventId);
+$organizer = $eventRepo->getOrganizer((int)$event['organizer_id']);
+$organizerName = trim($organizer['full_name'] ?? '') ?: 'Event Organizer';
+$organizerTitle = implode(' at ', array_filter([trim($organizer['job_title'] ?? ''), trim($organizer['organization'] ?? '')]));
 
 // Check if already registered
 $checkStmt = $conn->prepare("SELECT status, receive_updates FROM event_registrations WHERE event_id = ? AND user_id = ? AND status IN ('PENDING','APPROVED','REGISTERED')");
@@ -166,13 +169,23 @@ function coverUrl($path) {
         <h2>Organized by</h2>
         <div class="organizer-flex">
           <div class="organizer-avatar">
-            <img src="https://images.unsplash.com/photo-1542442828-287217bfb87f?auto=format&fit=crop&w=150&q=80" alt="EventDNA Sri Lanka">
+            <?php if (!empty($organizer['profile_photo'])): ?>
+            <img src="<?= htmlspecialchars(coverUrl($organizer['profile_photo'])) ?>" alt="<?= htmlspecialchars($organizerName) ?>">
+            <?php else: ?>
+            <span class="organizer-initial"><?= htmlspecialchars(mb_strtoupper(mb_substr($organizerName, 0, 1))) ?></span>
+            <?php endif; ?>
           </div>
           <div>
-            <div class="organizer-role">Event Organizer</div>
-            <div class="organizer-name">EventDNA Sri Lanka</div>
+            <div class="organizer-role">Event Organizer<?= $organizer && $organizer['events_count'] > 1 ? ' &middot; ' . (int)$organizer['events_count'] . ' events hosted' : '' ?></div>
+            <div class="organizer-name"><?= htmlspecialchars($organizerName) ?></div>
+            <?php if ($organizerTitle !== ''): ?>
+            <div class="organizer-title"><?= htmlspecialchars($organizerTitle) ?></div>
+            <?php endif; ?>
           </div>
         </div>
+        <?php if (trim($organizer['bio'] ?? '') !== ''): ?>
+        <p class="organizer-bio"><?= nl2br(htmlspecialchars(trim($organizer['bio']))) ?></p>
+        <?php endif; ?>
       </div>
 
       <h2>About Event</h2>

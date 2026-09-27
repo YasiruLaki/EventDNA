@@ -67,6 +67,20 @@ class EventRepository {
         return $stmt->get_result()->fetch_assoc();
     }
 
+    // Public-facing details of an event's organizer, from their user account and organizer profile
+    public function getOrganizer($organizerId) {
+        $stmt = $this->conn->prepare("
+            SELECT u.user_id, u.full_name, p.organization, p.job_title, p.field, p.bio, p.profile_photo,
+                   (SELECT COUNT(*) FROM events e WHERE e.organizer_id = u.user_id AND e.status != 'CANCELLED') AS events_count
+            FROM users u
+            LEFT JOIN profiles p ON p.user_id = u.user_id
+            WHERE u.user_id = ?
+        ");
+        $stmt->bind_param("i", $organizerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     public function getEventsByOrganizer($organizerId) {
         $stmt = $this->conn->prepare("
             SELECT e.event_id, e.name, e.cover_photo, e.event_date, e.start_time, e.end_time, e.location, e.capacity,
@@ -144,13 +158,39 @@ class EventRepository {
                      WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count
             FROM events e
             WHERE e.status != 'CANCELLED'
+              AND TIMESTAMP(e.event_date, e.end_time) > ?
             ORDER BY e.event_date ASC, e.start_time ASC
         ");
         if (!$stmt) {
             die('Error preparing getUpcomingEvents: ' . $this->conn->error);
         }
+        // Hide events that have already ended, using PHP's clock so the cutoff matches the app's timezone
+        $now = date('Y-m-d H:i:s');
+        $stmt->bind_param("s", $now);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // The public event that hasn't finished yet with the most attendees, soonest first on a tie
+    public function getMostAttendedUpcomingEvent() {
+        $stmt = $this->conn->prepare("
+            SELECT e.*,
+                   (SELECT COUNT(*) FROM event_registrations r
+                     WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count
+            FROM events e
+            WHERE e.status != 'CANCELLED' AND e.visibility = 'PUBLIC'
+              AND TIMESTAMP(e.event_date, e.end_time) > ?
+            ORDER BY registered_count DESC, e.event_date ASC, e.start_time ASC
+            LIMIT 1
+        ");
+        if (!$stmt) {
+            die('Error preparing getMostAttendedUpcomingEvent: ' . $this->conn->error);
+        }
+        // Compare against PHP's clock so the cutoff matches the app's timezone, not the database server's
+        $now = date('Y-m-d H:i:s');
+        $stmt->bind_param("s", $now);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function getRegisteredEvents($userId) {
@@ -230,9 +270,11 @@ class EventRepository {
 
     public function getEventAttendees($eventId) {
         $stmt = $this->conn->prepare("
-            SELECT u.user_id, u.full_name, u.email, r.status, r.registered_at, r.registration_id
+            SELECT u.user_id, u.full_name, u.email, r.status, r.registered_at, r.registration_id,
+                   COALESCE(a.checked_in, 0) AS checked_in, a.checked_in_at
             FROM event_registrations r
             JOIN users u ON r.user_id = u.user_id
+            LEFT JOIN attendance a ON a.event_id = r.event_id AND a.user_id = r.user_id
             WHERE r.event_id = ?
             ORDER BY r.registered_at DESC
         ");

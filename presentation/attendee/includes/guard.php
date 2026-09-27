@@ -6,6 +6,8 @@ if (!isset($_SESSION['user_id']) || (int)($_SESSION['role_id'] ?? 0) !== 1) {
     exit;
 }
 
+require_once __DIR__ . '/avatar.php';
+
 $attendeeId = (int)$_SESSION['user_id'];
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
 

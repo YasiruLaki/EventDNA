@@ -2,8 +2,10 @@
 require_once __DIR__ . "/includes/guard.php";
 require_once "../../data/database.php";
 require_once "../../application/controllers/EventController.php";
+require_once "../../application/controllers/GroupController.php";
 
 $eventController = new EventController($conn);
+$groups = (new GroupController($conn))->getGroupsByOrganizer($organizerId);
 $dashboard = $eventController->getOrganizerDashboard($organizerId);
 $events = $dashboard["events"];
 $active = $dashboard["active"];
@@ -115,21 +117,6 @@ $activeNav = 'dashboard';
       </div>
       <?php endif; ?>
 
-      <div class="org-mt-4" id="community" >
-        <div class="org-flex-between-end" >
-          <div>
-            <h2 class="org-event-title" >Community
-            </h2>
-            <p class="org-event-meta" >Create and manage groups for your
-              attendees.</p>
-          </div>
-          <div class="org-flex-gap-1" >
-            <a href="create-group.php" class="btn-primary">+ Create Group</a>
-            <a href="manage-groups.php" class="btn-secondary">Manage Groups</a>
-          </div>
-        </div>
-      </div>
-
       <div class="org-mt-4" id="events" >
         <div class="org-flex-between-end" >
           <div>
@@ -202,6 +189,59 @@ $activeNav = 'dashboard';
           <?php endif; ?>
         </div>
       </div>
+      <div class="org-mt-4" id="community" >
+        <div class="org-flex-between-end" >
+          <div>
+            <h2 class="org-event-title" >Community
+            </h2>
+            <p class="org-event-meta" >Create and manage groups for your
+              attendees.</p>
+          </div>
+          <div class="org-flex-gap-1" >
+            <a href="create-group.php" class="btn-primary">+ Create Group</a>
+            <a href="manage-groups.php" class="btn-secondary">Manage Groups</a>
+          </div>
+        </div>
+
+        <?php if (empty($groups)): ?>
+          <div class="org-card-base">
+            <div class="org-empty-state-pad" >
+              <p class="org-empty-state-text" >You haven't created any groups yet.</p>
+              <a href="create-group.php" class="btn-primary">Create your first group</a>
+            </div>
+          </div>
+        <?php else: ?>
+          <div class="group-grid">
+            <?php foreach (array_slice($groups, 0, 3) as $g): ?>
+              <div class="manage-card">
+                <div class="card-banner">
+                  <div class="card-icon-wrap"><i data-lucide="users" style="width: 24px;"></i></div>
+                </div>
+                <div class="card-body">
+                  <h3 style="margin-bottom: 0.5rem; color: var(--secondary); font-size: 1.15rem; font-weight: 700; line-height: 1.3;"><?= h($g['name']) ?></h3>
+                  <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    <span style="display: flex; align-items: center; gap: 0.25rem;"><i data-lucide="users" style="width: 14px;"></i> <?= (int)$g['member_count'] ?> members</span>
+                    <span style="display: flex; align-items: center; gap: 0.25rem;"><i data-lucide="calendar" style="width: 14px;"></i> <?= date('M d, Y', strtotime($g['created_at'])) ?></span>
+                  </div>
+                  <p style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere;">
+                    <?= h($g['description']) ?>
+                  </p>
+                  <div class="manage-actions">
+                    <a href="view-group.php?id=<?= (int)$g['group_id'] ?>" class="btn-primary btn-sm"><i data-lucide="eye" style="width: 14px; display: inline; margin-bottom: -2px;"></i> View Hub</a>
+                    <a href="edit-group.php?id=<?= (int)$g['group_id'] ?>" class="btn-secondary btn-sm"><i data-lucide="settings" style="width: 14px; display: inline; margin-bottom: -2px;"></i> Manage</a>
+                  </div>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <?php if (count($groups) > 3): ?>
+            <div style="text-align: center; margin-top: 1.5rem;">
+              <a href="manage-groups.php" class="btn-secondary">View all <?= count($groups) ?> groups</a>
+            </div>
+          <?php endif; ?>
+        <?php endif; ?>
+      </div>
+
     </main>
   </div>
 
