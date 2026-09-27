@@ -64,6 +64,10 @@ $groups = $groupController->getGroupsByOrganizer($organizerId);
                                 <div class="manage-actions">
                                     <a href="view-group.php?id=<?= $g['group_id'] ?>" class="btn-primary btn-sm"><i data-lucide="eye" style="width: 14px; display: inline; margin-bottom: -2px;"></i> View Hub</a>
                                     <a href="edit-group.php?id=<?= $g['group_id'] ?>" class="btn-secondary btn-sm"><i data-lucide="settings" style="width: 14px; display: inline; margin-bottom: -2px;"></i> Manage</a>
+                                    <form action="delete-group.php" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this group?');">
+                                        <input type="hidden" name="group_id" value="<?= $g['group_id'] ?>">
+                                        <button type="submit" class="btn-secondary btn-sm" style="color: #ef4444; border-color: #fee2e2; background: #fee2e2;"><i data-lucide="trash-2" style="width: 14px; display: inline; margin-bottom: -2px;"></i> Delete</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
