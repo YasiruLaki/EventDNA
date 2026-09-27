@@ -171,6 +171,29 @@ class AuthController {
         }
     }
 
+    public function changePassword($userId, $currentPassword, $newPassword, $confirmPassword) {
+        if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+            return ["success" => false, "message" => "Please fill in all password fields."];
+        }
+        if (strlen($newPassword) < 8) {
+            return ["success" => false, "message" => "New password must be at least 8 characters."];
+        }
+        if ($newPassword !== $confirmPassword) {
+            return ["success" => false, "message" => "New passwords do not match."];
+        }
+
+        $currentHash = $this->userRepo->getPasswordHash($userId);
+        if (!$currentHash || !password_verify($currentPassword, $currentHash)) {
+            return ["success" => false, "message" => "Current password is incorrect."];
+        }
+
+        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+        if ($this->userRepo->updateUserPassword($userId, $passwordHash)) {
+            return ["success" => true, "message" => "Password changed successfully."];
+        }
+        return ["success" => false, "message" => "Failed to update password. Please try again."];
+    }
+
     public function resetPassword($token, $password, $confirmPassword) {
         if (empty($token)) {
             return ["success" => false, "message" => "Invalid or missing token."];

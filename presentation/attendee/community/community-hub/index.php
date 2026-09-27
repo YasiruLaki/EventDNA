@@ -12,7 +12,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Communities — EventDNA</title>
-<link rel="stylesheet" href="../../../globals.css" />
+<link rel="stylesheet" href="../../../../globals.css" />
 <link rel="stylesheet" href="../../dashboard/styles.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>

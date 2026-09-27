@@ -12,7 +12,7 @@
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-logo">
-        <img src="../../images/logo.png" alt="EventDNA" />
+        <img src="../images/logo.png" alt="EventDNA" />
         <span style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem;">Admin</span>
       </div>
       <nav class="admin-nav">

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../auth/login/index.php");
+    header("Location: ../../auth/login/index.php");
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';

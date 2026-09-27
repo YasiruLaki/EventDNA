@@ -85,6 +85,14 @@ class UserRepository {
         return $stmt->execute();
     }
 
+    public function getPasswordHash($userId) {
+        $stmt = $this->conn->prepare("SELECT password_hash FROM users WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row ? $row['password_hash'] : null;
+    }
+
     public function updateUserPassword($userId, $passwordHash) {
         $stmt = $this->conn->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
         $stmt->bind_param("si", $passwordHash, $userId);
