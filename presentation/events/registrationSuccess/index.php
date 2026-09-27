@@ -115,15 +115,15 @@ function formatTime($timeStr) {
           <span class="ticket-badge">Registered</span>
         </div>
         <div class="ticket-body">
-          <h3>AI Innovation Summit 2026</h3>
+          <h3><?= htmlspecialchars($event['name']) ?></h3>
           <div class="ticket-meta">
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Oct 24, 2026 &middot; 9:00 AM
+              <?= formatDate($event['event_date']) ?> &middot; <?= formatTime($event['start_time']) ?>
             </span>
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-              BMICH, Colombo
+              <?= htmlspecialchars($event['location']) ?>
             </span>
             <span class="ticket-meta-item">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c0-3.4 3-6 7-6s7 2.6 7 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -161,31 +161,27 @@ function formatTime($timeStr) {
             Registered
           </span>
           <div style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; margin-top:2rem;">Your Event Pass</div>
-          <h3 style="font-size:1.4rem; font-weight:700; text-align:center; margin:0 0 1.25rem 0; line-height:1.2;">AI Innovation Summit 2026</h3>
+          <h3 style="font-size:1.4rem; font-weight:700; text-align:center; margin:0 0 1.25rem 0; line-height:1.2;"><?= htmlspecialchars($event['name']) ?></h3>
           
           <div style="text-align:center; margin-bottom:1.75rem;">
             <div style="font-size:1.15rem; font-weight:600; color:var(--text-primary); margin-bottom:0.15rem;"><?= htmlspecialchars($attendeeName) ?></div>
             <div style="font-size:0.9rem; color:var(--text-secondary);">Attendee</div>
           </div>
 
-          <div style="font-size:0.85rem; font-weight:600; color:var(--text-primary); letter-spacing:0.02em; margin-bottom:0.4rem;">EVENT ID: AIS2026</div>
+          <div style="font-size:0.85rem; font-weight:600; color:var(--text-primary); letter-spacing:0.02em; margin-bottom:0.4rem;">EVENT ID: <?= htmlspecialchars($event['event_id']) ?></div>
           <div style="font-size:0.75rem; color:var(--text-tertiary);">Check in at the event venue</div>
         </div>
 
         <div class="pass-right-col">
           <div class="pass-info-card">
-            <h3>AI Innovation Summit 2026</h3>
+            <h3><?= htmlspecialchars($event['name']) ?></h3>
             <div class="pass-info-row">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Oct 24–26, 2026 · 9:00 AM
+              <?= formatDate($event['event_date']) ?> · <?= formatTime($event['start_time']) ?>
             </div>
             <div class="pass-info-row">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
-              BMICH, Colombo
-            </div>
-            <div class="pass-info-row">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Starts in 14 days, 5 hours
+              <?= htmlspecialchars($event['location']) ?>
             </div>
           </div>
 
