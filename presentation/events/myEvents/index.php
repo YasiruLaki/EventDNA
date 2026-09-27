@@ -5,6 +5,36 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+$userId = $_SESSION['user_id'];
+
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
+
+$eventRepo = new EventRepository($conn);
+$allEvents = $eventRepo->getRegisteredEvents($userId);
+
+$upcomingEvents = [];
+$pastEvents = [];
+$now = time();
+
+foreach ($allEvents as $ev) {
+    $evTime = strtotime($ev['event_date'] . ' ' . $ev['start_time']);
+    if ($evTime > $now) {
+        $upcomingEvents[] = $ev;
+    } else {
+        $pastEvents[] = $ev;
+    }
+}
+
+function formatDate($dateStr) {
+    return date('M j, Y', strtotime($dateStr));
+}
+function formatShortDate($dateStr) {
+    return date('M j', strtotime($dateStr));
+}
+function formatTime($timeStr) {
+    return date('g:i A', strtotime($timeStr));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
