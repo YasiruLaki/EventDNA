@@ -223,6 +223,27 @@ a {
   transform: translateY(-1px);
 }
 
+.btn-secondary {
+  padding: 1rem 1rem;
+  background: var(--surface-color);
+  color: var(--secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+
 .btn-sm {
   min-height: 42px;
   padding: 0.55rem 1.1rem;
@@ -770,7 +791,7 @@ a {
   }
 
   .hero-inner {
-    padding: 2.25rem 1.5rem;
+    padding: 4rem 1.5rem;
   }
 
 

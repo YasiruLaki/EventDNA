@@ -6,6 +6,8 @@ require_once "../../../application/controllers/AuthController.php";
 $error = "";
 $auth = new AuthController($conn);
 
+$roleName = $_GET["role"] ?? "attendee";
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $fullName = trim($_POST["fullName"] ?? "");
     $email = trim($_POST["email"] ?? "");
@@ -28,27 +30,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - EventDNA</title>
+    <title><?= $roleName === 'organizer' ? 'Create Organizer Account' : 'Create Account' ?> - EventDNA</title>
     <link rel="stylesheet" href="../../../globals.css">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <?php include '../includes/nav.php'; ?>
+    <?php
+    $isOrganizer = ($roleName === 'organizer');
+    $heroTitle = $isOrganizer ? "Host Better.<br><span class=\"highlight\">Manage Smarter.</span>" : "Meet Better.<br><span class=\"highlight\">Network Smarter.</span>";
+    $heroDesc = $isOrganizer ? "Create, manage, and scale your events with EventDNA—an intelligent platform designed for event organizers to deliver exceptional experiences." : "Connect, collaborate, and grow with EventDNA—an intelligent platform that makes professional networking at events smarter, easier, and more meaningful.";
+    $formTitle = $isOrganizer ? "Create Organizer Account" : "Create Account";
+    $formSubtitle = $isOrganizer ? "Start managing your events today." : "Start your networking journey today.";
+    ?>
     <div class="split-layout">
         <div class="left-section">
-            <h1 class="hero-title">Meet Better.<br><span class="highlight">Network Smarter.</span></h1>
+            <h1 class="hero-title"><?= $heroTitle ?></h1>
             <p class="hero-description">
-                Connect, collaborate, and grow with EventDNA—an intelligent platform that makes professional networking at events smarter, easier, and more meaningful.
+                <?= $heroDesc ?>
             </p>
         </div>
         <div class="right-section">
             <div class="register-card">
-                <h2>Create Account</h2>
-                <p class="subtitle">Start your networking journey today.</p>
+                <h2><?= $formTitle ?></h2>
+                <p class="subtitle"><?= $formSubtitle ?></p>
                 
                 
                 <form action="" method="post" onsubmit="this.querySelector('button[type=submit]').classList.add('btn-loading');">
-                    <input type="hidden" name="role" id="roleInput" value="attendee">
+                    <input type="hidden" name="role" id="roleInput" value="<?= htmlspecialchars($roleName) ?>">
                     
                     <div class="form-group">
                         <label for="fullName">Full Name</label>

@@ -10,6 +10,21 @@ if (!isset($_SESSION['user_id']) || (int)($_SESSION['role_id'] ?? 0) !== 2) {
 $organizerId = (int)$_SESSION['user_id'];
 $organizerName = $_SESSION['full_name'] ?? 'Organizer';
 
+require_once __DIR__ . '/../../../data/database.php';
+$stmt = $conn->prepare("SELECT profile_completed, profile_photo FROM profiles WHERE user_id = ?");
+$stmt->bind_param("i", $organizerId);
+$stmt->execute();
+$res = $stmt->get_result()->fetch_assoc();
+$organizerPhoto = $res['profile_photo'] ?? null;
+
+if (!$res || !$res['profile_completed']) {
+    if (strpos($_SERVER['REQUEST_URI'], 'organizer/onboarding/index.php') === false) {
+        // Redirect to onboarding if profile is incomplete
+        header("Location: /eventDNA/presentation/organizer/onboarding/index.php");
+        exit;
+    }
+}
+
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

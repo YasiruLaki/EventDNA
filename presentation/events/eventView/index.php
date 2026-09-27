@@ -106,11 +106,7 @@ function coverUrl($path) {
       <span><?= htmlspecialchars($cancelMessage ?: 'The organizer cancelled this event. Registration is closed.') ?></span>
     </div>
     <?php endif; ?>
-    <?php if(!empty($interests)): ?>
-    <span class="hero-badge"><?= htmlspecialchars($interests[0]) ?></span>
-    <?php endif; ?>
     <h1><?= htmlspecialchars($event['name']) ?></h1>
-    <p><?= nl2br(htmlspecialchars($event['description'])) ?></p>
   </div>
 </section>
 
@@ -193,30 +189,7 @@ function coverUrl($path) {
         </div>
       </div>
 
-      <h2 class="why-heading">Highlights</h2>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l2.6 6.2L21 10l-5.4 3.9L17 21l-5-3.8L7 21l1.4-7.1L3 10l6.4-1.8L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-          </div>
-          <h3>Expert Sessions</h3>
-          <p>Learn from professionals and researchers.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-          </div>
-          <h3>Networking after check-in</h3>
-          <p>Discover relevant connections after you check in at the event.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20V10l8-6 8 6v10" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 20v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-          </div>
-          <h3>Startup Showcase</h3>
-          <p>Explore emerging products and ideas.</p>
-        </div>
-      </div>
+
     </div>
 
     <div class="side-col">
