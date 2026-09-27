@@ -1,4 +1,13 @@
-<?php require_once "includes/guard.php"; ?>
+<?php 
+require_once "includes/guard.php"; 
+require_once "../../data/database.php";
+require_once "../../application/controllers/AdminController.php";
+
+$controller = new AdminController($conn);
+$search = $_GET['search'] ?? '';
+$statusFilter = $_GET['status'] ?? '';
+$events = $controller->getAllEvents($search, $statusFilter);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -32,55 +41,58 @@
         <h1 class="page-title">All Events</h1>
       </div>
 
-      <div class="filters-bar">
-        <div class="search-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" placeholder="Search events..." />
+      <form method="GET" class="filters-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <div class="search-box" style="flex: 1; display: flex; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 0 1rem;">
+          <svg style="color: var(--text-secondary); width: 18px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" name="search" value="<?= h($search) ?>" placeholder="Search events or organizers..." style="border: none; outline: none; padding: 0.75rem; width: 100%;" />
         </div>
-        <select class="filter-select">
-          <option>All Statuses</option>
-          <option>Live</option>
-          <option>Upcoming</option>
-          <option>Draft</option>
+        <select class="filter-select" name="status" style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; outline: none;" onchange="this.form.submit()">
+          <option value="">All Statuses</option>
+          <option value="ACTIVE" <?= $statusFilter === 'ACTIVE' ? 'selected' : '' ?>>Active</option>
+          <option value="CANCELLED" <?= $statusFilter === 'CANCELLED' ? 'selected' : '' ?>>Cancelled</option>
         </select>
-      </div>
+      </form>
 
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Event</th>
-            <th>Organizer</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="font-weight: 600;">AI Innovation Summit 2026</td>
-            <td>Hanan Perera</td>
-            <td>Oct 24</td>
-            <td><span class="status-badge status-live">Live</span></td>
-            <td><a href="event-details.php" class="btn-view">View</a></td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600;">Career Fair</td>
-            <td>Kamal Silva</td>
-            <td>Dec 03</td>
-            <td><span class="status-badge status-upcoming">Upcoming</span></td>
-            <td><a href="event-details.php" class="btn-view">View</a></td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600;">Design Masterclass</td>
-            <td>Sarah Fernando</td>
-            <td>Jan 18</td>
-            <td><span class="status-badge status-draft">Draft</span></td>
-            <td><a href="event-details.php" class="btn-view">View</a></td>
-          </tr>
-        </tbody>
-      </table>
+      <div style="overflow-x: auto; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color);">
+        <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-color); background: #f8fafc;">
+              <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Event</th>
+              <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Organizer</th>
+              <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Event Date</th>
+              <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Status</th>
+              <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Cancellation Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($events as $ev): ?>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--secondary);"><?= h($ev['name']) ?></td>
+              <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary);"><?= h($ev['organizer_name']) ?></td>
+              <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary);"><?= h(date('M d, Y', strtotime($ev['event_date']))) ?> at <?= h(date('h:i A', strtotime($ev['start_time']))) ?></td>
+              <td style="padding: 1.25rem 1.5rem;">
+                  <?php if ($ev['status'] === 'ACTIVE'): ?>
+                      <span class="status-badge" style="background: rgba(34, 197, 94, 0.1); color: var(--success); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;">Active</span>
+                  <?php elseif ($ev['status'] === 'CANCELLED'): ?>
+                      <span class="status-badge" style="background: rgba(220, 38, 38, 0.1); color: var(--danger); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;">Cancelled</span>
+                  <?php else: ?>
+                      <span class="status-badge" style="background: #f1f5f9; color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;"><?= h(ucfirst(strtolower($ev['status']))) ?></span>
+                  <?php endif; ?>
+              </td>
+              <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                  <?= $ev['status'] === 'CANCELLED' && $ev['cancellation_reason'] ? h($ev['cancellation_reason']) : '<span style="color: #cbd5e1;">—</span>' ?>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (empty($events)): ?>
+                <tr>
+                    <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No events found.</td>
+                </tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
     </main>
   </div>
-
-  </body>
+</body>
 </html>

@@ -55,6 +55,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_valid()) {
                 $error = $res['message'];
             }
         }
+    } elseif ($action === 'suspend') {
+        $userId = (int)($_POST['user_id'] ?? 0);
+        $durationDays = (int)($_POST['duration'] ?? 7);
+        $reason = trim($_POST['reason'] ?? '');
+        if ($userId && $durationDays > 0 && $reason !== '') {
+            $res = $controller->suspendUser($userId, $durationDays, $reason);
+            if ($res['success']) {
+                $success = $res['message'] . " (Cancelled " . $res['cancelled_events'] . " affected events)";
+            } else {
+                $error = $res['message'];
+            }
+        } else {
+            $error = "Valid duration and reason are required to suspend.";
+        }
+    } elseif ($action === 'reactivate') {
+        $userId = (int)($_POST['user_id'] ?? 0);
+        if ($userId) {
+            $res = $controller->reactivateUser($userId);
+            if ($res['success']) {
+                $success = $res['message'];
+            } else {
+                $error = $res['message'];
+            }
+        }
+    } elseif ($action === 'disable') {
+        $userId = (int)($_POST['user_id'] ?? 0);
+        if ($userId) {
+            $res = $controller->disableUser($userId);
+            if ($res['success']) {
+                $success = $res['message'];
+            } else {
+                $error = $res['message'];
+            }
+        }
     }
 }
 
@@ -202,16 +236,33 @@ $roles = $rolesRes->fetch_all(MYSQLI_ASSOC);
                         <span class="status-badge status-disabled" style="background: rgba(100, 116, 139, 0.1); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;">Disabled</span>
                     <?php endif; ?>
                 </td>
-                <td style="padding: 1.25rem 1.5rem; display: flex; gap: 0.75rem;">
-                    <button onclick="openEditModal(<?= $u['user_id'] ?>, '<?= h(addslashes($u['full_name'])) ?>', '<?= h(addslashes($u['email'])) ?>', <?= $u['role_id'] ?>, '<?= h(addslashes($u['status'])) ?>')" style="padding: 0.4rem 1rem; border: 1px solid var(--border-color); background: #fff; border-radius: 6px; cursor: pointer; font-weight: 600; color: var(--secondary);">Edit</button>
+                <td style="padding: 1.25rem 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button onclick="openEditModal(<?= $u['user_id'] ?>, '<?= h(addslashes($u['full_name'])) ?>', '<?= h(addslashes($u['email'])) ?>', <?= $u['role_id'] ?>, '<?= h(addslashes($u['status'])) ?>')" style="padding: 0.4rem 0.75rem; border: 1px solid var(--border-color); background: #fff; border-radius: 6px; cursor: pointer; font-weight: 600; color: var(--secondary); font-size: 0.8rem;">Edit</button>
                     
                     <?php if ($u['user_id'] != $_SESSION['user_id']): ?>
-                    <form method="POST" style="display:inline;" onsubmit="return initCustomConfirm(this, 'Are you sure you want to delete this user?', event);">
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
-                        <button type="submit" style="padding: 0.4rem 1rem; border: 1px solid rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.05); color: var(--danger); border-radius: 6px; cursor: pointer; font-weight: 600;">Delete</button>
-                    </form>
+                        <?php if ($u['status'] === 'ACTIVE'): ?>
+                            <button onclick="openSuspendModal(<?= $u['user_id'] ?>, '<?= h(addslashes($u['full_name'])) ?>')" style="padding: 0.4rem 0.75rem; border: 1px solid rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.05); color: #d97706; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem;">Suspend</button>
+                            <form method="POST" style="display:inline;" onsubmit="return initCustomConfirm(this, 'Are you sure you want to disable this user?', event);">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="disable">
+                                <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
+                                <button type="submit" style="padding: 0.4rem 0.75rem; border: 1px solid rgba(100, 116, 139, 0.3); background: rgba(100, 116, 139, 0.05); color: var(--text-secondary); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem;">Disable</button>
+                            </form>
+                        <?php else: ?>
+                            <form method="POST" style="display:inline;" onsubmit="return initCustomConfirm(this, 'Are you sure you want to reactivate this user?', event);">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="action" value="reactivate">
+                                <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
+                                <button type="submit" style="padding: 0.4rem 0.75rem; border: 1px solid rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); color: var(--success); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem;">Reactivate</button>
+                            </form>
+                        <?php endif; ?>
+                        
+                        <form method="POST" style="display:inline;" onsubmit="return initCustomConfirm(this, 'Are you sure you want to delete this user?', event);">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
+                            <button type="submit" style="padding: 0.4rem 0.75rem; border: 1px solid rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.05); color: var(--danger); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem;">Delete</button>
+                        </form>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -302,6 +353,34 @@ $roles = $rolesRes->fetch_all(MYSQLI_ASSOC);
     </div>
   </div>
 
+  <!-- Suspend Modal -->
+  <div id="suspendModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('suspendModal')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">Suspend <span id="suspend_user_name"></span></h2>
+      <form method="POST">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="suspend">
+        <input type="hidden" name="user_id" id="suspend_user_id" value="">
+        <div class="form-group">
+            <label>Duration</label>
+            <select name="duration" class="form-select" required>
+                <option value="1">1 Day</option>
+                <option value="3">3 Days</option>
+                <option value="7" selected>7 Days</option>
+                <option value="14">14 Days</option>
+                <option value="30">30 Days</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Reason</label>
+            <input type="text" name="reason" class="form-input" required placeholder="e.g. Community guideline violation">
+        </div>
+        <button type="submit" class="btn-submit" style="background: #d97706;">Confirm Suspension</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     lucide.createIcons();
 
@@ -319,6 +398,12 @@ $roles = $rolesRes->fetch_all(MYSQLI_ASSOC);
         document.getElementById('edit_role_id').value = roleId;
         document.getElementById('edit_account_status').value = accountStatus;
         openModal('editModal');
+    }
+    
+    function openSuspendModal(id, name) {
+        document.getElementById('suspend_user_id').value = id;
+        document.getElementById('suspend_user_name').innerText = name;
+        openModal('suspendModal');
     }
   </script>
 <!-- Custom Confirm Modal Setup -->

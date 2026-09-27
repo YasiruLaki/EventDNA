@@ -8,7 +8,6 @@ class OnboardingController {
     const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
     const PHOTO_TYPES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
 
-    // Field / Industry keys stored in profiles.field, with display labels
     const INDUSTRIES = [
         'medicine' => 'Medicine & Healthcare', 'technology' => 'Technology', 'business' => 'Business',
         'engineering' => 'Engineering', 'education' => 'Education', 'research' => 'Research',
@@ -69,7 +68,10 @@ class OnboardingController {
             return $photo;
         }
 
-        $saved = $this->onboardingRepo->saveUserProfile($userId, $profile['full_name'], $data['job_title'], $data['organization'], $data['field'], $data['bio'], $photo['path'])
+        $linkedinUrl = trim($data['linkedin_url'] ?? '');
+        $otherSocialUrl = trim($data['other_social_url'] ?? '');
+
+        $saved = $this->onboardingRepo->saveUserProfile($userId, $profile['full_name'], $data['job_title'], $data['organization'], $data['field'], $data['bio'], $linkedinUrl, $otherSocialUrl, $photo['path'])
             && $this->onboardingRepo->saveUserSkills($userId, $skills)
             && $this->onboardingRepo->saveUserInterests($userId, $interests)
             && $this->onboardingRepo->saveUserNetworkingGoals($userId, $goals);
@@ -96,14 +98,13 @@ class OnboardingController {
         return ["success" => true, "message" => "Profile photo removed."];
     }
 
-    // Keeps only submitted IDs that exist in the given catalog.
+
     private function filterIds($submitted, $knownIds) {
         $known = array_map('intval', $knownIds);
         $ids = array_unique(array_map('intval', (array)$submitted));
         return array_values(array_filter($ids, fn($id) => in_array($id, $known, true)));
     }
 
-    // Percentage of profile fields the user has filled in.
     public function getProfileCompletion($profile) {
         $checks = [
             $profile['full_name'], $profile['profile_photo'], $profile['job_title'],
@@ -114,7 +115,7 @@ class OnboardingController {
         return (int)round($filled / count($checks) * 100);
     }
 
-    public function processStep1($userId, $fullName, $jobTitle, $organization, $industry, $bio, $photoFile = null) {
+    public function processStep1($userId, $fullName, $jobTitle, $organization, $industry, $bio, $linkedinUrl, $otherSocialUrl, $photoFile = null) {
         if (empty($fullName)) {
             return ["success" => false, "message" => "Full Name is required."];
         }
@@ -124,7 +125,7 @@ class OnboardingController {
             return $photo;
         }
 
-        $saved = $this->onboardingRepo->saveUserProfile($userId, $fullName, $jobTitle, $organization, $industry, $bio, $photo['path']);
+        $saved = $this->onboardingRepo->saveUserProfile($userId, $fullName, $jobTitle, $organization, $industry, $bio, $linkedinUrl, $otherSocialUrl, $photo['path']);
 
         if ($saved) {
             return ["success" => true];
@@ -134,7 +135,6 @@ class OnboardingController {
         }
     }
 
-    // Saves an optional profile photo. "path" is null when no file was uploaded.
     private function storePhoto($file) {
         if (!$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
             return ["success" => true, "path" => null];

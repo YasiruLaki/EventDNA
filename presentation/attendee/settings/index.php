@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'organization' => trim($_POST['organization'] ?? ''),
             'field' => trim($_POST['field'] ?? ''),
             'bio' => trim($_POST['bio'] ?? ''),
+            'linkedin_url' => trim($_POST['linkedinUrl'] ?? ''),
+            'other_social_url' => trim($_POST['otherSocialUrl'] ?? ''),
             'skills' => $_POST['skills'] ?? [],
             'interests' => $_POST['interests'] ?? [],
             'goals' => $_POST['goals'] ?? [],
@@ -49,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $settingsController->updateNotifications($attendeeId, $_POST['notify'] ?? []);
     } elseif ($action === 'privacy') {
         $tab = 'privacy';
-        $result = $settingsController->updatePrivacy($attendeeId, $_POST['profile_visibility'] ?? '');
+        // Profile visibility has been removed, but we keep the tab for the QR feature
+        $result = ["success" => true, "message" => "Privacy settings updated."];
     } else {
         $result = ["success" => false, "message" => "Unknown action."];
     }
@@ -267,6 +270,16 @@ function flash_message($tab, $flash) {
               </div>
 
               <div class="form-group">
+                <label for="linkedinUrl">LinkedIn URL (Optional)</label>
+                <input type="url" id="linkedinUrl" name="linkedinUrl" class="form-input" value="<?= h($profile['linkedin_url'] ?? '') ?>" maxlength="255">
+              </div>
+
+              <div class="form-group">
+                <label for="otherSocialUrl">Other Social Link (Optional)</label>
+                <input type="url" id="otherSocialUrl" name="otherSocialUrl" class="form-input" value="<?= h($profile['other_social_url'] ?? '') ?>" maxlength="255">
+              </div>
+
+              <div class="form-group">
                 <label for="bio">Professional Bio</label>
                 <textarea id="bio" name="bio" class="form-textarea" rows="4" maxlength="300"><?= h($profile['bio']) ?></textarea>
               </div>
@@ -347,25 +360,12 @@ function flash_message($tab, $flash) {
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="privacy">
 
-              <h3>Profile Visibility</h3>
-              <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Who can view your public profile information?</p>
-              <div class="radio-group" style="margin-bottom: 2rem;">
-                <label class="radio-label">
-                  <input type="radio" name="profile_visibility" value="MEMBERS"<?= $settings['profile_visibility'] === 'MEMBERS' ? ' checked' : '' ?>>
-                  <div class="radio-content">
-                    <strong>EventDNA members</strong>
-                  </div>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="profile_visibility" value="CONNECTIONS"<?= $settings['profile_visibility'] === 'CONNECTIONS' ? ' checked' : '' ?>>
-                  <div class="radio-content">
-                    <strong>People you've connected with</strong>
-                  </div>
-                </label>
-              </div>
-
               <h3>Personal QR</h3>
-              <p style="color: var(--text-secondary); font-size: 0.9rem;">Your Personal QR only shares your public profile information.</p>
+              <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Your Personal QR only shares your public profile information.</p>
+              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; width: fit-content;">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=eventdna_user_<?= $attendeeId ?>" alt="Personal QR Code" style="width: 150px; height: 150px; border-radius: 8px;">
+                  <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Scan to connect</span>
+              </div>
 
               <div class="card-actions" style="margin-top: 2rem;">
                 <button type="submit" class="btn-primary" id="privacySaveBtn" style="display: none;">Save Changes</button>

@@ -62,10 +62,25 @@ class AuthController {
             if ($user['role_id'] != $expectedRoleId) {
                 return ["success" => false, "message" => "Invalid role for this account."];
             }
+
+            // Check Account Status
+            if ($user['account_status'] === 'DISABLED') {
+                return ["success" => false, "message" => "Your account has been disabled. Please contact support."];
+            }
+            if ($user['account_status'] === 'SUSPENDED') {
+                if (strtotime($user['suspended_until']) <= time()) {
+                    // Auto reactivate
+                    $this->userRepo->autoReactivateUser($user['user_id']);
+                } else {
+                    $sus_until = date('d F Y, h:i A', strtotime($user['suspended_until']));
+                    return ["success" => false, "message" => "Your account is suspended until $sus_until."];
+                }
+            }
             
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['role_id'] = $user['role_id'];
             $_SESSION['full_name'] = $user['full_name'];
+            $_SESSION['account_status'] = 'ACTIVE';
             
             return ["success" => true, "role_id" => $user['role_id']];
         }

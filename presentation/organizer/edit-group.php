@@ -89,10 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php endforeach; ?>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
-                    <a href="view-group.php?id=<?= $groupId ?>" class="btn-secondary" style="padding: 0.75rem 1.5rem; text-decoration: none;">Cancel</a>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="view-group.php?id=<?= $groupId ?>" class="btn-secondary" style="padding: 0.75rem 1.5rem; text-decoration: none;">Cancel</a>
+                        <button type="button" class="btn-secondary" style="color: #ef4444; border-color: #fee2e2; background: #fee2e2; padding: 0.75rem 1.5rem;" onclick="if(confirm('Are you sure you want to delete this group?')) document.getElementById('deleteForm').submit();"><i data-lucide="trash-2" style="width: 16px; margin-right: 0.4rem; display: inline; margin-bottom: -2px;"></i> Delete</button>
+                    </div>
                     <button type="submit" class="btn-primary org-btn-pad">Save Changes <i data-lucide="save" style="width: 16px; margin-left: 0.4rem;"></i></button>
                 </div>
+            </form>
+            <form id="deleteForm" action="delete-group.php" method="POST" style="display: none;">
+                <input type="hidden" name="group_id" value="<?= $groupId ?>">
             </form>
         </main>
     </div>

@@ -1,11 +1,7 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../attendee/includes/avatar.php';
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../auth/login/index.php");
-    exit;
-}
-$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+
+require_once __DIR__ . '/../includes/guard.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

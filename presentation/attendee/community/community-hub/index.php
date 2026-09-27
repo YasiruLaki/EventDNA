@@ -1,11 +1,7 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../../attendee/includes/avatar.php';
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../auth/login/index.php");
-    exit;
-}
-$attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+
+require_once __DIR__ . '/../includes/guard.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +25,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
           <a href="../../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
           <a href="../../../events/myEvents/index.php" class="nav-link">My Events</a>
           <a href="#" class="nav-link active">Communities</a>
-          <a href="../../NetworkHub/index.php" class="nav-link">Connections</a>
+          <a href="../../myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
       <div class="nav-right">

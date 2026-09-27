@@ -13,6 +13,8 @@ $defaultOrganization = $profile['organization'] ?? '';
 $defaultRole = $profile['job_title'] ?? '';
 $defaultIndustry = $profile['field'] ?? '';
 $defaultBio = $profile['bio'] ?? '';
+$defaultLinkedin = $profile['linkedin_url'] ?? '';
+$defaultOtherSocial = $profile['other_social_url'] ?? '';
 $defaultPhoto = $profile['profile_photo'] ?? '';
 
 $userSkills = $profile && !empty($profile['skills']) ? array_keys($profile['skills']) : [];
@@ -34,9 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!is_array($interests)) $interests = [$interests];
     if (!is_array($goals)) $goals = [$goals];
     
+    $linkedinUrl = trim($_POST['linkedinUrl'] ?? '');
+    $otherSocialUrl = trim($_POST['otherSocialUrl'] ?? '');
+
     $photoFile = $_FILES['profile_photo'] ?? null;
 
-    $res1 = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio, $photoFile);
+    $res1 = $controller->processStep1($_SESSION['user_id'], $fullName, $role, $organization, $industry, $bio, $linkedinUrl, $otherSocialUrl, $photoFile);
     
     if ($res1['success']) {
         $controller->processStep2($_SESSION['user_id'], $skills, $interests);
@@ -49,6 +54,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $defaultRole = $profile['job_title'] ?? '';
         $defaultIndustry = $profile['field'] ?? '';
         $defaultBio = $profile['bio'] ?? '';
+        $defaultLinkedin = $profile['linkedin_url'] ?? '';
+        $defaultOtherSocial = $profile['other_social_url'] ?? '';
         $defaultPhoto = $profile['profile_photo'] ?? '';
         $userSkills = $profile && !empty($profile['skills']) ? array_keys($profile['skills']) : [];
         $userInterests = $profile && !empty($profile['interests']) ? array_keys($profile['interests']) : [];
@@ -231,10 +238,13 @@ $activeNav = ''; // No active nav link for profile
             <?php endif; ?>
 
             <form action="" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="fullName" value="<?php echo htmlspecialchars($defaultName); ?>">
-
                 <div class="form-card">
                     <h2 class="org-form-section-title">Basic Information</h2>
+
+                    <div class="form-group full-width">
+                        <label for="fullName">Full Name <span style="color:var(--error)">*</span></label>
+                        <input type="text" id="fullName" name="fullName" value="<?php echo htmlspecialchars($defaultName); ?>" class="form-input" required>
+                    </div>
 
                     <div class="form-group full-width">
                         <label for="profile_photo">Profile Photo / Logo</label>
@@ -269,6 +279,16 @@ $activeNav = ''; // No active nav link for profile
                             <option value="finance" <?php echo $defaultIndustry === 'finance' ? 'selected' : ''; ?>>Finance</option>
                             <option value="other" <?php echo $defaultIndustry === 'other' ? 'selected' : ''; ?>>Other</option>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="linkedinUrl">LinkedIn URL (Optional)</label>
+                        <input type="url" id="linkedinUrl" name="linkedinUrl" value="<?php echo htmlspecialchars($defaultLinkedin); ?>" placeholder="https://linkedin.com/in/username" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="otherSocialUrl">Other Social Link (Optional)</label>
+                        <input type="url" id="otherSocialUrl" name="otherSocialUrl" value="<?php echo htmlspecialchars($defaultOtherSocial); ?>" placeholder="e.g. GitHub, Website" class="form-input">
                     </div>
 
                     <div class="form-group full-width">
