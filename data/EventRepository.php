@@ -144,11 +144,15 @@ class EventRepository {
                      WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count
             FROM events e
             WHERE e.status != 'CANCELLED'
+              AND TIMESTAMP(e.event_date, e.end_time) > ?
             ORDER BY e.event_date ASC, e.start_time ASC
         ");
         if (!$stmt) {
             die('Error preparing getUpcomingEvents: ' . $this->conn->error);
         }
+        // Hide events that have already ended, using PHP's clock so the cutoff matches the app's timezone
+        $now = date('Y-m-d H:i:s');
+        $stmt->bind_param("s", $now);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
