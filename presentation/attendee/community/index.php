@@ -1,90 +1,110 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) { header("Location: ../../auth/login/index.php"); exit; }
+require_once __DIR__ . '/../includes/guard.php';
 require_once "../../../data/database.php";
 require_once "../../../application/controllers/GroupController.php";
 
 $groupController = new GroupController($conn);
 $search = $_GET['q'] ?? '';
-$groups = $groupController->getActiveGroups($search);
-$isOrganizer = (int)($_SESSION['role_id'] ?? 0) === 2;
+$tab = $_GET['tab'] ?? 'discover'; // discover or mygroups
+$userId = (int)$_SESSION['user_id'];
+
+if ($tab === 'mygroups') {
+    $groups = $groupController->getMyJoinedGroups($userId);
+} else {
+    $groups = $groupController->getActiveGroups($search);
+}
+
+// Helper to handle cover photos
+function coverUrl($path) {
+    if (!$path) return '';
+    return preg_match('#^https?://#i', $path) ? $path : '../../../' . ltrim($path, '/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Community Hub - EventDNA</title>
-    <link rel="stylesheet" href="../dashboard/styles.css" />
-    <link rel="stylesheet" href="../../organizer/organizer.css" />
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        
-        .group-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-top: 2rem; }
-        .group-card { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; text-decoration: none; color: inherit; }
-        .group-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.08), 0 4px 12px -4px rgba(0,0,0,0.04); border-color: var(--primary-tint); }
-        .card-banner { height: 80px; background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%); position: relative; }
-        .card-icon-wrap { position: absolute; bottom: -20px; left: 1.5rem; width: 48px; height: 48px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: var(--primary); }
-        .card-body { padding: 2.5rem 1.5rem 1.5rem; flex: 1; display: flex; flex-direction: column; }
-        .group-title { font-size: 1.15rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.4rem; line-height: 1.3; }
-        .group-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; }
-        .group-desc { font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .group-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
-        .g-tag { background: var(--primary-tint); color: var(--primary); padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
-        .search-bar-wrap { position: relative; max-width: 400px; width: 100%; }
-        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); width: 18px; }
-        .search-input { width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 0.95rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .search-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-tint); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Communities - EventDNA</title>
+  <link rel="stylesheet" href="../../../globals.css" />
+  <link rel="stylesheet" href="../../events/ExploreEvents/styles.css">
+  <style>
+    .event-card { text-decoration: none; display: flex; flex-direction: column; }
+    .event-card:hover { transform: translateY(-4px); }
+  </style>
 </head>
-<body class="org-page-bg">
-    <?php include '../includes/nav.php'; ?>
-    <div class="dashboard-shell">
-        <div class="org-hero-header" style="margin-bottom: 2rem; display: flex; flex-direction: row; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <h1 class="page-title">Discover Communities</h1>
-                <p class="supporting-copy">Find and join groups that match your interests.</p>
+<body>
+  <?php 
+  $activeNav = 'communities';
+  include '../includes/nav.php'; 
+  ?>
+  <div class="dashboard-shell">
+    <main class="dashboard-content">
+      
+      <!-- Header Section -->
+      <section class="section-row" style="margin-bottom: 2rem;">
+        <div class="section-head" style="margin-bottom: 1rem;">
+          <h1 style="font-size: 2.2rem; font-weight: 700; color: #0f172a;">Communities</h1>
+        </div>
+        <p class="supporting-copy" style="margin-bottom: 1.5rem; color: var(--text-secondary); max-width: 600px;">
+          Discover groups, join communities that match your interests, and connect through discussions and shared resources.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="search-bar" style="max-width: 500px; margin-bottom: 2rem;">
+          <form method="get" style="display: flex; gap: 0.5rem; width: 100%;">
+            <input type="hidden" name="tab" value="<?= htmlspecialchars($tab) ?>">
+            <div class="search-input-wrapper" style="flex: 1; position: relative;">
+              <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 20px; color: var(--text-tertiary);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Search communities..." style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.75rem; border: 1px solid var(--border-color); border-radius: 999px; font-size: 0.95rem; background: var(--surface-color);">
             </div>
-            <form method="get" class="search-bar-wrap">
-                <i data-lucide="search" class="search-icon"></i>
-                <input type="text" name="q" class="search-input" value="<?= htmlspecialchars($search) ?>" placeholder="Search communities by name or topic...">
-            </form>
+            <button type="submit" class="btn-primary" style="padding: 0 1.5rem; border-radius: 999px;">Search</button>
+          </form>
         </div>
 
-        <div class="group-grid">
-            <?php foreach ($groups as $g): ?>
-                <a href="view.php?id=<?= $g['group_id'] ?>" class="group-card">
-                    <div class="card-banner">
-                        <div class="card-icon-wrap"><i data-lucide="users" style="width: 24px;"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="group-title"><?= htmlspecialchars($g['name']) ?></h3>
-                        <div class="group-meta">
-                            <i data-lucide="user" style="width: 14px;"></i> <?= $g['member_count'] ?> Members
-                        </div>
-                        <p class="group-desc"><?= htmlspecialchars($g['description']) ?></p>
-                        <div class="group-tags">
-                            <?php 
-                            $tags = array_slice($g['interests'], 0, 3);
-                            foreach ($tags as $tag): ?>
-                                <span class="g-tag"><?= htmlspecialchars($tag['name']) ?></span>
-                            <?php endforeach; ?>
-                            <?php if (count($g['interests']) > 3): ?>
-                                <span class="g-tag" style="background: #e2e8f0; color: #475569;">+<?= count($g['interests']) - 3 ?></span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </a>
-            <?php endforeach; ?>
+        <!-- Filter Tabs (Pills) -->
+        <div class="filter-scroll">
+          <div class="filter-pills">
+            <a href="?tab=discover&q=<?= urlencode($search) ?>" class="pill <?= $tab === 'discover' ? 'active' : '' ?>">Discover Groups</a>
+            <a href="?tab=mygroups&q=<?= urlencode($search) ?>" class="pill <?= $tab === 'mygroups' ? 'active' : '' ?>">My Groups</a>
+          </div>
         </div>
-        
-        <?php if (empty($groups)): ?>
-            <div class="org-empty-state-dashed" style="margin-top: 2rem;">
-                <div class="org-empty-icon"><i data-lucide="search-x" style="width: 32px;"></i></div>
-                <h3 class="org-empty-state-title">No communities found</h3>
-                <p class="org-empty-state-desc">Try adjusting your search terms.</p>
+      </section>
+
+      <!-- Communities Grid -->
+      <section class="section-row events-section">
+        <div class="section-head">
+          <h3><?= $tab === 'discover' ? 'All Communities' : 'Your Communities' ?></h3>
+        </div>
+
+        <div class="recommendation-row">
+          <?php foreach ($groups as $idx => $g): 
+              $mainInterest = !empty($g['interests']) ? $g['interests'][0]['name'] : 'Community';
+              $gradClass = 'grad-' . (($idx % 3) + 1);
+          ?>
+          <article class="event-card" onclick="window.location.href='view.php?id=<?= $g['group_id'] ?>'" style="cursor: pointer;">
+            <!-- Dummy cover since groups don't have covers yet, or use abstract gradient -->
+            <div class="event-image <?= $gradClass ?>" style="height: 140px; display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 48px; opacity: 0.8;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
-        <?php endif; ?>
-    </div>
-    <script>lucide.createIcons();</script>
+            <div class="event-body">
+              <span class="event-chip"><?= htmlspecialchars($mainInterest) ?></span>
+              <h4><?= htmlspecialchars($g['name']) ?></h4>
+              <p><?= number_format($g['member_count']) ?> members</p>
+              <div class="event-card-footer" style="margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <span class="event-price" style="font-weight: 400; font-size: 0.85rem; color: var(--text-secondary);"><?= htmlspecialchars(substr($g['description'], 0, 60)) ?>...</span>
+                <a href="view.php?id=<?= $g['group_id'] ?>" class="btn-view">View</a>
+              </div>
+            </div>
+          </article>
+          <?php endforeach; ?>
+          <?php if (empty($groups)): ?>
+            <p style="color: var(--text-secondary); grid-column: 1 / -1; text-align: center; padding: 2rem 0;">No communities found.</p>
+          <?php endif; ?>
+        </div>
+      </section>
+
+    </main>
+  </div>
 </body>
 </html>
