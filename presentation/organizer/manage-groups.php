@@ -17,16 +17,6 @@ $groups = $groupController->getGroupsByOrganizer($organizerId);
   <link rel="stylesheet" href="../attendee/dashboard/styles.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="organizer.css" />
-  <style>
-    .manage-card { background: #fff; border-radius: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; text-decoration: none; color: inherit; position: relative; }
-    .manage-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.08), 0 4px 12px -4px rgba(0,0,0,0.04); border-color: var(--primary-tint); }
-    .card-banner { height: 90px; background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%); position: relative; }
-    .card-icon-wrap { position: absolute; bottom: -20px; left: 1.5rem; width: 48px; height: 48px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: var(--primary); }
-    .card-body { padding: 2.5rem 1.5rem 1.5rem; flex: 1; display: flex; flex-direction: column; }
-    .group-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; margin-top: 2rem; }
-    .manage-actions { display: flex; gap: 0.5rem; margin-top: auto; padding-top: 1.25rem; border-top: 1px solid #f1f5f9; }
-    .manage-actions a { flex: 1; text-align: center; }
-  </style>
 </head>
 <body class="org-page-bg" >
     <?php include 'includes/nav.php'; ?>
