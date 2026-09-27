@@ -168,5 +168,45 @@ class EventRepository {
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function getRegistration($eventId, $userId) {
+        $stmt = $this->conn->prepare("
+            SELECT registration_id, status, receive_updates, registered_at
+            FROM event_registrations
+            WHERE event_id = ? AND user_id = ?
+        ");
+        $stmt->bind_param("ii", $eventId, $userId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function registerAttendee($eventId, $userId, $receiveUpdates) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO event_registrations (event_id, user_id, status, receive_updates)
+            VALUES (?, ?, 'REGISTERED', ?)
+            ON DUPLICATE KEY UPDATE status = 'REGISTERED', receive_updates = ?,
+                                    registered_at = CURRENT_TIMESTAMP, approved_at = NULL
+        ");
+        $stmt->bind_param("iiii", $eventId, $userId, $receiveUpdates, $receiveUpdates);
+        return $stmt->execute();
+    }
+
+    public function cancelRegistration($eventId, $userId) {
+        $stmt = $this->conn->prepare("
+            DELETE FROM event_registrations
+            WHERE event_id = ? AND user_id = ? AND status IN (" . self::SEAT_STATUSES . ")
+        ");
+        $stmt->bind_param("ii", $eventId, $userId);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function setReceiveUpdates($eventId, $userId, $receiveUpdates) {
+        $stmt = $this->conn->prepare("
+            UPDATE event_registrations SET receive_updates = ?
+            WHERE event_id = ? AND user_id = ? AND status IN (" . self::SEAT_STATUSES . ")
+        ");
+        $stmt->bind_param("iii", $receiveUpdates, $eventId, $userId);
+        return $stmt->execute();
+    }
 }
 ?>

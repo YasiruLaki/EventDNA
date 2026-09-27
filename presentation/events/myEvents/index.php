@@ -38,7 +38,10 @@ function formatTime($timeStr) {
 }
 // Cover photos are stored relative to the project root (e.g. uploads/events/x.jpg)
 function coverUrl($path) {
-    return $path ? '../../../' . $path : '';
+    if (!$path) {
+        return '';
+    }
+    return preg_match('#^https?://#i', $path) ? $path : '../../../' . $path;
 }
 ?>
 <!DOCTYPE html>
