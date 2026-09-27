@@ -5,13 +5,42 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+$userId = $_SESSION['user_id'];
+
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
+
+$eventId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$eventRepo = new EventRepository($conn);
+$event = $eventRepo->getEventById($eventId);
+
+if (!$event) {
+    header("Location: ../ExploreEvents/index.php");
+    exit;
+}
+
+$interests = $eventRepo->getEventInterestNames($eventId);
+
+// Check if already registered
+$checkStmt = $conn->prepare("SELECT status FROM event_registrations WHERE event_id = ? AND user_id = ?");
+$checkStmt->bind_param("ii", $eventId, $userId);
+$checkStmt->execute();
+$regResult = $checkStmt->get_result();
+$isRegistered = $regResult->num_rows > 0;
+
+function formatDate($dateStr) {
+    return date('M j, Y', strtotime($dateStr));
+}
+function formatTime($timeStr) {
+    return date('g:i A', strtotime($timeStr));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Innovation Summit 2026 — EventDNA</title>
+<title><?= htmlspecialchars($event['name']) ?> — EventDNA</title>
 <link rel="stylesheet" href="../../../globals.css" />
 <link rel="stylesheet" href="./styles.css">
 </head>
