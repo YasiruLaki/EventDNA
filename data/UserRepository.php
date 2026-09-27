@@ -10,7 +10,7 @@ class UserRepository {
 
     public function getUserByEmail($email) {
         $stmt = $this->conn->prepare("
-            SELECT u.user_id, u.password_hash, u.full_name, ur.role_id 
+            SELECT u.user_id, u.password_hash, u.full_name, u.account_status, u.suspended_until, ur.role_id 
             FROM users u
             JOIN user_roles ur ON u.user_id = ur.user_id
             WHERE u.email = ?
@@ -39,6 +39,12 @@ class UserRepository {
             }
         }
         return false;
+    }
+
+    public function autoReactivateUser($userId) {
+        $stmt = $this->conn->prepare("UPDATE users SET account_status = 'ACTIVE', suspended_at = NULL, suspended_until = NULL, suspension_reason = NULL WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        return $stmt->execute();
     }
 
     public function createEmailVerificationToken($userId, $tokenHash) {
