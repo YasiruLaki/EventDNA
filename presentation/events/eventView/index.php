@@ -97,7 +97,7 @@ function formatTime($timeStr) {
         </div>
         <div>
           <div class="info-label">Date</div>
-          <div class="info-value">Oct 24–26, 2026</div>
+          <div class="info-value"><?= formatDate($event['event_date']) ?></div>
         </div>
       </div>
       <div class="info-item">
