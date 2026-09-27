@@ -240,8 +240,8 @@ if ($cancellation) {
               </div>
             </div>
             <div class="feature-actions">
-              <a class="btn-primary" href="../../events/eventView/index.php">View Event Details</a>
-              <a class="btn-secondary" href="../../events/registrationModel/index.php">View Event Pass</a>
+              <a class="btn-primary" href="../../events/eventView/index.php?id=1">View Event Details</a>
+              <a class="btn-secondary" href="../../events/registrationSuccess/index.php?id=1">View Event Pass</a>
             </div>
           </article>
 

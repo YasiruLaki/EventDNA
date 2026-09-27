@@ -76,7 +76,6 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                 </div>
                 <div>
                     <?php if (false): // Attendees cannot edit ?>
-                        <a href="edit.php?id=<?= $groupId ?>" class="btn-primary" style="background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); text-decoration: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="settings" style="width: 18px;"></i> Manage Group</a>
                     <?php elseif ($membership): ?>
                         <a href="leave.php?id=<?= $groupId ?>" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="log-out" style="width: 18px;"></i> Leave Group</a>
                     <?php else: ?>
