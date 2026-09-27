@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') === 'cance
     if (!csrf_valid()) {
         $error = "Your session expired. Please try again.";
     } else {
-        $result = $eventController->cancelEvent($organizerId, $eventId);
+        $result = $eventController->cancelEvent($organizerId, $eventId, $_POST['reason'] ?? '');
         if ($result["success"]) {
             header("Location: event-details.php?id=" . $eventId . "&cancelled=1");
             exit;
@@ -26,7 +26,7 @@ if (!$event) {
     die("Event not found.");
 }
 
-$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled." : "");
+$notice = isset($_GET['saved']) ? "Event saved." : (isset($_GET['cancelled']) ? "Event cancelled. Registered attendees have been notified." : "");
 $registrationColors = ['Open' => 'var(--success)', 'Full' => 'var(--danger)'];
 $activeNav = 'events';
 ?>
@@ -526,13 +526,17 @@ $activeNav = 'events';
   <div class="org-modal-overlay" id="cancelModal" >
     <div class="org-modal-content" >
       <h3 class="org-modal-title" >Cancel this event?</h3>
-      <p class="org-modal-desc" >Are you sure you want to cancel <strong><?= h($event['name']) ?></strong>? This can't be undone. Registration will close and the <?= (int)$event['registered_count'] ?> registered attendees will see the event as cancelled.</p>
+      <p class="org-modal-desc" >Are you sure you want to cancel <strong><?= h($event['name']) ?></strong>? This can't be undone. Registration will close and the <?= (int)$event['registered_count'] ?> registered attendees will be notified.</p>
 
-      <form class="org-modal-actions" method="post" >
+      <form method="post" >
         <?= csrf_field() ?>
         <input type="hidden" name="action" value="cancel">
-        <button type="button" id="closeModalBtn" class="btn-secondary org-btn-pad" >Keep Event</button>
-        <button type="submit" class="btn-primary org-btn-danger" >Cancel Event</button>
+        <label for="cancelReason" class="org-modal-label" >Reason <span>(optional, shared with attendees)</span></label>
+        <textarea id="cancelReason" name="reason" class="org-modal-textarea" rows="3" maxlength="500" placeholder="e.g. The venue is no longer available."></textarea>
+        <div class="org-modal-actions" >
+          <button type="button" id="closeModalBtn" class="btn-secondary org-btn-pad" >Keep Event</button>
+          <button type="submit" class="btn-primary org-btn-danger" >Cancel Event</button>
+        </div>
       </form>
     </div>
   </div>
@@ -563,21 +567,6 @@ $activeNav = 'events';
       }
     }
     
-    // Simple profile menu toggle
-    const profileBtn = document.querySelector('.nav-profile-btn');
-    const profileDropdown = document.querySelector('.nav-dropdown');
-    
-    if (profileBtn && profileDropdown) {
-      profileBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('show');
-      });
-      
-      document.addEventListener('click', () => {
-        profileDropdown.classList.remove('show');
-      });
-    }
-
     // Modal Logic
     const cancelBtn = document.getElementById('cancelEventBtn');
     const cancelModal = document.getElementById('cancelModal');

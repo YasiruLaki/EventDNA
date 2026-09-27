@@ -208,20 +208,6 @@ $activeNav = 'dashboard';
   <script>
     lucide.createIcons();
 
-    const profileBtn = document.querySelector('.nav-profile-btn');
-    const profileDropdown = document.querySelector('.nav-dropdown');
-
-    if (profileBtn && profileDropdown) {
-      profileBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('show');
-      });
-
-      document.addEventListener('click', () => {
-        profileDropdown.classList.remove('show');
-      });
-    }
-
     // Search and status filter for the events table
     const search = document.getElementById('eventSearch');
     const statusFilter = document.getElementById('statusFilter');

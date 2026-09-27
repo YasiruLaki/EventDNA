@@ -629,7 +629,7 @@ a {
   width: 86px;
   height: 86px;
   border-radius: 50%;
-  background: conic-gradient(var(--primary) 0 82%, var(--tertiary) 82% 100%);
+  background: conic-gradient(var(--primary) 0 var(--progress, 0%), var(--tertiary) var(--progress, 0%) 100%);
   padding: 7px;
   flex: none;
 }

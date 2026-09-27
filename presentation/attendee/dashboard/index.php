@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../includes/guard.php";
 require_once __DIR__ . '/../../attendee/includes/avatar.php';
 require_once __DIR__ . '/../../../data/EventRepository.php';
+require_once __DIR__ . '/../../../data/NotificationRepository.php';
 
 $firstName = explode(' ', trim($attendeeName))[0];
 $now = time();
@@ -25,6 +26,33 @@ $stmt->bind_param("i", $attendeeId);
 $stmt->execute();
 $profile = $stmt->get_result()->fetch_assoc();
 $profileIncomplete = !$profile || !$profile['profile_completed'] || !$profile['profile_photo'];
+
+// Profile strength: which parts of the profile the attendee has filled in
+$stmt = $conn->prepare("
+    SELECT u.full_name, p.job_title, p.organization, p.bio, p.profile_photo,
+           (SELECT COUNT(*) FROM user_skills WHERE user_id = u.user_id) AS skills,
+           (SELECT COUNT(*) FROM user_interests WHERE user_id = u.user_id) AS interests,
+           (SELECT COUNT(*) FROM user_networking_goals WHERE user_id = u.user_id) AS goals
+    FROM users u
+    LEFT JOIN profiles p ON p.user_id = u.user_id
+    WHERE u.user_id = ?
+");
+$stmt->bind_param("i", $attendeeId);
+$stmt->execute();
+$s = $stmt->get_result()->fetch_assoc();
+$strengthItems = [
+    'Basic Information'    => trim($s['full_name'] ?? '') !== '',
+    'Professional Details' => trim($s['job_title'] ?? '') !== '' && trim($s['organization'] ?? '') !== '',
+    'Skills'               => $s['skills'] > 0,
+    'Interests'            => $s['interests'] > 0,
+    'Profile Photo'        => !empty($s['profile_photo']),
+    'Professional Bio'     => trim($s['bio'] ?? '') !== '',
+    'Networking Goals'     => $s['goals'] > 0,
+];
+$strengthPercent = (int)round(count(array_filter($strengthItems)) / count($strengthItems) * 100);
+$strengthLabel = $strengthPercent === 100 ? 'Ready for networking'
+    : ($strengthPercent >= 70 ? 'Almost ready for networking'
+    : ($strengthPercent >= 40 ? 'Getting there, keep going' : "Let's build your profile"));
 
 // Pick the most relevant welcome message: live/soon events first, then things waiting on the user, then a time-of-day greeting
 function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileIncomplete, $now, $today, $tomorrow) {
@@ -83,6 +111,14 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
 }
 
 [$welcomeTitle, $welcomeText, $welcomeCta] = dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileIncomplete, $now, $today, $tomorrow);
+
+// An unread cancellation outranks everything else, so attendees don't turn up to an event that isn't happening
+$notificationRepo = new NotificationRepository($conn);
+$recentNotifications = $notificationRepo->getForUser($attendeeId, 3);
+$cancellation = $notificationRepo->getLatestUnread($attendeeId, NotificationRepository::EVENT_CANCELLED);
+if ($cancellation) {
+    [$welcomeTitle, $welcomeText, $welcomeCta] = ["Heads up, $firstName!", $cancellation['message'], ['label' => 'View Notifications', 'href' => '../community/notifications/index.php']];
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -107,6 +143,7 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
         </div>
       </div>
       <div class="nav-right">
+        <?= nav_notifications_html() ?>
         <div class="nav-profile-menu">
           <button class="nav-profile-btn" aria-label="Profile Menu">
             <?= nav_avatar_html($attendeeName) ?>
@@ -313,44 +350,26 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
         <aside class="right-column">
           <article class="side-card profile-strength-card">
             <div class="card-header-row">
-              <div class="progress-ring" aria-hidden="true">
-                <span>82%</span>
+              <div class="progress-ring" aria-hidden="true" style="--progress: <?= $strengthPercent ?>%;">
+                <span><?= $strengthPercent ?>%</span>
               </div>
               <div>
                 <h3>Profile Strength</h3>
-                <p>Almost ready for networking</p>
+                <p><?= h($strengthLabel) ?></p>
               </div>
             </div>
 
             <ul class="checklist">
-              <li class="done">
+              <?php foreach ($strengthItems as $label => $done): ?>
+              <li<?= $done ? ' class="done"' : '' ?>>
+                <?php if ($done): ?>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Basic Information
-              </li>
-              <li class="done">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Professional Details
-              </li>
-              <li class="done">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Skills
-              </li>
-              <li class="done">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Interests
-              </li>
-              <li>
+                <?php else: ?>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="circle-icon"><circle cx="12" cy="12" r="10"></circle></svg>
-                Profile Photo
+                <?php endif; ?>
+                <?= h($label) ?>
               </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="circle-icon"><circle cx="12" cy="12" r="10"></circle></svg>
-                Professional Bio
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="circle-icon"><circle cx="12" cy="12" r="10"></circle></svg>
-                Networking Goals
-              </li>
+              <?php endforeach; ?>
             </ul>
           </article>
 
@@ -387,25 +406,22 @@ function dashboard_welcome($firstName, $nextEvent, $pendingRequests, $profileInc
           <article class="side-card alerts-card">
             <h3>Recent Notifications</h3>
             <div class="alert-list">
+              <?php if (empty($recentNotifications)): ?>
+              <p class="supporting-copy">No notifications yet.</p>
+              <?php endif; ?>
+              <?php foreach ($recentNotifications as $n): ?>
               <div class="alert-item">
-                <span class="alert-icon">
+                <span class="alert-icon"<?= $n['type'] === NotificationRepository::EVENT_CANCELLED ? ' style="color: #dc2626;"' : '' ?>>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 </span>
                 <div>
-                  <strong>Venue update</strong>
-                  <p>Room changed for "Design Ops" track.</p>
+                  <strong><?= h($n['title']) ?></strong>
+                  <p><?= h($n['message']) ?></p>
                 </div>
               </div>
-              <div class="alert-item">
-                <span class="alert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                </span>
-                <div>
-                  <strong>Community update</strong>
-                  <p>New discussion in "AI Founders".</p>
-                </div>
-              </div>
+              <?php endforeach; ?>
             </div>
+            <a class="inline-link" href="../community/notifications/index.php">View all notifications</a>
           </article>
         </aside>
       </section>
