@@ -36,6 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result["success"]) {
         $_SESSION['user_id'] = $pendingUserId;
         $_SESSION['role_id'] = ($pendingRole === 'organizer') ? 2 : 1;
+
+        $stmt = $conn->prepare("SELECT full_name FROM users WHERE user_id = ?");
+        $stmt->bind_param("i", $pendingUserId);
+        $stmt->execute();
+        $_SESSION['full_name'] = $stmt->get_result()->fetch_assoc()['full_name'] ?? null;
         
         unset($_SESSION['pending_user_id']);
         unset($_SESSION['pending_user_email']);

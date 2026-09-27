@@ -2,6 +2,18 @@
 require_once __DIR__ . '/../../../data/database.php';
 require_once __DIR__ . '/../../../data/NotificationRepository.php';
 
+// Keep the session name in sync with the database: sign-up never sets it, and it goes stale if the name is edited elsewhere
+if (isset($_SESSION['user_id'])) {
+    $stmt = $conn->prepare("SELECT full_name FROM users WHERE user_id = ?");
+    $sessionUserId = (int)$_SESSION['user_id'];
+    $stmt->bind_param("i", $sessionUserId);
+    $stmt->execute();
+    $sessionUser = $stmt->get_result()->fetch_assoc();
+    if ($sessionUser && trim($sessionUser['full_name']) !== '') {
+        $_SESSION['full_name'] = $sessionUser['full_name'];
+    }
+}
+
 // Stored paths and site links are relative to the project root, so climb up from the current page's folder
 function nav_root_prefix() {
     $root = str_replace('\\', '/', realpath(__DIR__ . '/../../..'));
