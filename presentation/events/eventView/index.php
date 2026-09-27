@@ -34,6 +34,10 @@ function formatDate($dateStr) {
 function formatTime($timeStr) {
     return date('g:i A', strtotime($timeStr));
 }
+// Cover photos are stored relative to the project root (e.g. uploads/events/x.jpg)
+function coverUrl($path) {
+    return $path ? '../../../' . $path : '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,7 +81,7 @@ function formatTime($timeStr) {
   </nav>
 
 <!-- Hero -->
-<section class="hero" style="background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('<?= htmlspecialchars($event['cover_photo']) ?>');">
+<section class="hero" style="background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('<?= htmlspecialchars(coverUrl($event['cover_photo'])) ?>');">
   <div class="container hero-inner">
     <?php if(!empty($interests)): ?>
     <span class="hero-badge"><?= htmlspecialchars($interests[0]) ?></span>

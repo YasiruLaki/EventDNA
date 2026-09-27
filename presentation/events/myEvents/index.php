@@ -35,6 +35,10 @@ function formatShortDate($dateStr) {
 function formatTime($timeStr) {
     return date('g:i A', strtotime($timeStr));
 }
+// Cover photos are stored relative to the project root (e.g. uploads/events/x.jpg)
+function coverUrl($path) {
+    return $path ? '../../../' . $path : '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,7 +116,7 @@ function formatTime($timeStr) {
             $mainInterest = !empty($interests) ? $interests[0] : 'Event';
         ?>
         <div class="event-card-vertical">
-          <div class="event-thumb" style="background: url('<?= htmlspecialchars($ev['cover_photo']) ?>') center/cover;">
+          <div class="event-thumb" style="background: url('<?= htmlspecialchars(coverUrl($ev['cover_photo'])) ?>') center/cover;">
             <div class="event-thumb-brand">EventDNA</div>
           </div>
           <div class="event-body">
@@ -154,7 +158,7 @@ function formatTime($timeStr) {
       <?php else: ?>
         <?php foreach ($pastEvents as $ev): ?>
         <div class="event-card-horizontal past-event">
-          <div class="event-thumb" style="background: url('<?= htmlspecialchars($ev['cover_photo']) ?>') center/cover; opacity: 0.85;">
+          <div class="event-thumb" style="background: url('<?= htmlspecialchars(coverUrl($ev['cover_photo'])) ?>') center/cover; opacity: 0.85;">
             <div class="event-thumb-brand">EventDNA</div>
           </div>
 

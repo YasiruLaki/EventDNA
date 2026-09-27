@@ -28,6 +28,10 @@ function formatShortDate($dateStr) {
 function formatTime($timeStr) {
     return date('g:i A', strtotime($timeStr));
 }
+// Cover photos are stored relative to the project root (e.g. uploads/events/x.jpg)
+function coverUrl($path) {
+    return $path ? '../../../' . $path : '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,7 +110,9 @@ function formatTime($timeStr) {
       ?>
       <article class="feature-card">
         <div class="feature-cover">
-          <img src="<?= htmlspecialchars($featuredEvent['cover_photo']) ?>" alt="<?= htmlspecialchars($featuredEvent['name']) ?>">
+          <?php if (!empty($featuredEvent['cover_photo'])): ?>
+            <img src="<?= htmlspecialchars(coverUrl($featuredEvent['cover_photo'])) ?>" alt="<?= htmlspecialchars($featuredEvent['name']) ?>">
+          <?php endif; ?>
           <span class="date-tag feature-date"><?= formatShortDate($featuredEvent['event_date']) ?></span>
         </div>
         <div class="feature-info">
@@ -145,7 +151,7 @@ function formatTime($timeStr) {
               $gradClass = 'grad-' . (($idx % 3) + 1);
           ?>
           <article class="event-card">
-            <div class="event-image <?= $gradClass ?>" style="background-image: url('<?= htmlspecialchars($ev['cover_photo']) ?>'); background-size: cover; background-position: center;">
+            <div class="event-image <?= $gradClass ?>" style="background-image: url('<?= htmlspecialchars(coverUrl($ev['cover_photo'])) ?>'); background-size: cover; background-position: center;">
               <span class="date-tag"><?= formatShortDate($ev['event_date']) ?> &middot; <?= formatTime($ev['start_time']) ?></span>
             </div>
             <div class="event-body">
