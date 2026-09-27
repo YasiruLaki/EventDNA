@@ -5,6 +5,29 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
+
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/EventRepository.php';
+
+$eventRepo = new EventRepository($conn);
+$events = $eventRepo->getUpcomingEvents();
+
+// Pick a featured event (e.g. the first one or one with most capacity)
+$featuredEvent = !empty($events) ? $events[0] : null;
+
+// The rest of the events
+$regularEvents = count($events) > 1 ? array_slice($events, 1) : [];
+
+// Helper to format date
+function formatDate($dateStr) {
+    return date('M j, Y', strtotime($dateStr));
+}
+function formatShortDate($dateStr) {
+    return date('M j', strtotime($dateStr));
+}
+function formatTime($timeStr) {
+    return date('g:i A', strtotime($timeStr));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
