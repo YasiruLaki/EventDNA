@@ -9,12 +9,29 @@ $now = time();
 $today = date('Y-m-d', $now);
 $tomorrow = date('Y-m-d', strtotime('+1 day', $now));
 
+$eventRepo = new EventRepository($conn);
+
 // Registered events that haven't finished yet, soonest first
 $upcoming = array_values(array_filter(
-    (new EventRepository($conn))->getRegisteredEvents($attendeeId),
+    $eventRepo->getRegisteredEvents($attendeeId),
     fn($e) => $e['status'] !== 'CANCELLED' && strtotime($e['event_date'] . ' ' . $e['end_time']) > $now
 ));
 $nextEvent = $upcoming[0] ?? null;
+
+// Featured event: the most popular upcoming event, with the attendee's own registration if they have one
+$featured = $eventRepo->getMostAttendedUpcomingEvent();
+if ($featured) {
+    $featuredRegistration = $eventRepo->getRegistration((int)$featured['event_id'], $attendeeId);
+    $featuredRegistered = $featuredRegistration && in_array($featuredRegistration['status'], ['PENDING', 'APPROVED', 'REGISTERED'], true);
+    $featuredStart = strtotime($featured['event_date'] . ' ' . $featured['start_time']);
+    $featuredDays = (int)floor((strtotime($featured['event_date']) - strtotime($today)) / 86400);
+    $featuredCountdown = $featuredStart <= $now ? 'Happening Now'
+        : ($featuredDays === 0 ? 'Starts Today'
+        : ($featuredDays === 1 ? 'Starts Tomorrow' : "Starts in $featuredDays Days"));
+    $featuredCover = $featured['cover_photo']
+        ? (preg_match('#^https?://#i', $featured['cover_photo']) ? $featured['cover_photo'] : '../../../' . $featured['cover_photo'])
+        : '';
+}
 
 $stmt = $conn->prepare("SELECT COUNT(*) AS n FROM connections WHERE recipient_id = ? AND status = 'PENDING'");
 $stmt->bind_param("i", $attendeeId);
@@ -220,30 +237,36 @@ if ($cancellation) {
 
       <section class="main-grid">
         <div class="left-column">
+          <?php if ($featured): ?>
           <article class="feature-card">
               <div class="feature-cover">
-                <img
-                  src="https://orlandosydney.com/wp-content/uploads/2023/08/Business-Networking-Photo-Example-for-Professionals-at-the-ICC-Sydney-Convention-Centre.-Photography.-By-orlandosydney.com-OS1_7380.jpg"
-                  alt="Featured event cover showing a packed conference audience"
-                />
-                <span class="date-tag feature-date">Oct 24 - 26</span>
+                <?php if ($featuredCover): ?>
+                <img src="<?= h($featuredCover) ?>" alt="<?= h($featured['name']) ?> cover" />
+                <?php endif; ?>
+                <span class="date-tag feature-date"><?= h(date('M j', strtotime($featured['event_date']))) ?></span>
               </div>
             <div class="feature-badges">
-              <span class="pill pill-primary">Starts in 16 Days</span>
+              <span class="pill pill-primary"><?= h($featuredCountdown) ?></span>
+              <span class="pill"><?= (int)$featured['registered_count'] ?> Attending</span>
+              <?php if ($featuredRegistered): ?>
               <span class="pill">&check; Registered</span>
+              <?php endif; ?>
             </div>
             <div class="feature-copy">
-              <h2>Global Tech Innovators Summit 2026</h2>
+              <h2><?= h($featured['name']) ?></h2>
               <div class="feature-meta">
-                <span>Oct 24 - 26, 2026</span>
-                <span>Moscone Center, San Francisco</span>
+                <span><?= h(date('M j, Y', strtotime($featured['event_date'])) . ' · ' . date('g:i A', strtotime($featured['start_time']))) ?></span>
+                <span><?= h($featured['location']) ?></span>
               </div>
             </div>
             <div class="feature-actions">
-              <a class="btn-primary" href="../../events/eventView/index.php?id=1">View Event Details</a>
-              <a class="btn-secondary" href="../../events/registrationSuccess/index.php?id=1">View Event Pass</a>
+              <a class="btn-primary" href="../../events/eventView/index.php?id=<?= (int)$featured['event_id'] ?>">View Event Details</a>
+              <?php if ($featuredRegistered): ?>
+              <a class="btn-secondary" href="../../events/registrationSuccess/index.php?id=<?= (int)$featured['event_id'] ?>">View Event Pass</a>
+              <?php endif; ?>
             </div>
           </article>
+          <?php endif; ?>
 
           <article class="locked-card">
             <div class="locked-icon">

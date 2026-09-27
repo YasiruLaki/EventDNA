@@ -153,6 +153,28 @@ class EventRepository {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    // The public event that hasn't finished yet with the most attendees, soonest first on a tie
+    public function getMostAttendedUpcomingEvent() {
+        $stmt = $this->conn->prepare("
+            SELECT e.*,
+                   (SELECT COUNT(*) FROM event_registrations r
+                     WHERE r.event_id = e.event_id AND r.status IN (" . self::SEAT_STATUSES . ")) AS registered_count
+            FROM events e
+            WHERE e.status != 'CANCELLED' AND e.visibility = 'PUBLIC'
+              AND TIMESTAMP(e.event_date, e.end_time) > ?
+            ORDER BY registered_count DESC, e.event_date ASC, e.start_time ASC
+            LIMIT 1
+        ");
+        if (!$stmt) {
+            die('Error preparing getMostAttendedUpcomingEvent: ' . $this->conn->error);
+        }
+        // Compare against PHP's clock so the cutoff matches the app's timezone, not the database server's
+        $now = date('Y-m-d H:i:s');
+        $stmt->bind_param("s", $now);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     public function getRegisteredEvents($userId) {
         $stmt = $this->conn->prepare("
             SELECT e.*, r.registration_id, r.status AS reg_status, r.registered_at AS reg_date
