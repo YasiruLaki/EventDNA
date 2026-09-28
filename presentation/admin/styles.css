@@ -434,4 +434,98 @@ table .btn-view:hover {
   position: relative;
   height: 300px;
   width: 100%;
+/* -------------------------------------------
+   OVERRIDE AI-CENTRIC BORDERS & STYLES
+   ------------------------------------------- */
+
+/* Standardize Sidebar active nav item (keep purple, but human coded structure) */
+.admin-nav-item.active {
+  background: var(--tertiary) !important;
+  color: var(--primary) !important;
+  border-left: 3px solid var(--primary) !important;
+  border-radius: 0 !important; /* Sharp edge on the left */
 }
+.admin-nav-item:hover {
+  background: var(--tertiary) !important;
+}
+
+/* Change pill-shaped badges to slightly rounded rectangles */
+span[style*="border-radius: 999px"], .status-badge {
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+}
+
+/* Harder, standard human-coded borders instead of soft UI borders */
+.stat-card, .chart-card, .activity-card, .detail-card, .data-table, .content-box {
+  box-shadow: none !important;
+  border-radius: 4px !important;
+  border: 1px solid #d1d5db !important; /* Crisp gray border */
+}
+
+/* -------------------------------------------
+   HUMAN-CENTRIC TABLE UI/UX OVERRIDES
+   ------------------------------------------- */
+
+/* Make tables highly compact and data-dense */
+.data-table th, .data-table td, th[style], td[style] {
+  padding: 0.6rem 1rem !important;
+  vertical-align: middle !important;
+  font-size: 0.85rem !important;
+}
+
+/* Prevent awkward wrapping of action buttons */
+td[style*="display: flex"] {
+  flex-wrap: nowrap !important;
+  gap: 0.4rem !important;
+}
+
+/* Make row action buttons minimal and compact */
+td button[style*="padding:"], td form button {
+  padding: 0.25rem 0.6rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 3px !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+}
+td button:hover {
+  background: #f1f5f9 !important;
+  border-color: #d1d5db !important;
+}
+/* Recolor text based on inline background hints */
+td button[style*="rgba(245, 158, 11"] { color: #d97706 !important; } /* Suspend */
+td button[style*="rgba(100, 116, 139"] { color: #64748b !important; } /* Disable */
+td button[style*="rgba(220, 38, 38"] { color: #dc2626 !important; } /* Delete */
+td button[style*="rgba(34, 197, 94"] { color: #16a34a !important; } /* Reactivate */
+td button[onclick*="openEdit"] { color: var(--secondary) !important; }
+
+/* Modals to standard borders */
+.modal-content {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 6px !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* Search and Inputs */
+.search-box input, .filter-select, .form-input, .form-select, textarea {
+  border-radius: 4px !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* Standardize buttons (keep theme color but standard borders) */
+.btn, .btn-primary, button[style*="var(--primary)"] {
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+/* Fix SVG charts: Keep theme color, just simplify */
+svg rect {
+  rx: 0 !important; /* Sharp bars */
+}
+#areaGradient stop:nth-child(1) {
+  stop-color: rgba(79, 16, 255, 0.2) !important;
+}
+#areaGradient stop:nth-child(2) {
+  stop-color: rgba(79, 16, 255, 0) !important;
+}
+

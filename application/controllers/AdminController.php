@@ -247,6 +247,57 @@ class AdminController {
             return ["success" => false, "message" => "Failed to disable user."];
         }
     }
+    public function cancelEvent($eventId, $reason) {
+        $this->conn->begin_transaction();
+        try {
+            // Get event details
+            $stmt = $this->conn->prepare("SELECT name, status FROM events WHERE event_id = ?");
+            $stmt->bind_param("i", $eventId);
+            $stmt->execute();
+            $ev = $stmt->get_result()->fetch_assoc();
+            
+            if (!$ev || $ev['status'] === 'CANCELLED') {
+                return ["success" => false, "message" => "Event not found or already cancelled."];
+            }
+
+            $cancelledBy = "SYSTEM";
+            $cancelledAt = date('Y-m-d H:i:s');
+            
+            // Cancel event
+            $stmt = $this->conn->prepare("UPDATE events SET status = 'CANCELLED', cancellation_reason = ?, cancelled_by = ?, cancelled_at = ? WHERE event_id = ?");
+            $stmt->bind_param("sssi", $reason, $cancelledBy, $cancelledAt, $eventId);
+            $stmt->execute();
+
+            // Revoke QR tokens
+            $stmt = $this->conn->prepare("UPDATE qr_tokens SET status = 'REVOKED' WHERE event_id = ? AND type = 'EVENT_CHECKIN'");
+            $stmt->bind_param("i", $eventId);
+            $stmt->execute();
+
+            // Get attendees to notify
+            $stmt = $this->conn->prepare("SELECT user_id FROM event_registrations WHERE event_id = ? AND status IN ('REGISTERED', 'APPROVED')");
+            $stmt->bind_param("i", $eventId);
+            $stmt->execute();
+            $attRes = $stmt->get_result();
+            
+            // Notify attendees
+            $notifySql = "INSERT INTO notifications (user_id, title, message, type, related_id) VALUES (?, ?, ?, 'EVENT_CANCELLED', ?)";
+            $notifyStmt = $this->conn->prepare($notifySql);
+            $title = "Event Cancelled";
+            $message = "The event '" . $ev['name'] . "' has been cancelled by an administrator. Reason: " . $reason;
+            
+            while ($att = $attRes->fetch_assoc()) {
+                $notifyStmt->bind_param("issi", $att['user_id'], $title, $message, $eventId);
+                $notifyStmt->execute();
+            }
+
+            $this->conn->commit();
+            return ["success" => true, "message" => "Event cancelled successfully."];
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            return ["success" => false, "message" => "Failed to cancel event: " . $e->getMessage()];
+        }
+    }
+
     public function getAllEvents($search = '', $statusFilter = '') {
         $sql = "SELECT e.event_id, e.name, e.event_date, e.start_time, e.status, e.cancellation_reason, u.full_name as organizer_name 
                 FROM events e 

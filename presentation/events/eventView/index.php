@@ -78,7 +78,7 @@ function coverUrl($path) {
         <div class="nav-links">
           <a href="../ExploreEvents/index.php" class="nav-link active">Find Events</a>
           <a href="../myEvents/index.php" class="nav-link">My Events</a>
-          <a href="../../attendee/community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../../attendee/community/index.php" class="nav-link">Communities</a>
           <a href="../../attendee/myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>

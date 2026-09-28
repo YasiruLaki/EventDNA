@@ -53,7 +53,7 @@ function coverUrl($path) {
         <div class="nav-links">
           <a href="#" class="nav-link active">Find Events</a>
           <a href="../myEvents/index.php" class="nav-link">My Events</a>
-          <a href="../../attendee/community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../../attendee/community/index.php" class="nav-link">Communities</a>
           <a href="../../attendee/myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
@@ -129,7 +129,7 @@ function coverUrl($path) {
                 <span><?= number_format($featuredEvent['capacity']) ?> spots total</span>
             </div>
             <p class="desc">
-                <?= nl2br(htmlspecialchars($featuredEvent['description'])) ?>
+                <?= nl2br(htmlspecialchars(strlen($featuredEvent['description']) > 250 ? substr($featuredEvent['description'], 0, 250) . '...' : $featuredEvent['description'])) ?>
             </p>
             </div>
             <div class="feature-actions">
