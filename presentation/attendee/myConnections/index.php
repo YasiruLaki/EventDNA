@@ -1,7 +1,34 @@
 <?php
-
 require_once __DIR__ . '/../includes/guard.php';
+require_once __DIR__ . '/../../../data/database.php';
+require_once __DIR__ . '/../../../data/ConnectionRepository.php';
 
+$connRepo = new ConnectionRepository($conn);
+$userId = (int)$_SESSION['user_id'];
+$tab = $_GET['tab'] ?? 'connections';
+$search = $_GET['q'] ?? '';
+
+$stats = $connRepo->getStats($userId);
+
+if ($tab === 'received') {
+    $people = $connRepo->getReceivedRequests($userId);
+} elseif ($tab === 'sent') {
+    $people = $connRepo->getSentRequests($userId);
+} else {
+    $people = $connRepo->getConnections($userId);
+}
+
+// Filter by search if needed
+if (!empty($search)) {
+    $people = array_filter($people, function($p) use ($search) {
+        return stripos($p['name'], $search) !== false || stripos($p['role'] ?? '', $search) !== false;
+    });
+}
+
+function getAvatar($path, $name) {
+    if (!$path) return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80';
+    return preg_match('#^https?://#i', $path) ? $path : '../../../' . ltrim($path, '/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +51,7 @@ require_once __DIR__ . '/../includes/guard.php';
         <div class="nav-links">
           <a href="../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
           <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
-          <a href="../community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../community/index.php" class="nav-link">Communities</a>
           <a href="#" class="nav-link active">Connections</a>
         </div>
       </div>
@@ -59,11 +86,11 @@ require_once __DIR__ . '/../includes/guard.php';
     <!-- Stats -->
     <div class="stats-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 600px;">
       <div class="stat-card">
-        <div class="stat-num">46</div>
+        <div class="stat-num"><?= $stats['total'] ?></div>
         <div class="stat-label">Total Connections</div>
       </div>
       <div class="stat-card accent">
-        <div class="stat-num">4</div>
+        <div class="stat-num"><?= $stats['pending'] ?></div>
         <div class="stat-label">Pending Requests</div>
       </div>
     </div>
@@ -71,90 +98,74 @@ require_once __DIR__ . '/../includes/guard.php';
     <!-- Tabs & Toolbar -->
     <div class="connections-control-bar">
       <div class="tabs">
-        <span class="tab active">Connections</span>
-        <span class="tab">Received</span>
-        <span class="tab">Sent</span>
+        <a href="?tab=connections&q=<?= urlencode($search) ?>" class="tab <?= $tab === 'connections' ? 'active' : '' ?>" style="text-decoration: none;">Connections</a>
+        <a href="?tab=received&q=<?= urlencode($search) ?>" class="tab <?= $tab === 'received' ? 'active' : '' ?>" style="text-decoration: none;">Received</a>
+        <a href="?tab=sent&q=<?= urlencode($search) ?>" class="tab <?= $tab === 'sent' ? 'active' : '' ?>" style="text-decoration: none;">Sent</a>
       </div>
 
       <div class="toolbar">
-        <div class="search-input">
+        <form method="get" class="search-input">
+          <input type="hidden" name="tab" value="<?= htmlspecialchars($tab) ?>">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input type="text" placeholder="Search people...">
-        </div>
+          <input type="text" name="q" placeholder="Search people..." value="<?= htmlspecialchars($search) ?>">
+        </form>
       </div>
     </div>
 
     <!-- Connection cards -->
     <div class="connections-grid">
+      <?php if (empty($people)): ?>
+        <p style="color: var(--text-secondary); grid-column: 1 / -1; padding: 2rem 0; text-align: center;">No connections found in this tab.</p>
+      <?php else: ?>
+        <?php foreach ($people as $person): ?>
+          <div class="person-card">
+            <div class="person-top">
+              <div class="avatar <?= $tab === 'connections' ? 'online' : '' ?>"><img src="<?= getAvatar($person['profile_picture'] ?? '', $person['name']) ?>" alt="<?= htmlspecialchars($person['name']) ?>"></div>
+              <div>
+                <div class="person-name"><?= htmlspecialchars($person['name']) ?></div>
+                <div class="person-role"><?= htmlspecialchars($person['role'] ?? 'Member') ?><br><?= htmlspecialchars($person['company'] ?? 'EventDNA') ?></div>
+              </div>
+            </div>
 
-      <!-- Established Connection -->
-      <div class="person-card">
-        <div class="person-top">
-          <div class="avatar avatar-2 online">SJ</div>
-          <div>
-            <div class="person-name">Sarah Jenkins</div>
-            <div class="person-role">Lead Researcher<br>BioGen</div>
+            <div class="person-stats">
+              <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
+                <?php if ($tab === 'connections'): ?>
+                  <span class="stat-tiny-label">Connected since</span>
+                  <span class="stat-tiny-value"><?= date('M d, Y', strtotime($person['responded_at'] ?? $person['requested_at'])) ?></span>
+                <?php elseif ($tab === 'received'): ?>
+                  <span class="stat-tiny-value" style="font-weight: 600;">Wants to connect with you</span>
+                <?php else: ?>
+                  <span class="stat-tiny-label">Request sent &middot; <?= date('M d, Y', strtotime($person['requested_at'])) ?></span>
+                <?php endif; ?>
+              </div>
+            </div>
+
+            <div class="person-actions">
+              <?php if ($tab === 'received'): ?>
+                <form action="action.php" method="post" style="display:flex; width: 100%; gap: 0.5rem; margin-bottom: 0.75rem;">
+                  <input type="hidden" name="connection_id" value="<?= $person['connection_id'] ?>">
+                  <button type="submit" name="action" value="accept" class="btn-primary" style="flex:1; justify-content: center;">Accept</button>
+                  <button type="submit" name="action" value="reject" class="btn-secondary" style="flex:1; justify-content: center;">Reject</button>
+                </form>
+              <?php else: ?>
+                <a href="../NetworkHub/view_profile.php?id=<?= $person['profile_id'] ?>" class="btn-primary w-full" style="text-align: center; justify-content: center;">View Profile</a>
+                <?php if ($tab === 'connections'): ?>
+                  <form action="action.php" method="post" style="width:100%;">
+                    <input type="hidden" name="connection_id" value="<?= $person['connection_id'] ?>">
+                    <button type="submit" name="action" value="remove" class="btn-secondary w-full" style="justify-content: center;" onclick="return initCustomConfirm(this, 'Are you sure you want to remove this connection?', event);">Remove</button>
+                  </form>
+                <?php else: ?>
+                  <button class="btn-secondary w-full" disabled style="justify-content: center; opacity: 0.6; cursor: default;">Pending</button>
+                <?php endif; ?>
+              <?php endif; ?>
+            </div>
+            
+            <?php if ($tab === 'received'): ?>
+              <a href="../NetworkHub/view_profile.php?id=<?= $person['profile_id'] ?>" class="btn-secondary w-full" style="text-align: center; justify-content: center; background: transparent; border: 1px solid var(--divider-color);">View Profile</a>
+            <?php endif; ?>
           </div>
-        </div>
-
-        <div class="person-stats">
-          <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
-            <span class="stat-tiny-label">Connected since</span>
-            <span class="stat-tiny-value">Nov 05, 2026</span>
-          </div>
-        </div>
-
-        <div class="person-actions">
-          <a href="#" class="btn-primary w-full" style="text-align: center; justify-content: center;">View Profile</a>
-          <button class="btn-secondary w-full" style="justify-content: center;" onclick="return initCustomConfirm(this, 'Are you sure you want to remove this item?', event);">Remove</button>
-        </div>
-      </div>
-
-      <!-- Received Request -->
-      <div class="person-card">
-        <div class="person-top">
-          <div class="avatar avatar-3">JD</div>
-          <div>
-            <div class="person-name">James Doe</div>
-            <div class="person-role">Software Engineer<br>CloudSync</div>
-          </div>
-        </div>
-
-        <div class="person-stats">
-          <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
-            <span class="stat-tiny-value" style="font-weight: 600;">Wants to connect with you</span>
-          </div>
-        </div>
-
-        <div class="person-actions" style="margin-bottom: 0.75rem;">
-          <button class="btn-primary w-full" style="justify-content: center;">Accept</button>
-          <button class="btn-secondary w-full" style="justify-content: center;">Reject</button>
-        </div>
-        <a href="#" class="btn-secondary w-full" style="text-align: center; justify-content: center; background: transparent; border: 1px solid var(--divider-color);">View Profile</a>
-      </div>
-
-      <!-- Sent Request -->
-      <div class="person-card">
-        <div class="person-top">
-          <div class="avatar avatar-1">ER</div>
-          <div>
-            <div class="person-name">Elena Rostova</div>
-            <div class="person-role">Product Manager<br>TechFlow</div>
-          </div>
-        </div>
-
-        <div class="person-stats">
-          <div class="stat-block" style="flex-direction: row; gap: 0.5rem; align-items: center;">
-            <span class="stat-tiny-label">Request sent &middot; 2 days ago</span>
-          </div>
-        </div>
-
-        <div class="person-actions">
-          <a href="#" class="btn-primary w-full" style="text-align: center; justify-content: center;">View Profile</a>
-          <button class="btn-secondary w-full" disabled style="justify-content: center; opacity: 0.6; cursor: default;">Pending</button>
-        </div>
-      </div>
-
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
   </main>
 </div>
