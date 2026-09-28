@@ -20,6 +20,11 @@ $nextEvent = $upcoming[0] ?? null;
 
 // Featured event: the most popular upcoming event, with the attendee's own registration if they have one
 $featured = $eventRepo->getMostAttendedUpcomingEvent();
+
+// Recommended events (random selection)
+$allUpcoming = $eventRepo->getUpcomingEvents();
+shuffle($allUpcoming);
+$recommendedEvents = array_slice($allUpcoming, 0, 3);
 if ($featured) {
     $featuredRegistration = $eventRepo->getRegistration((int)$featured['event_id'], $attendeeId);
     $featuredRegistered = $featuredRegistration && in_array($featuredRegistration['status'], ['PENDING', 'APPROVED', 'REGISTERED'], true);
@@ -155,7 +160,7 @@ if ($cancellation) {
         <div class="nav-links">
           <a href="../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
           <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
-          <a href="../community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../community/index.php" class="nav-link">Communities</a>
           <a href="../myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
@@ -286,89 +291,27 @@ if ($cancellation) {
             </div>
 
             <div class="recommendation-row">
+              <?php foreach ($recommendedEvents as $idx => $ev): 
+                  $interests = $eventRepo->getEventInterestNames($ev['event_id']);
+                  $mainInterest = !empty($interests) ? $interests[0] : 'Event';
+                  $gradClass = 'grad-' . (($idx % 3) + 1);
+              ?>
               <article class="event-card">
-                <div class="event-image image-1">
-                  <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80" alt="Design systems workshop audience" />
-                  <span class="date-tag">Oct 12</span>
+                <div class="event-image <?= $gradClass ?>" style="background-image: url('<?= htmlspecialchars(preg_match('#^https?://#i', $ev['cover_photo']) ? $ev['cover_photo'] : '../../../' . $ev['cover_photo']) ?>'); background-size: cover; background-position: center;">
+                  <span class="date-tag"><?= date('M d', strtotime($ev['event_date'])) ?></span>
                 </div>
                 <div class="event-body">
-                  <span class="event-chip">Workshop</span>
-                  <h4>Design Systems Masterclass</h4>
-                  <p>Online</p>
+                  <span class="event-chip"><?= htmlspecialchars($mainInterest) ?></span>
+                  <h4><?= htmlspecialchars($ev['name']) ?></h4>
+                  <p><?= htmlspecialchars($ev['location']) ?></p>
                 </div>
+                <a href="../../events/eventView/index.php?id=<?= $ev['event_id'] ?>" style="position:absolute; inset:0; z-index:10;"><span class="sr-only">View</span></a>
               </article>
-
-              <article class="event-card">
-                <div class="event-image image-2">
-                  <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80" alt="Founders meetup networking event" />
-                  <span class="date-tag">Nov 05</span>
-                </div>
-                <div class="event-body">
-                  <span class="event-chip">Mixer</span>
-                  <h4>Bay Area Founders Meetup</h4>
-                  <p>San Francisco, CA</p>
-                </div>
-              </article>
-
-              <article class="event-card">
-                <div class="event-image image-3">
-                  <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1200&q=80" alt="Conference stage with speakers" />
-                  <span class="date-tag">Nov 21</span>
-                </div>
-                <div class="event-body">
-                  <span class="event-chip">Conference</span>
-                  <h4>Future of Product Summit</h4>
-                  <p>Seattle, WA</p>
-                </div>
-              </article>
+              <?php endforeach; ?>
             </div>
           </section>
-
-          <section class="quick-actions-section">
-            <div class="section-head compact">
-              <h3>Quick Actions</h3>
-            </div>
-
-            <div class="quick-actions-grid">
-              <a class="quick-action" href="../../events/ExploreEvents/index.php">
-                <span class="quick-action-icon">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                </span>
-                <span>Find Events</span>
-              </a>
-              <a class="quick-action" href="../../events/myEvents/index.php">
-                <span class="quick-action-icon">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M6 6h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <span>My Events</span>
-              </a>
-              <a class="quick-action" href="#">
-                <span class="quick-action-icon">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <span>Check In</span>
-              </a>
-              <a class="quick-action" href="../../events/myEvents/index.php">
-                <span class="quick-action-icon">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M4.5 8.5h15M4.5 15.5h15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                </span>
-                <span>My Matches</span>
-              </a>
-              <a class="quick-action" href="../community/community-hub/index.php">
-                <span class="quick-action-icon">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 11a3 3 0 1 0-6 0 3 3 0 0 0 6 0Zm18 0a3 3 0 1 0-6 0 3 3 0 0 0 6 0ZM16 21a4 4 0 0 0-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <span>Community</span>
-              </a>
-              <a class="quick-action" href="#">
-                <span class="quick-action-icon">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                </span>
-                <span>My QR</span>
-              </a>
-            </div>
-          </section>
-        </div>
+          
+          </div>
 
         <aside class="right-column">
           <article class="side-card profile-strength-card">
@@ -423,7 +366,7 @@ if ($cancellation) {
               </div>
             </div>
 
-            <a class="inline-link" href="../community/community-hub/index.php">View all requests</a>
+            <a class="inline-link" href="../community/index.php">View all requests</a>
           </article>
 
           <article class="side-card alerts-card">

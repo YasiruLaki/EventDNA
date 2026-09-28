@@ -4,6 +4,21 @@ require_once "../../data/database.php";
 require_once "../../application/controllers/AdminController.php";
 
 $controller = new AdminController($conn);
+
+$success = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if ($_POST['action'] === 'cancel_event' && isset($_POST['event_id'], $_POST['reason'])) {
+        $res = $controller->cancelEvent((int)$_POST['event_id'], trim($_POST['reason']));
+        if ($res['success']) {
+            $success = $res['message'];
+        } else {
+            $error = $res['message'];
+        }
+    }
+}
+
 $search = $_GET['search'] ?? '';
 $statusFilter = $_GET['status'] ?? '';
 $events = $controller->getAllEvents($search, $statusFilter);
@@ -41,6 +56,17 @@ $events = $controller->getAllEvents($search, $statusFilter);
         <h1 class="page-title">All Events</h1>
       </div>
 
+      <?php if ($success): ?>
+        <div style="background: rgba(34, 197, 94, 0.1); color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-weight: 600; border: 1px solid rgba(34,197,94,0.3);">
+            <?= h($success) ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($error): ?>
+        <div style="background: rgba(220, 38, 38, 0.1); color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-weight: 600; border: 1px solid rgba(220,38,38,0.3);">
+            <?= h($error) ?>
+        </div>
+      <?php endif; ?>
+
       <form method="GET" class="filters-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
         <div class="search-box" style="flex: 1; display: flex; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 0 1rem;">
           <svg style="color: var(--text-secondary); width: 18px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -62,6 +88,7 @@ $events = $controller->getAllEvents($search, $statusFilter);
               <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Event Date</th>
               <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Status</th>
               <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Cancellation Reason</th>
+              <th style="padding: 1rem 1.5rem; font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -82,11 +109,18 @@ $events = $controller->getAllEvents($search, $statusFilter);
               <td style="padding: 1.25rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
                   <?= $ev['status'] === 'CANCELLED' && $ev['cancellation_reason'] ? h($ev['cancellation_reason']) : '<span style="color: #cbd5e1;">—</span>' ?>
               </td>
+              <td style="padding: 1.25rem 1.5rem; display: flex; gap: 0.5rem; flex-wrap: nowrap;">
+                  <?php if ($ev['status'] === 'ACTIVE'): ?>
+                      <button onclick="openCancelModal(<?= $ev['event_id'] ?>, '<?= h(addslashes($ev['name'])) ?>')" style="padding: 0.25rem 0.6rem; border: 1px solid rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.05); color: #dc2626; border-radius: 3px; cursor: pointer; font-weight: 600; font-size: 0.75rem;">Cancel Event</button>
+                  <?php else: ?>
+                      <span style="color: #cbd5e1; font-size: 0.85rem;">—</span>
+                  <?php endif; ?>
+              </td>
             </tr>
             <?php endforeach; ?>
             <?php if (empty($events)): ?>
                 <tr>
-                    <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No events found.</td>
+                    <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No events found.</td>
                 </tr>
             <?php endif; ?>
           </tbody>
@@ -94,5 +128,34 @@ $events = $controller->getAllEvents($search, $statusFilter);
       </div>
     </main>
   </div>
+
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3 id="cancelModalTitle">Cancel Event</h3>
+      <p>Are you sure you want to cancel <strong id="cancelEventName"></strong>? This will revoke all active check-in QR codes and notify attendees.</p>
+      <form method="POST">
+        <input type="hidden" name="action" value="cancel_event">
+        <input type="hidden" name="event_id" id="cancel_event_id">
+        <textarea name="reason" placeholder="Reason for cancellation (optional)" rows="3"></textarea>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeCancelModal()">Go Back</button>
+          <button type="submit" class="btn btn-danger-solid">Confirm Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openCancelModal(eventId, eventName) {
+        document.getElementById('cancel_event_id').value = eventId;
+        document.getElementById('cancelEventName').textContent = eventName;
+        document.getElementById('cancelModal').style.display = 'flex';
+    }
+
+    function closeCancelModal() {
+        document.getElementById('cancelModal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

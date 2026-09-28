@@ -23,7 +23,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       <div class="nav-links">
         <a href="../../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
         <a href="../../../events/myEvents/index.php" class="nav-link">My Events</a>
-        <a href="../community-hub/index.php" class="nav-link active">Communities</a>
+        <a href="../index.php" class="nav-link active">Communities</a>
         <a href="../../myConnections/index.php" class="nav-link">Connections</a>
       </div>
     </div>

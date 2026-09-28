@@ -24,23 +24,23 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         
-        .group-hero { background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%); border-radius: 20px; padding: 4rem 3rem; color: #fff; position: relative; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.3); }
+        .group-hero { background: #fff; border-bottom: 1px solid var(--border-color); padding: 3rem 0 2rem 0; color: #0f172a; margin-bottom: 2rem; }
         
         .hero-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
-        .hero-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .hero-meta { display: flex; gap: 1.5rem; opacity: 0.9; font-size: 0.95rem; align-items: center; }
+        .hero-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.2; color: #0f172a; }
+        .hero-meta { display: flex; gap: 1.5rem; color: var(--text-secondary); font-size: 0.95rem; align-items: center; }
         
         .layout-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 2rem; align-items: start; }
         @media(max-width: 900px) { .layout-grid { grid-template-columns: 1fr; } }
         
-        .panel { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px -4px rgba(0,0,0,0.03), 0 2px 8px -2px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; margin-bottom: 2rem; }
+        .panel { background: #fff; border-radius: 4px; padding: 2rem; border: 1px solid #d1d5db; margin-bottom: 2rem; }
         .panel-title { font-size: 1.15rem; font-weight: 700; color: var(--secondary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 1px solid #f1f5f9; }
         
-        .g-tag { background: var(--primary-tint); color: var(--primary); padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; display: inline-block; margin: 0.25rem; }
+        .g-tag { background: transparent; color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 500; display: inline-block; margin: 0.25rem 0.25rem 0.25rem 0; }
         
         /* Thread Styles */
         .post-input-wrap { display: flex; gap: 1rem; margin-bottom: 2.5rem; }
-        .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--primary-tint); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 1.1rem; }
+        .avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; overflow: hidden; background: #e2e8f0; } .avatar img { width: 100%; height: 100%; object-fit: cover; }
         
         
         
@@ -76,9 +76,9 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                 <div>
                     <?php if (false): // Attendees cannot edit ?>
                     <?php elseif ($membership): ?>
-                        <a href="leave.php?id=<?= $groupId ?>" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i data-lucide="log-out" style="width: 18px;"></i> Leave Group</a>
+                        <a href="leave.php?id=<?= $groupId ?>" class="btn-secondary" style="border-radius: 4px; padding: 0.6rem 1.5rem;"><i data-lucide="log-out" style="width: 18px;"></i> Leave Group</a>
                     <?php else: ?>
-                        <a href="join.php?id=<?= $groupId ?>" style="background: #fff; color: var(--primary); font-weight: 700; border-radius: 8px; text-decoration: none; padding: 0.8rem 2rem; font-size: 1.05rem; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">Join Group</a>
+                        <a href="join.php?id=<?= $groupId ?>" class="btn-primary" style="border-radius: 4px; padding: 0.6rem 2rem;">Join Group</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -92,7 +92,7 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                     
                     <?php if ($membership || $isOwner): ?>
                         <div class="post-input-wrap" style="display: flex; gap: 1rem; margin-bottom: 2.5rem; align-items: flex-start;">
-                            <div class="avatar">Y</div>
+                            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Y"></div>
                             <div style="flex: 1; background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 0.5rem; display: flex; flex-direction: column; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02);" onfocusin="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px var(--primary-tint)';" onfocusout="this.style.borderColor='var(--border-color)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)';">
                                 <textarea rows="2" placeholder="Share something with the community..." style="border: none; background: transparent; padding: 0.5rem; outline: none; width: 100%; resize: none; font-family: inherit; font-size: 0.95rem;" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.5rem 0;">
@@ -115,7 +115,7 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                     <!-- Mocked Threads UI -->
                     <div class="thread">
                         <div class="thread-header">
-                            <div class="avatar">A</div>
+                            <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Admin"></div>
                             <div>
                                 <div class="thread-author">Admin User <span class="thread-role">ORGANIZER</span><span class="thread-time">2 hours ago</span></div>
                             </div>
@@ -126,22 +126,23 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                         <div class="thread-actions">
                             <button class="btn-action"><i data-lucide="heart" style="width: 16px;"></i> 12</button>
                             <button class="btn-action"><i data-lucide="message-circle" style="width: 16px;"></i> Reply</button>
-                            <?php if (false): // Attendees cannot edit ?><button class="btn-action" style="color: #ef4444; margin-left: auto;"><i data-lucide="trash-2" style="width: 16px;"></i></button><?php endif; ?>
+                            <button class="btn-action" style="color: #ef4444; margin-left: auto;" onclick="openReportModal('POST', 1)"><i data-lucide="flag" style="width: 16px;"></i> Report</button>
                         </div>
                         
                         <!-- Reply block -->
                         <div class="reply-block">
-                            <div class="avatar reply-avatar">S</div>
-                            <div>
+                            <div class="avatar reply-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" alt="Sarah"></div>
+                            <div style="flex: 1;">
                                 <div class="thread-author">Sarah Doe <span class="thread-time">1 hour ago</span></div>
                                 <div style="color: var(--text-primary); font-size: 0.9rem; margin-top: 0.4rem; line-height: 1.5;">Super excited! Are the workshop schedules finalized yet?</div>
                             </div>
+                            <button class="btn-action" style="color: #ef4444; margin-left: auto; align-self: flex-start;" onclick="openReportModal('COMMENT', 1)"><i data-lucide="flag" style="width: 14px;"></i></button>
                         </div>
                     </div>
 
                     <div class="thread">
                         <div class="thread-header">
-                            <div class="avatar" style="background: #e0e7ff; color: #4338ca;">J</div>
+                            <div class="avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="John"></div>
                             <div>
                                 <div class="thread-author">John Smith <span class="thread-time">Yesterday</span></div>
                             </div>
@@ -152,7 +153,7 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
                         <div class="thread-actions">
                             <button class="btn-action"><i data-lucide="heart" style="width: 16px;"></i> 5</button>
                             <button class="btn-action"><i data-lucide="message-circle" style="width: 16px;"></i> 0 Replies</button>
-                            <?php if (false): // Attendees cannot edit ?><button class="btn-action" style="color: #ef4444; margin-left: auto;"><i data-lucide="trash-2" style="width: 16px;"></i></button><?php endif; ?>
+                            <button class="btn-action" style="color: #ef4444; margin-left: auto;" onclick="openReportModal('POST', 2)"><i data-lucide="flag" style="width: 16px;"></i> Report</button>
                         </div>
                     </div>
                 </div>
@@ -173,16 +174,91 @@ $isOwner = $membership && $membership['role'] === 'OWNER';
 
                     <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 1rem; font-weight: 700;">Recent Members</h3>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <div class="avatar" style="width: 36px; height: 36px; font-size: 0.9rem;" title="Member">JD</div>
-                        <div class="avatar" style="width: 36px; height: 36px; font-size: 0.9rem; background: #e0e7ff; color: #4338ca;" title="Member">AS</div>
-                        <div class="avatar" style="width: 36px; height: 36px; font-size: 0.9rem; background: #dcfce7; color: #166534;" title="Member">MK</div>
-                        <div class="avatar" style="width: 36px; height: 36px; font-size: 0.9rem; background: #fef9c3; color: #854d0e;" title="Member">TR</div>
-                        <div class="avatar" style="width: 36px; height: 36px; font-size: 0.9rem; background: #f1f5f9; color: #475569;">+<?= max(0, $group['member_count'] - 4) ?></div>
+                        <div class="avatar" style="width: 36px; height: 36px;" title="Member"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"></div>
+                        <div class="avatar" style="width: 36px; height: 36px;" title="Member"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80"></div>
+                        <div class="avatar" style="width: 36px; height: 36px;" title="Member"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=150&q=80"></div>
+                        <div class="avatar" style="width: 36px; height: 36px;" title="Member"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80"></div>
+                        <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #475569; font-size: 0.8rem; font-weight: 600;">+<?= max(0, $group['member_count'] - 4) ?></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>lucide.createIcons();</script>
+
+    <!-- Report Modal -->
+    <div class="modal-overlay" id="reportModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.4); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center;">
+        <div class="modal" style="background:#fff; border-radius:12px; width:90%; max-width:400px; padding:2rem; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.15);">
+            <button class="modal-close" id="closeReportModal" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#64748b; cursor:pointer;"><i data-lucide="x" style="width: 20px;"></i></button>
+            <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:1rem; color:var(--secondary);">Report Content</h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.5rem;">Why are you reporting this? Your report will be kept anonymous.</p>
+            
+            <form id="reportForm">
+                <input type="hidden" id="reportType" name="type" value="">
+                <input type="hidden" id="reportContentId" name="content_id" value="">
+                
+                <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom: 2rem;">
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.95rem; cursor:pointer;">
+                        <input type="radio" name="reason" value="Spam or promotional" required> Spam or promotional
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.95rem; cursor:pointer;">
+                        <input type="radio" name="reason" value="Harassment or bullying"> Harassment or bullying
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.95rem; cursor:pointer;">
+                        <input type="radio" name="reason" value="Inappropriate content"> Inappropriate content
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.95rem; cursor:pointer;">
+                        <input type="radio" name="reason" value="Off-topic"> Off-topic
+                    </label>
+                </div>
+                
+                <div style="display:flex; gap:1rem;">
+                    <button type="button" class="btn-secondary" style="flex:1; justify-content:center; border-radius:4px;" onclick="closeReport()">Cancel</button>
+                    <button type="submit" class="btn-primary" style="flex:1; justify-content:center; border-radius:4px; background:#ef4444; border-color:#ef4444;">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    lucide.createIcons();
+    
+    function openReportModal(type, contentId) {
+        document.getElementById('reportType').value = type;
+        document.getElementById('reportContentId').value = contentId;
+        document.getElementById('reportModal').style.display = 'flex';
+        document.getElementById('reportForm').reset();
+    }
+    
+    function closeReport() {
+        document.getElementById('reportModal').style.display = 'none';
+    }
+    
+    document.getElementById('closeReportModal').addEventListener('click', closeReport);
+    
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            type: document.getElementById('reportType').value,
+            content_id: document.getElementById('reportContentId').value,
+            reason: document.querySelector('input[name="reason"]:checked').value
+        };
+        
+        fetch('report.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                alert('Thank you! Your report has been submitted for review.');
+                closeReport();
+            } else {
+                alert(res.message || 'Error submitting report.');
+            }
+        })
+        .catch(() => alert('Error submitting report.'));
+    });
+    </script>
 </body>
 </html>

@@ -116,7 +116,7 @@ function flash_message($tab, $flash) {
         <div class="nav-links">
           <a href="../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
           <a href="../../events/myEvents/index.php" class="nav-link">My Events</a>
-          <a href="../community/community-hub/index.php" class="nav-link">Communities</a>
+          <a href="../community/index.php" class="nav-link">Communities</a>
           <a href="../myConnections/index.php" class="nav-link">Connections</a>
         </div>
       </div>
