@@ -183,7 +183,8 @@ class GroupRepository {
 
     public function getMyJoinedGroups($userId) {
         $stmt = $this->conn->prepare("
-            SELECT g.group_id, g.name, g.description, g.created_at, gm.role
+            SELECT g.group_id, g.name, g.description, g.created_at, gm.role,
+                   (SELECT COUNT(*) FROM group_members gm2 WHERE gm2.group_id = g.group_id AND gm2.status = 'ACTIVE') as member_count
             FROM groups g
             JOIN group_members gm ON g.group_id = gm.group_id
             WHERE gm.user_id = ? AND gm.status = 'ACTIVE' AND g.status = 'ACTIVE'

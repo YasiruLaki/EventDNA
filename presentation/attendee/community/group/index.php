@@ -23,7 +23,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
       <div class="nav-links">
         <a href="../../../events/ExploreEvents/index.php" class="nav-link">Find Events</a>
         <a href="../../../events/myEvents/index.php" class="nav-link">My Events</a>
-        <a href="../community-hub/index.php" class="nav-link active">Communities</a>
+        <a href="../index.php" class="nav-link active">Communities</a>
         <a href="../../myConnections/index.php" class="nav-link">Connections</a>
       </div>
     </div>
@@ -49,7 +49,7 @@ $attendeeName = $_SESSION['full_name'] ?? 'Attendee';
   <div class="container">
     <div class="hero-row">
       <div class="hero-title" style="max-width:800px;">
-        <a href="../community-hub/index.php" class="back-link" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--text-secondary); margin-bottom:1.5rem; font-size:0.95rem; font-weight:500;">
+        <a href="../index.php" class="back-link" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--text-secondary); margin-bottom:1.5rem; font-size:0.95rem; font-weight:500;">
           <svg viewBox="0 0 24 24" fill="none" style="width:18px;height:18px;"><line x1="19" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Back to Community
         </a>
